@@ -1,0 +1,446 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────── Enums ───────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum LeadType {
+  EDUCATION
+  MEDIA
+  GENERAL
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  CONVERTED
+  LOST
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseFormat {
+  OFFLINE
+  ONLINE
+  HYBRID
+}
+
+enum ResultKind {
+  PROJECT
+  CAREER
+  GROWTH
+  CERTIFICATE
+}
+
+enum FaqScope {
+  GENERAL
+  EDU
+  MEDIA
+}
+
+enum GalleryCategory {
+  CLASSROOM
+  EVENT
+  PRODUCTION
+  CAMPUS
+}
+
+enum AuditAction {
+  LOGIN
+  LOGIN_FAILED
+  LOGOUT
+  CREATE
+  UPDATE
+  DELETE
+  STATUS_CHANGE
+  EXPORT
+  UPLOAD
+  NOTIFY_FAILED
+}
+
+// ─────────────────────────── Auth ───────────────────────────
+
+model AdminUser {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  name                String
+  passwordHash        String
+  role                Role      @default(EDITOR)
+  isActive            Boolean   @default(true)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  sessions      Session[]
+  auditLogs     AuditLog[]
+  leadNotes     LeadNote[]
+  assignedLeads Lead[]     @relation("LeadAssignee")
+  uploads       Upload[]
+
+  @@index([role])
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  ip        String?
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  userId    String?
+  action    AuditAction
+  entity    String
+  entityId  String?
+  meta      Json?
+  ip        String?
+  createdAt DateTime    @default(now())
+
+  user AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+  @@index([userId])
+}
+
+// ─────────────────────────── Organisation ───────────────────────────
+
+model Branch {
+  id           String   @id @default(cuid())
+  name         String
+  address      String
+  phone        String?
+  mapUrl       String?
+  workingHours String?
+  isActive     Boolean  @default(true)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  leads Lead[]
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────── Education ───────────────────────────
+
+model CourseCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+}
+
+model Course {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  roleLabel      String // "Developer", "Robotics Engineer" — the profession the course leads to
+  tagline        String // "Build real products."
+  description    String
+  categoryId     String?
+  level          CourseLevel   @default(BEGINNER)
+  format         CourseFormat  @default(OFFLINE)
+  durationLabel  String // "6 oy"
+  durationWeeks  Int?
+  schedule       String? // "Haftasiga 3 kun · 90 daqiqa"
+  priceLabel     String? // "1 200 000 soʻm / oy"
+  ageLabel       String? // "14+"
+  accent         String? // hex used for the course's ambient tint
+  coverImage     String?
+  whoFor         String[] // bullet list
+  skills         String[]
+  outcomes       String[]
+  curriculum     Json? // [{ title, lessons: string[] }]
+  projects       Json? // [{ title, description }]
+  status         ContentStatus @default(DRAFT)
+  featured       Boolean       @default(false)
+  order          Int           @default(0)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  category     CourseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  teachers     CourseTeacher[]
+  leads        Lead[]
+  testimonials Testimonial[]
+  results      Result[]
+  faqs         Faq[]
+
+  @@index([status, order])
+  @@index([categoryId])
+}
+
+model Teacher {
+  id        String        @id @default(cuid())
+  slug      String        @unique
+  name      String
+  title     String // "Senior Frontend Engineer"
+  bio       String?
+  photo     String?
+  socials   Json? // { telegram?, instagram?, linkedin? }
+  status    ContentStatus @default(DRAFT)
+  order     Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  courses CourseTeacher[]
+
+  @@index([status, order])
+}
+
+model CourseTeacher {
+  courseId  String
+  teacherId String
+
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, teacherId])
+  @@index([teacherId])
+}
+
+// ─────────────────────────── Media ───────────────────────────
+
+model Service {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  tagline        String
+  description    String
+  attributes     String[] // ["Creative", "Fast", "Vertical", "Conversion"]
+  deliverables   String[]
+  process        Json? // [{ step, title, description }]
+  coverImage     String?
+  status         ContentStatus @default(DRAFT)
+  featured       Boolean       @default(false)
+  order          Int           @default(0)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  projects MediaProject[]
+  leads    Lead[]
+
+  @@index([status, order])
+}
+
+model MediaProject {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  client      String
+  serviceId   String?
+  category    String
+  description String
+  challenge   String?
+  solution    String?
+  results     String?
+  coverImage  String?
+  videos      Json? // [{ url, title?, poster? }]
+  images      String[]
+  tags        String[]
+  beforeImage String?
+  afterImage  String?
+  status      ContentStatus @default(DRAFT)
+  featured    Boolean       @default(false)
+  order       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([status, order])
+  @@index([serviceId])
+}
+
+// ─────────────────────────── Proof ───────────────────────────
+
+model Testimonial {
+  id          String        @id @default(cuid())
+  name        String
+  role        String? // "Frontend kursi bitiruvchisi" / "Marketing direktori, X"
+  courseId    String?
+  photo       String?
+  quote       String
+  resultLabel String? // "Junior Frontend Developer sifatida ishga kirdi"
+  videoUrl    String?
+  status      ContentStatus @default(DRAFT)
+  order       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([status, order])
+}
+
+model Result {
+  id          String        @id @default(cuid())
+  kind        ResultKind    @default(PROJECT)
+  title       String
+  studentName String?
+  courseId    String?
+  description String?
+  metricLabel String? // "+40 000 obunachi"
+  image       String?
+  beforeImage String?
+  afterImage  String?
+  link        String?
+  status      ContentStatus @default(DRAFT)
+  featured    Boolean       @default(false)
+  order       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([status, order])
+}
+
+model GalleryItem {
+  id        String          @id @default(cuid())
+  title     String?
+  image     String
+  alt       String
+  category  GalleryCategory @default(CLASSROOM)
+  status    ContentStatus   @default(DRAFT)
+  order     Int             @default(0)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([status, category, order])
+}
+
+model Faq {
+  id        String        @id @default(cuid())
+  question  String
+  answer    String
+  scope     FaqScope      @default(GENERAL)
+  courseId  String?
+  status    ContentStatus @default(PUBLISHED)
+  order     Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([scope, status, order])
+  @@index([courseId])
+}
+
+// ─────────────────────────── Leads ───────────────────────────
+
+model Lead {
+  id                String     @id @default(cuid())
+  type              LeadType
+  status            LeadStatus @default(NEW)
+  name              String
+  phone             String
+  email             String?
+  company           String?
+  budget            String?
+  message           String?
+  courseId          String?
+  serviceId         String?
+  branchId          String?
+  interest          String? // free-text interest for GENERAL leads
+  source            String? // page path the lead came from
+  utm               Json?
+  ip                String?
+  telegramMessageId String?
+  telegramChatId    String?
+  assignedToId      String?
+  contactedAt       DateTime?
+  closedAt          DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  course     Course?    @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  service    Service?   @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  assignedTo AdminUser? @relation("LeadAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  notes      LeadNote[]
+
+  @@index([type, status])
+  @@index([createdAt])
+  @@index([phone])
+  @@index([courseId])
+  @@index([serviceId])
+}
+
+model LeadNote {
+  id        String   @id @default(cuid())
+  leadId    String
+  authorId  String?
+  text      String
+  createdAt DateTime @default(now())
+
+  lead   Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  author AdminUser? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+}
+
+// ─────────────────────────── Files ───────────────────────────
+
+model Upload {
+  id          String   @id @default(cuid())
+  key         String   @unique // storage key (provider agnostic)
+  url         String
+  mimeType    String
+  size        Int
+  width       Int?
+  height      Int?
+  alt         String?
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  createdBy AdminUser? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+}
