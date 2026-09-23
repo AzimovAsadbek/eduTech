@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/config/site";
 import { getPublicSlugs } from "@/server/modules/content/public";
 
+// Generated per request (from the tagged data cache) so the build never needs a live database.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { courses, services, projects } = await getPublicSlugs();
   const now = new Date();
