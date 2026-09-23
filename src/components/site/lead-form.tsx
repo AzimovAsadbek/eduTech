@@ -31,7 +31,8 @@ const anySchema = z.object({
   budget: z.string().optional(),
   interest: z.string().optional(),
   message: z.string().trim().max(1500).optional(),
-  startedAt: z.number().optional(),
+  // Hidden input + valueAsNumber yields NaN until a field was focused; treat that as "unknown" instead of failing silently.
+  startedAt: z.number().optional().catch(undefined),
 });
 type Values = z.infer<typeof anySchema>;
 

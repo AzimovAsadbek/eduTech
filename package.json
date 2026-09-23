@@ -14,11 +14,14 @@
     "db:reset": "prisma migrate reset --force",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "telegram:webhook": "tsx scripts/telegram-webhook.ts",
-    "admin:create": "tsx scripts/create-admin.ts"
+    "admin:create": "tsx scripts/create-admin.ts",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "tsx tests/helpers/prepare-test-db.ts && vitest run --project integration",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
