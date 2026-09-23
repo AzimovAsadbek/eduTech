@@ -28,7 +28,6 @@ export class MemoryRateLimiter implements RateLimiter {
     const bucket = this.buckets.get(key) ?? { hits: [] };
     bucket.hits = bucket.hits.filter((t) => now - t < this.windowMs);
     if (bucket.hits.length >= this.limit) {
-      const resetAt = bucket.hits[0] + this.windowMs;
       this.buckets.set(key, bucket);
       throw tooMany("Juda koʻp soʻrov yuborildi. Birozdan soʻng qayta urinib koʻring.");
     }

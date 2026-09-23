@@ -66,8 +66,8 @@ export async function createPublicLead(input: PublicLeadInput, meta: { ip?: stri
   return { id: lead.id, type: lead.type, createdAt: lead.createdAt };
 }
 
-export async function listLeads(filter: LeadFilter) {
-  const where: Prisma.LeadWhereInput = {
+function buildWhere(filter: Omit<LeadFilter, "page" | "pageSize" | "sort" | "dir">): Prisma.LeadWhereInput {
+  return {
     type: filter.type,
     status: filter.status,
     courseId: filter.courseId,
@@ -82,6 +82,10 @@ export async function listLeads(filter: LeadFilter) {
         ]
       : undefined,
   };
+}
+
+export async function listLeads(filter: LeadFilter) {
+  const where = buildWhere(filter);
   const [items, total] = await Promise.all([
     db.lead.findMany({
       where,
@@ -95,22 +99,11 @@ export async function listLeads(filter: LeadFilter) {
   return { items, total, page: filter.page, pageSize: filter.pageSize };
 }
 
+const EXPORT_MAX_ROWS = 50_000;
+
 /** Same filters as the list, no pagination — used by the Excel export. */
 export async function findLeadsForExport(filter: Omit<LeadFilter, "page" | "pageSize">) {
-  const { items } = await listLeads({ ...filter, page: 1, pageSize: 100 });
-  if (items.length < 100) return items;
-  const where = buildWhere(filter);
-  return db.lead.findMany({ where, include: leadInclude, orderBy: { [filter.sort]: filter.dir }, take: 50_000 });
-}
-
-function buildWhere(filter: Omit<LeadFilter, "page" | "pageSize">): Prisma.LeadWhereInput {
-  return {
-    type: filter.type,
-    status: filter.status,
-    courseId: filter.courseId,
-    serviceId: filter.serviceId,
-    createdAt: filter.from || filter.to ? { gte: filter.from, lte: filter.to } : undefined,
-  };
+  return db.lead.findMany({ where: buildWhere(filter), include: leadInclude, orderBy: { [filter.sort]: filter.dir }, take: EXPORT_MAX_ROWS });
 }
 
 export async function getLead(id: string) {

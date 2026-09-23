@@ -58,6 +58,8 @@ export async function login(input: { email: string; password: string }, meta: { 
 
   const token = newSessionToken();
   const ttlSeconds = env().SESSION_TTL_HOURS * 3600;
+  // Opportunistic housekeeping: drop sessions that expired more than a week ago.
+  void db.session.deleteMany({ where: { expiresAt: { lt: new Date(Date.now() - 7 * 86_400_000) } } }).catch(() => undefined);
   const session = await db.session.create({
     data: {
       userId: user.id,

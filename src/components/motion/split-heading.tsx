@@ -2,7 +2,7 @@
 
 import { useRef, type ElementType } from "react";
 import { cn } from "@/lib/utils";
-import { gsap, prefersReducedMotion, useGSAP } from "./gsap";
+import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "./gsap";
 
 interface Props {
   text: string;
@@ -26,21 +26,20 @@ export function SplitHeading({ text, className, as: Tag = "h2", accent = [], del
   useGSAP(
     () => {
       const el = ref.current;
-      if (!el) return;
+      if (!el || prefersReducedMotion()) return;
       const spans = el.querySelectorAll<HTMLElement>("[data-word]");
-      if (prefersReducedMotion()) return;
-      gsap.set(spans, { yPercent: 110, rotate: 2 });
-      gsap.to(spans, {
-        yPercent: 0,
-        rotate: 0,
-        duration: 1.1,
-        ease: "expo.out",
-        stagger: 0.045,
-        delay,
-        scrollTrigger: scroll ? { trigger: el, start: "top 88%", once: true } : undefined,
-      });
+      const tween = gsap.fromTo(
+        spans,
+        { yPercent: 110, rotate: 2 },
+        { yPercent: 0, rotate: 0, duration: 1.1, ease: "expo.out", stagger: 0.045, delay, paused: true, immediateRender: true },
+      );
+      if (!scroll) {
+        tween.play();
+        return;
+      }
+      ScrollTrigger.create({ trigger: el, start: "top 88%", once: true, onEnter: () => tween.play() });
     },
-    { scope: ref },
+    { scope: ref, dependencies: [text] },
   );
 
   return (

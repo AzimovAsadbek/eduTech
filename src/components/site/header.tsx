@@ -56,7 +56,15 @@ export function Header() {
     };
   }, [pathname]);
 
-  useEffect(() => setOpen(false), [pathname]);
+  const lastPath = useRef(pathname);
+  useEffect(() => {
+    if (lastPath.current !== pathname) {
+      lastPath.current = pathname;
+      // Route changed while the drawer was open — close it on the next tick.
+      const t = setTimeout(() => setOpen(false), 0);
+      return () => clearTimeout(t);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;

@@ -34,7 +34,7 @@ function applySecurityHeaders(res: NextResponse, csp: string) {
 }
 
 export async function proxy(req: NextRequest) {
-  const nonce = btoa(crypto.getRandomValues(new Uint8Array(16)).join(","));
+  const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
   const csp = buildCsp(nonce);
   const { pathname } = req.nextUrl;
 

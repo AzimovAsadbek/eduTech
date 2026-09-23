@@ -1,0 +1,139 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
+import { Reveal } from "@/components/motion/reveal";
+import { SplitHeading } from "@/components/motion/split-heading";
+import { JsonLd, breadcrumbJsonLd } from "@/components/site/json-ld";
+import { BeforeAfter } from "@/components/site/media/before-after";
+import { MediaInquiry } from "@/components/site/media/media-inquiry";
+import { VideoEmbed } from "@/components/site/media/video-embed";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { PlaceholderImage } from "@/components/ui/placeholder-image";
+import { routes } from "@/config/site";
+import { getProjectBySlug, getPublishedProjects, getPublishedServices } from "@/server/modules/content/public";
+import { getAuth } from "@/server/modules/auth/service";
+import { getSiteSettings } from "@/server/modules/settings/service";
+
+type Params = Promise<{ slug: string }>;
+type Video = { url: string; title?: string; poster?: string };
+
+export async function generateStaticParams() {
+  const projects = await getPublishedProjects().catch(() => []);
+  return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = await getProjectBySlug(slug);
+  if (!p) return { title: "Loyiha topilmadi" };
+  return { title: `${p.title} — ${p.client}`, description: p.description.slice(0, 160), alternates: { canonical: `/media/portfolio/${p.slug}` }, openGraph: { images: p.coverImage ? [{ url: p.coverImage }] : undefined } };
+}
+
+export default async function ProjectPage({ params, searchParams }: { params: Params; searchParams: Promise<{ preview?: string }> }) {
+  const { slug } = await params;
+  const { preview } = await searchParams;
+  const isPreview = preview === "1" && Boolean(await getAuth());
+  const [project, all, services, settings] = await Promise.all([getProjectBySlug(slug, { preview: isPreview }), getPublishedProjects(), getPublishedServices(), getSiteSettings()]);
+  if (!project) notFound();
+  const videos = (project.videos as Video[] | null) ?? [];
+  const idx = all.findIndex((p) => p.id === project.id);
+  const next = all[(idx + 1) % all.length];
+
+  const blocks = [
+    ["Challenge", "Muammo", project.challenge],
+    ["Strategy & Execution", "Strategiya va ijro", project.solution],
+    ["Result", "Natija", project.results],
+  ].filter((b) => b[2]) as [string, string, string][];
+
+  return (
+    <div data-world="media" className="bg-(--surface) text-white">
+      <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Portfolio", path: "/media/portfolio" }, { name: project.title, path: `/media/portfolio/${project.slug}` }])} />
+      <section className="relative overflow-hidden pt-36 pb-12 lg:pt-44">
+        <div className="container-x">
+          <Eyebrow className="mb-5 text-white/60">
+            {project.client} · {project.service?.title ?? project.category}
+          </Eyebrow>
+          <SplitHeading as="h1" text={project.title} className="t-display max-w-4xl" scroll={false} />
+          <Reveal delay={0.3}>
+            <p className="t-lead mt-6 max-w-2xl text-white/70">{project.description}</p>
+          </Reveal>
+          <Reveal delay={0.4} className="mt-10 grid gap-6 border-t border-white/10 pt-8 sm:grid-cols-3">
+            <div>
+              <p className="t-meta text-white/50">Client</p>
+              <p className="mt-1 font-semibold">{project.client}</p>
+            </div>
+            <div>
+              <p className="t-meta text-white/50">Service</p>
+              <p className="mt-1 font-semibold">{project.service?.title ?? project.category}</p>
+            </div>
+            {project.tags.length ? (
+              <div>
+                <p className="t-meta text-white/50">Tags</p>
+                <p className="mt-1 font-semibold">{project.tags.join(" · ")}</p>
+              </div>
+            ) : null}
+          </Reveal>
+        </div>
+      </section>
+
+      <Reveal className="container-x">
+        {videos[0] ? <VideoEmbed url={videos[0].url} title={videos[0].title ?? project.title} poster={videos[0].poster ?? project.coverImage} /> : <PlaceholderImage src={project.coverImage} alt={project.title} label="Cover" className="aspect-[16/9] rounded-(--radius-xl)" priority sizes="100vw" />}
+      </Reveal>
+
+      {blocks.length ? (
+        <section className="section-y">
+          <div className="container-x space-y-14">
+            {blocks.map(([en, uz, text], i) => (
+              <Reveal key={en} className="grid gap-6 border-t border-white/10 pt-10 lg:grid-cols-12">
+                <div className="lg:col-span-4">
+                  <p className="t-meta text-orange">{String(i + 1).padStart(2, "0")}</p>
+                  <h2 className="t-h2 mt-2">{uz}</h2>
+                  <p className="t-meta mt-1 text-white/40">{en}</p>
+                </div>
+                <p className="t-lead whitespace-pre-line text-white/75 lg:col-span-7 lg:col-start-6">{text}</p>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {project.beforeImage && project.afterImage ? (
+        <section className="container-x pb-24">
+          <Eyebrow className="mb-6 text-white/60">Before / After</Eyebrow>
+          <BeforeAfter before={project.beforeImage} after={project.afterImage} alt={project.title} />
+        </section>
+      ) : null}
+
+      {videos.length > 1 || project.images.length ? (
+        <section className="container-x pb-24">
+          <Eyebrow className="mb-6 text-white/60">Media</Eyebrow>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {videos.slice(1).map((v) => (
+              <VideoEmbed key={v.url} url={v.url} title={v.title ?? project.title} poster={v.poster} />
+            ))}
+            {project.images.map((img) => (
+              <PlaceholderImage key={img} src={img} alt={project.title} className="aspect-[4/3] rounded-(--radius-lg)" sizes="(min-width:640px) 50vw, 100vw" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {next && next.id !== project.id ? (
+        <Link href={routes.project(next.slug)} className="group block border-t border-white/10">
+          <div className="container-x flex items-center justify-between py-12">
+            <div>
+              <p className="t-meta text-white/50">Keyingi loyiha</p>
+              <p className="t-h2 mt-2 transition-colors group-hover:text-orange">{next.title}</p>
+            </div>
+            <span className="grid size-14 place-items-center rounded-full border border-white/20 transition-[background-color,transform] group-hover:bg-orange group-hover:rotate-45">
+              <ArrowUpRight />
+            </span>
+          </div>
+        </Link>
+      ) : null}
+
+      <MediaInquiry services={services.map((s) => ({ value: s.slug, label: s.title }))} settings={settings} defaultServiceSlug={project.service?.slug} />
+    </div>
+  );
+}

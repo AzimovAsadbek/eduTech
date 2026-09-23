@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Check } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
@@ -31,6 +31,7 @@ const anySchema = z.object({
   budget: z.string().optional(),
   interest: z.string().optional(),
   message: z.string().trim().max(1500).optional(),
+  startedAt: z.number().optional(),
 });
 type Values = z.infer<typeof anySchema>;
 
@@ -53,19 +54,18 @@ const INTERESTS = ["Kurslar", "Media xizmatlar", "Hamkorlik", "Boshqa"];
 
 /** One form component for all three lead types. Posts JSON to the public API. */
 export function LeadForm({ type, courses = [], services = [], branches = [], defaultCourseSlug, defaultServiceSlug, source, onDone, className, dark, submitLabel }: Props) {
-  const startedAt = useMemo(() => Date.now(), []);
   const [state, setState] = useState<{ status: "idle" | "submitting" | "success" | "error"; message?: string }>({ status: "idle" });
 
   const form = useForm<Values>({
     resolver: zodResolver(anySchema),
     defaultValues: { courseSlug: defaultCourseSlug ?? "", serviceSlug: defaultServiceSlug ?? "", branchId: branches[0]?.value ?? "" },
   });
-  const { register, handleSubmit, formState } = form;
+  const { register, handleSubmit, formState, setValue, getValues } = form;
   const err = (k: keyof Values) => formState.errors[k]?.message as string | undefined;
 
   const onSubmit = handleSubmit(async (values) => {
     setState({ status: "submitting" });
-    const payload: Record<string, unknown> = { type, ...values, startedAt, website: "", source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined) };
+    const payload: Record<string, unknown> = { type, ...values, website: "", source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined) };
     for (const k of Object.keys(payload)) if (payload[k] === "") delete payload[k];
     try {
       const res = await fetch("/api/v1/public/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
@@ -100,7 +100,16 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className={cn("space-y-4", className)}>
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      className={cn("space-y-4", className)}
+      // First interaction timestamp feeds the server-side "too fast to be human" check.
+      onFocusCapture={() => {
+        if (!getValues("startedAt")) setValue("startedAt", Date.now());
+      }}
+    >
+      <input type="hidden" {...register("startedAt", { valueAsNumber: true })} />
       {/* Honeypot: hidden from humans, filled by naive bots */}
       <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden>
         <label htmlFor="website">Website</label>

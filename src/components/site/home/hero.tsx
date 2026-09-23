@@ -130,7 +130,7 @@ export function Hero({ stats, heroImage }: Props) {
             <div data-hero-photo data-depth="0.4" className="absolute inset-x-[10%] top-[6%] bottom-[6%] overflow-hidden rounded-[28px] shadow-lg will-change-transform">
               <PlaceholderImage src={heroImage} alt="EduTech oʻquvchilari amaliy dars jarayonida" className="h-full w-full" label="Real foto: oʻquvchilar" priority sizes="(min-width:1024px) 40vw, 90vw" />
               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/35 to-transparent" aria-hidden />
-              <div className="absolute bottom-5 left-5 text-white">
+              <div className="absolute top-5 right-5 hidden text-right text-white sm:block">
                 <p className="t-eyebrow text-white/70">EduTech ecosystem</p>
                 <p className="font-display mt-1 text-xl font-semibold">IT · AI · Digital · Creative</p>
               </div>
@@ -158,7 +158,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* Reel tile */}
-            <div data-tile data-depth="0.8" className="absolute bottom-[4%] left-[2%] w-[34%] overflow-hidden rounded-(--radius-lg) bg-ink text-white shadow-lg will-change-transform">
+            <div data-tile data-depth="0.8" className="absolute bottom-[4%] left-[2%] w-[30%] overflow-hidden rounded-(--radius-lg) bg-ink text-white shadow-lg will-change-transform">
               <div className="placeholder-surface aspect-[9/14]" data-world="media">
                 <div className="absolute inset-0 grid place-items-center">
                   <span className="grid size-10 place-items-center rounded-full bg-white/90 text-ink">
@@ -173,7 +173,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* Robotics tile */}
-            <div data-tile data-depth="1.2" className="glass absolute right-[4%] bottom-[10%] w-[40%] rounded-(--radius-lg) p-4 will-change-transform">
+            <div data-tile data-depth="1.2" className="glass absolute right-[2%] bottom-[8%] w-[42%] rounded-(--radius-lg) p-4 will-change-transform">
               <p className="t-meta mb-2 text-(--fg-muted)">Robot · sensor</p>
               <svg viewBox="0 0 120 40" className="h-10 w-full text-orange" aria-hidden>
                 <polyline fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" points="0,30 12,28 22,12 34,26 46,18 58,32 70,10 84,24 96,16 108,28 120,14" />
