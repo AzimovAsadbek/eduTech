@@ -18,11 +18,6 @@ import { getSiteSettings } from "@/server/modules/settings/service";
 type Params = Promise<{ slug: string }>;
 type Video = { url: string; title?: string; poster?: string };
 
-export async function generateStaticParams() {
-  const projects = await getPublishedProjects().catch(() => []);
-  return projects.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const p = await getProjectBySlug(slug);

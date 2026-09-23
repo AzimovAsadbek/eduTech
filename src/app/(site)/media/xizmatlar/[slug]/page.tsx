@@ -18,11 +18,6 @@ import { getSiteSettings } from "@/server/modules/settings/service";
 type Params = Promise<{ slug: string }>;
 type Step = { step: string; title: string; description: string };
 
-export async function generateStaticParams() {
-  const services = await getPublishedServices().catch(() => []);
-  return services.map((s) => ({ slug: s.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const s = await getServiceBySlug(slug);

@@ -9,11 +9,6 @@ import { getAuth } from "@/server/modules/auth/service";
 type Params = Promise<{ slug: string }>;
 type Search = Promise<{ preview?: string }>;
 
-export async function generateStaticParams() {
-  const courses = await getPublishedCourses().catch(() => []);
-  return courses.map((c) => ({ slug: c.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
   const course = await getCourseBySlug(slug);

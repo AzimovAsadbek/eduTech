@@ -5,6 +5,10 @@ import { Header } from "@/components/site/header";
 import { getActiveBranches, getPublishedCourses } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 
+// Rendered per request so the per-request CSP nonce (see proxy.ts) is applied to Next's own scripts.
+// Content still comes from the tagged data cache, so this costs no extra DB work.
+export const dynamic = "force-dynamic";
+
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [settings, courses, branches] = await Promise.all([getSiteSettings(), getPublishedCourses(), getActiveBranches()]);
   return (
