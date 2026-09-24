@@ -1,4 +1,8 @@
-import { NextResponse, type NextRequest } from "next/server";
+import createIntlMiddleware from "next-intl/middleware";
+import { NextRequest, NextResponse } from "next/server";
+import { routing } from "@/i18n/routing";
+
+const intl = createIntlMiddleware(routing);
 import { SESSION_COOKIE, verifySessionJwt } from "@/server/modules/auth/token";
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -56,7 +60,9 @@ export async function proxy(req: NextRequest) {
   requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("content-security-policy", csp);
 
-  const res = NextResponse.next({ request: { headers: requestHeaders } });
+  const isAdminOrApi = pathname.startsWith("/admin") || pathname.startsWith("/api");
+  // Public pages go through next-intl (locale prefix rewrite/redirect); admin and API stay locale-free.
+  const res = isAdminOrApi ? NextResponse.next({ request: { headers: requestHeaders } }) : intl(new NextRequest(req.url, { headers: requestHeaders, method: req.method }));
   applySecurityHeaders(res, csp);
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/v1/admin")) {
     res.headers.set("Cache-Control", "no-store");

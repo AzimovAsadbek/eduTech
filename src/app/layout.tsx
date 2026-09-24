@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Manrope } from "next/font/google";
+import { getLocale } from "next-intl/server";
 import { siteConfig, absoluteUrl } from "@/config/site";
 import "./globals.css";
 
@@ -58,9 +59,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
-    <html lang="uz" data-scroll-behavior="smooth" className={`${bricolage.variable} ${manrope.variable} ${jetbrains.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth" className={`${bricolage.variable} ${manrope.variable} ${jetbrains.variable}`}>
       <body>{children}</body>
     </html>
   );

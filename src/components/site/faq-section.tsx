@@ -1,6 +1,6 @@
 import type { Faq } from "@prisma/client";
 import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Accordion } from "@/components/ui/accordion";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { routes } from "@/config/site";

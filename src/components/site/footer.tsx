@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { nav, siteConfig } from "@/config/site";
 import type { SiteSettings } from "@/server/modules/settings/service";
 import { Logo } from "./logo";

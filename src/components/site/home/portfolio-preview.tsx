@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Play } from "lucide-react";
 import type { Prisma } from "@prisma/client";
 import { Reveal } from "@/components/motion/reveal";

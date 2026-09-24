@@ -23,7 +23,10 @@ export const processSchema = z.array(z.object({ step: text(10), title: text(200)
 export const videosSchema = z.array(z.object({ url: text(500), title: text(200).optional(), poster: imagePath.optional() })).max(20);
 export const socialsSchema = z.object({ telegram: text(200).optional(), instagram: text(200).optional(), linkedin: text(200).optional() });
 
-const base = { status: contentStatusSchema.default("DRAFT"), order: z.coerce.number().int().min(0).default(0) };
+/** Translated copies of text fields, keyed by locale: { ru: { title: "…" }, en: { … } }. Values are validated against the base schema shape at the field level by the admin form. */
+export const translationsSchema = z.record(z.enum(["ru", "en"]), z.record(z.string(), z.unknown())).nullable().optional();
+
+const base = { status: contentStatusSchema.default("DRAFT"), order: z.coerce.number().int().min(0).default(0), translations: translationsSchema };
 
 export const courseSchema = z.object({
   slug,
@@ -53,7 +56,7 @@ export const courseSchema = z.object({
   ...base,
 });
 
-export const courseCategorySchema = z.object({ slug, name: text(80).min(2), order: z.coerce.number().int().min(0).default(0) });
+export const courseCategorySchema = z.object({ slug, name: text(80).min(2), order: z.coerce.number().int().min(0).default(0), translations: translationsSchema });
 
 export const teacherSchema = z.object({
   slug,
@@ -150,6 +153,7 @@ export const branchSchema = z.object({
   workingHours: optText(120),
   isActive: z.boolean().default(true),
   order: z.coerce.number().int().min(0).default(0),
+  translations: translationsSchema,
 });
 
 export const listQuerySchema = z.object({

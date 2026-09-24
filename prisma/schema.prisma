@@ -148,6 +148,7 @@ model Branch {
   workingHours String?
   isActive     Boolean  @default(true)
   order        Int      @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -167,6 +168,7 @@ model CourseCategory {
   slug      String   @unique
   name      String
   order     Int      @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -200,6 +202,7 @@ model Course {
   order          Int           @default(0)
   seoTitle       String?
   seoDescription String?
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -224,6 +227,7 @@ model Teacher {
   socials   Json? // { telegram?, instagram?, linkedin? }
   status    ContentStatus @default(DRAFT)
   order     Int           @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
@@ -260,6 +264,7 @@ model Service {
   order          Int           @default(0)
   seoTitle       String?
   seoDescription String?
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -289,6 +294,7 @@ model MediaProject {
   status      ContentStatus @default(DRAFT)
   featured    Boolean       @default(false)
   order       Int           @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -311,6 +317,7 @@ model Testimonial {
   videoUrl    String?
   status      ContentStatus @default(DRAFT)
   order       Int           @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -334,6 +341,7 @@ model Result {
   status      ContentStatus @default(DRAFT)
   featured    Boolean       @default(false)
   order       Int           @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -364,6 +372,7 @@ model Faq {
   courseId  String?
   status    ContentStatus @default(PUBLISHED)
   order     Int           @default(0)
+  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 

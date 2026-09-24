@@ -1,0 +1,15 @@
+{
+  "common": {
+    "brand": "EduTech",
+    "tagline": "Академия современных профессий",
+    "city": "Наманган",
+    "nav": { "courses": "Курсы", "results": "Результаты", "media": "Медиа", "about": "О нас", "contact": "Контакты", "home": "Главная", "portfolio": "Портфолио" },
+    "actions": { "apply": "Записаться на курс", "consult": "Бесплатная консультация", "viewCourses": "Смотреть курсы", "order": "Оставить заявку", "viewPortfolio": "Смотреть портфолио", "more": "Подробнее", "send": "Отправить", "close": "Закрыть", "back": "Назад", "allCourses": "Все курсы", "allResults": "Все результаты", "fullPortfolio": "Всё портфолио", "aboutCourse": "О курсе", "askQuestion": "Задать вопрос", "mediaServices": "Медиа-услуги", "prev": "Назад", "next": "Далее" },
+    "level": { "BEGINNER": "Начальный", "INTERMEDIATE": "Средний", "ADVANCED": "Продвинутый" },
+    "format": { "OFFLINE": "Офлайн", "ONLINE": "Онлайн", "HYBRID": "Гибрид" },
+    "resultKind": { "PROJECT": "Проект", "CAREER": "Карьера", "GROWTH": "Рост", "CERTIFICATE": "Сертификат" },
+    "stats": { "students": "учеников", "courses": "направлений", "projects": "реальных проектов" },
+    "language": { "label": "Язык", "uz": "Oʻzbekcha", "ru": "Русский", "en": "English" },
+    "a11y": { "skipToContent": "Перейти к содержимому", "openMenu": "Открыть меню", "closeMenu": "Закрыть меню", "mainNav": "Основная навигация", "mobileNav": "Мобильная навигация", "menu": "Меню", "home": "EduTech — главная" }
+  }
+}

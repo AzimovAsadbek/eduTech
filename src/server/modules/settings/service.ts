@@ -26,6 +26,9 @@ export const siteSettingsSchema = z.object({
     })
     .default({ students: "500+", courses: "9+", projects: "100+" }),
   telegramNotifications: z.boolean().default(true),
+  translations: z
+    .record(z.enum(["ru", "en"]), z.object({ tagline: z.string().optional(), address: z.string().optional(), workingHours: z.string().optional() }))
+    .default({}),
 });
 export type SiteSettings = z.infer<typeof siteSettingsSchema>;
 

@@ -1,0 +1,15 @@
+{
+  "common": {
+    "brand": "EduTech",
+    "tagline": "Zamonaviy kasblar akademiyasi",
+    "city": "Namangan",
+    "nav": { "courses": "Kurslar", "results": "Natijalar", "media": "Media", "about": "Biz haqimizda", "contact": "Kontakt", "home": "Bosh sahifa", "portfolio": "Portfolio" },
+    "actions": { "apply": "Kursga yozilish", "consult": "Bepul konsultatsiya", "viewCourses": "Kurslarni koʻrish", "order": "Buyurtma berish", "viewPortfolio": "Portfolio koʻrish", "more": "Batafsil", "send": "Yuborish", "close": "Yopish", "back": "Orqaga", "allCourses": "Barcha kurslar", "allResults": "Barcha natijalar", "fullPortfolio": "Toʻliq portfolio", "aboutCourse": "Kurs haqida", "askQuestion": "Savol berish", "mediaServices": "Media xizmatlar", "prev": "Oldingi", "next": "Keyingi" },
+    "level": { "BEGINNER": "Boshlangʻich", "INTERMEDIATE": "Oʻrta", "ADVANCED": "Yuqori" },
+    "format": { "OFFLINE": "Offlayn", "ONLINE": "Onlayn", "HYBRID": "Gibrid" },
+    "resultKind": { "PROJECT": "Loyiha", "CAREER": "Karyera", "GROWTH": "Oʻsish", "CERTIFICATE": "Sertifikat" },
+    "stats": { "students": "oʻquvchi", "courses": "yoʻnalish", "projects": "real loyiha" },
+    "language": { "label": "Til", "uz": "Oʻzbekcha", "ru": "Русский", "en": "English" },
+    "a11y": { "skipToContent": "Asosiy kontentga oʻtish", "openMenu": "Menyuni ochish", "closeMenu": "Menyuni yopish", "mainNav": "Asosiy navigatsiya", "mobileNav": "Mobil navigatsiya", "menu": "Menyu", "home": "EduTech — bosh sahifa" }
+  }
+}

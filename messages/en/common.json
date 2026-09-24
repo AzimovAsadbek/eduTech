@@ -1,0 +1,15 @@
+{
+  "common": {
+    "brand": "EduTech",
+    "tagline": "Academy of modern professions",
+    "city": "Namangan",
+    "nav": { "courses": "Courses", "results": "Results", "media": "Media", "about": "About", "contact": "Contact", "home": "Home", "portfolio": "Portfolio" },
+    "actions": { "apply": "Enrol in a course", "consult": "Free consultation", "viewCourses": "View courses", "order": "Request a quote", "viewPortfolio": "View portfolio", "more": "Learn more", "send": "Send", "close": "Close", "back": "Back", "allCourses": "All courses", "allResults": "All results", "fullPortfolio": "Full portfolio", "aboutCourse": "About the course", "askQuestion": "Ask a question", "mediaServices": "Media services", "prev": "Previous", "next": "Next" },
+    "level": { "BEGINNER": "Beginner", "INTERMEDIATE": "Intermediate", "ADVANCED": "Advanced" },
+    "format": { "OFFLINE": "Offline", "ONLINE": "Online", "HYBRID": "Hybrid" },
+    "resultKind": { "PROJECT": "Project", "CAREER": "Career", "GROWTH": "Growth", "CERTIFICATE": "Certificate" },
+    "stats": { "students": "students", "courses": "programmes", "projects": "real projects" },
+    "language": { "label": "Language", "uz": "Oʻzbekcha", "ru": "Русский", "en": "English" },
+    "a11y": { "skipToContent": "Skip to main content", "openMenu": "Open menu", "closeMenu": "Close menu", "mainNav": "Main navigation", "mobileNav": "Mobile navigation", "menu": "Menu", "home": "EduTech — home" }
+  }
+}

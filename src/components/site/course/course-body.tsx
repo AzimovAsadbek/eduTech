@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Check, Quote } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { Accordion } from "@/components/ui/accordion";

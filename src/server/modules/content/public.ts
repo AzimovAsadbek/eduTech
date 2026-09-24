@@ -23,7 +23,8 @@ export const courseCardSelect = {
   featured: true,
   order: true,
   outcomes: true,
-  category: { select: { id: true, slug: true, name: true } },
+  translations: true,
+  category: { select: { id: true, slug: true, name: true, translations: true } },
 } satisfies Prisma.CourseSelect;
 
 export type CourseCard = Prisma.CourseGetPayload<{ select: typeof courseCardSelect }>;
