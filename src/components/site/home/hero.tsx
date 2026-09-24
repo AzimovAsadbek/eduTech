@@ -5,7 +5,6 @@ import { useRef } from "react";
 import { gsap, isDesktop, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 import { Counter } from "@/components/motion/counter";
 import { Button } from "@/components/ui/button";
-import { Eyebrow } from "@/components/ui/eyebrow";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import { useApplyDialog } from "@/components/site/apply-dialog";
 
@@ -82,10 +81,7 @@ export function Hero({ stats, heroImage }: Props) {
 
       <div className="container-x grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-6">
-          <div data-hero-fade>
-            <Eyebrow>Namangan · Zamonaviy kasblar akademiyasi</Eyebrow>
-          </div>
-          <h1 id="hero-title" className="t-display mt-6" aria-label={headline.join(" ")}>
+          <h1 id="hero-title" className="t-display" aria-label={headline.join(" ")}>
             {headline.map((w, i) => (
               <span key={w} className="inline-block overflow-hidden pb-[0.06em] align-top" aria-hidden>
                 <span data-hero-word className={i === 1 ? "inline-block text-orange" : "inline-block"}>
@@ -128,12 +124,8 @@ export function Hero({ stats, heroImage }: Props) {
           <div className="relative mx-auto aspect-[4/5] w-full max-w-[520px] sm:aspect-[5/5.4]">
             {/* Photo slot */}
             <div data-hero-photo data-depth="0.4" className="absolute inset-x-[10%] top-[6%] bottom-[6%] overflow-hidden rounded-[28px] shadow-lg will-change-transform">
-              <PlaceholderImage src={heroImage} alt="EduTech oʻquvchilari amaliy dars jarayonida" className="h-full w-full" label="Real foto: oʻquvchilar" priority sizes="(min-width:1024px) 40vw, 90vw" />
+              <PlaceholderImage src={heroImage} alt="EduTech oʻquvchilari amaliy dars jarayonida" className="h-full w-full" priority sizes="(min-width:1024px) 40vw, 90vw" />
               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/35 to-transparent" aria-hidden />
-              <div className="absolute top-5 right-5 hidden text-right text-white sm:block">
-                <p className="t-eyebrow text-white/70">EduTech ecosystem</p>
-                <p className="font-display mt-1 text-xl font-semibold">IT · AI · Digital · Creative</p>
-              </div>
             </div>
 
             {/* Code tile */}
@@ -147,7 +139,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* AI tile */}
-            <div data-tile data-depth="1.4" className="glass absolute top-[38%] -right-2 w-[46%] rounded-(--radius-lg) p-4 will-change-transform sm:right-0">
+            <div data-tile data-depth="1.4" className="glass absolute right-0 bottom-[6%] w-[46%] rounded-(--radius-lg) p-4 will-change-transform sm:top-[38%] sm:bottom-auto">
               <p className="t-meta mb-3 text-(--fg-muted)">AI model · training</p>
               <div className="flex items-end gap-1" aria-hidden>
                 {[40, 65, 50, 80, 62, 92, 74, 100].map((h, i) => (
@@ -173,7 +165,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* Robotics tile */}
-            <div data-tile data-depth="1.2" className="glass absolute right-[2%] bottom-[8%] w-[42%] rounded-(--radius-lg) p-4 will-change-transform">
+            <div data-tile data-depth="1.2" className="glass absolute right-[2%] bottom-[8%] hidden w-[42%] rounded-(--radius-lg) p-4 will-change-transform sm:block">
               <p className="t-meta mb-2 text-(--fg-muted)">Robot · sensor</p>
               <svg viewBox="0 0 120 40" className="h-10 w-full text-orange" aria-hidden>
                 <polyline fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" points="0,30 12,28 22,12 34,26 46,18 58,32 70,10 84,24 96,16 108,28 120,14" />

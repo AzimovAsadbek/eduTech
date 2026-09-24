@@ -40,7 +40,6 @@ export function Cursor() {
         const my = cy + (e.clientY - cy) * 0.25;
         xTo(mx);
         yTo(my);
-        gsap.to(magnet, { x: (e.clientX - cx) * 0.18, y: (e.clientY - cy) * 0.18, duration: 0.4, ease: "power3" });
       } else {
         xTo(e.clientX);
         yTo(e.clientY);
@@ -57,7 +56,6 @@ export function Cursor() {
         const b = m.getBoundingClientRect();
         gsap.to(r, { width: b.width + 16, height: b.height + 16, borderRadius: 999, duration: 0.35, ease: "power3" });
       } else if (!m && magnet) {
-        gsap.to(magnet, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.5)" });
         magnet = null;
         gsap.to(r, { width: 36, height: 36, duration: 0.35, ease: "power3" });
       }

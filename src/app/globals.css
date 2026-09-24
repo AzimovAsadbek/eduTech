@@ -66,7 +66,7 @@
 :root {
   --section-y: clamp(4rem, 10vw, 9rem);
   --gutter: 1rem;
-  --container: 80rem;
+  --container: 90rem;
   --header-h: 4.5rem;
 
   /* World-aware surface tokens (EDU by default) */

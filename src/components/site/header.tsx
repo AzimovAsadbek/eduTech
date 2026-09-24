@@ -111,12 +111,21 @@ export function Header() {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors duration-200",
-                    inverted ? "hover:bg-white/10" : "hover:bg-ink/5",
-                    active && "after:absolute after:bottom-0.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-orange",
+                    "group/nav relative rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors duration-200",
+                    inverted ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-ink/75 hover:bg-ink/[0.06] hover:text-ink",
+                    active && (inverted ? "text-white" : "text-ink"),
                   )}
                 >
-                  {item.label}
+                  <span className="relative">
+                    {item.label}
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "absolute -bottom-1 left-0 h-0.5 w-full origin-left rounded-full bg-orange transition-transform duration-300 ease-[var(--ease-out)]",
+                        active ? "scale-x-100" : "scale-x-0 group-hover/nav:scale-x-100",
+                      )}
+                    />
+                  </span>
                 </Link>
               );
             })}

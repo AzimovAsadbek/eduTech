@@ -5,15 +5,20 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "secondary" | "ghost" | "inverse" | "outline-inverse";
 type Size = "sm" | "md" | "lg";
 
+/**
+ * Hover language shared by every variant: the surface shifts one tone, the button lifts 1px,
+ * the icon nudges. Nothing scales, nothing bounces — calm and premium.
+ */
 const base =
-  "group/btn relative inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap select-none transition-[transform,background-color,color,border-color,box-shadow] duration-300 ease-[var(--ease-out)] disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
+  "group/btn relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-full font-semibold whitespace-nowrap select-none transition-[transform,background-color,color,border-color,box-shadow] duration-300 ease-[var(--ease-out)] hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-orange text-white shadow-[0_8px_24px_-8px_rgba(255,107,26,.6)] hover:bg-orange-deep hover:shadow-[0_12px_32px_-8px_rgba(255,107,26,.7)]",
+  primary:
+    "bg-orange text-white shadow-[0_6px_20px_-8px_rgba(255,107,26,.55)] hover:bg-orange-deep hover:shadow-[0_10px_28px_-8px_rgba(255,107,26,.6)] after:absolute after:inset-0 after:-z-10 after:bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,.18)_50%,transparent_70%)] after:translate-x-[-120%] after:transition-transform after:duration-700 after:ease-[var(--ease-out)] hover:after:translate-x-[120%]",
   secondary: "bg-ink text-white hover:bg-ink-3",
-  ghost: "bg-transparent text-ink hover:bg-ink/5 media-world:text-white media-world:hover:bg-white/10",
+  ghost: "bg-transparent text-ink border border-(--line) hover:border-ink/30 hover:bg-ink/[0.04] media-world:text-white media-world:border-white/15 media-world:hover:border-white/40 media-world:hover:bg-white/[0.06]",
   inverse: "bg-white text-ink hover:bg-orange-soft",
-  "outline-inverse": "bg-transparent text-white border border-white/25 hover:border-white/60 hover:bg-white/5",
+  "outline-inverse": "bg-transparent text-white border border-white/25 hover:border-white/70 hover:bg-white/[0.06]",
 };
 
 const sizes: Record<Size, string> = {
@@ -40,7 +45,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <>
       <span>{children}</span>
       {icon ? (
-        <span className="inline-flex shrink-0 transition-transform duration-300 ease-[var(--ease-out)] group-hover/btn:translate-x-0.5" aria-hidden>
+        <span className="inline-flex shrink-0 transition-transform duration-300 ease-[var(--ease-out)] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" aria-hidden>
           {icon}
         </span>
       ) : null}

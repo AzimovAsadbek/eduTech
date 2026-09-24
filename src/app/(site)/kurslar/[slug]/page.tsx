@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CourseBody } from "@/components/site/course/course-body";
 import { CourseHero } from "@/components/site/course/course-hero";
 import { JsonLd, breadcrumbJsonLd, courseJsonLd } from "@/components/site/json-ld";
-import { getActiveBranches, getCourseBySlug, getPublishedCourses } from "@/server/modules/content/public";
+import { getActiveBranches, getCourseBySlug } from "@/server/modules/content/public";
 import { getAuth } from "@/server/modules/auth/service";
 
 type Params = Promise<{ slug: string }>;

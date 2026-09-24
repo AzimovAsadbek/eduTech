@@ -40,7 +40,7 @@ export function CourseBody({ course, branches }: { course: CourseDetail; branche
 
   return (
     <div className="container-x grid gap-12 pb-24 lg:grid-cols-12">
-      <div className="lg:col-span-7">
+      <div className="min-w-0 lg:col-span-7">
         <nav aria-label="Kurs boʻlimlari" className="sticky top-20 z-10 -mx-(--gutter) mb-4 overflow-x-auto bg-paper/85 px-(--gutter) py-3 backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <ul className="flex gap-2">
             {anchors.map(([id, label]) => (
@@ -173,7 +173,7 @@ export function CourseBody({ course, branches }: { course: CourseDetail; branche
         </div>
       </div>
 
-      <aside className="lg:col-span-5">
+      <aside className="min-w-0 lg:col-span-5">
         <div className="lg:sticky lg:top-24">
           <CourseApply course={{ slug: course.slug, title: course.title, priceLabel: course.priceLabel, durationLabel: course.durationLabel }} branches={branches} />
         </div>

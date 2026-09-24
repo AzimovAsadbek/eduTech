@@ -1,4 +1,3 @@
-import { Marquee } from "@/components/motion/marquee";
 import { Conversion } from "@/components/site/home/conversion";
 import { CourseIndex } from "@/components/site/home/course-index";
 import { Hero } from "@/components/site/home/hero";
@@ -44,9 +43,6 @@ export default async function HomePage() {
     <>
       <JsonLd data={organizationJsonLd(settings)} />
       <Hero stats={settings.stats} heroImage={gallery.find((g) => g.category === "CLASSROOM")?.image} />
-      <div className="border-y border-(--line) py-6">
-        <Marquee items={courses.map((c) => c.title)} />
-      </div>
       <Journey />
       <CourseIndex courses={courses} categories={categories} />
       <Manifesto gallery={gallery} />
