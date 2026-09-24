@@ -24,7 +24,7 @@ export const videosSchema = z.array(z.object({ url: text(500), title: text(200).
 export const socialsSchema = z.object({ telegram: text(200).optional(), instagram: text(200).optional(), linkedin: text(200).optional() });
 
 /** Translated copies of text fields, keyed by locale: { ru: { title: "…" }, en: { … } }. Values are validated against the base schema shape at the field level by the admin form. */
-export const translationsSchema = z.record(z.enum(["ru", "en"]), z.record(z.string(), z.unknown())).nullable().optional();
+export const translationsSchema = z.partialRecord(z.enum(["ru", "en"]), z.record(z.string(), z.unknown())).nullable().optional();
 
 const base = { status: contentStatusSchema.default("DRAFT"), order: z.coerce.number().int().min(0).default(0), translations: translationsSchema };
 
