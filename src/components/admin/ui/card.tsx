@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function Card({ children, className, as: Tag = "section" }: { children: ReactNode; className?: string; as?: "section" | "div" | "article" }) {
-  return <Tag className={cn("rounded-(--radius-md) border border-(--line) bg-paper shadow-sm", className)}>{children}</Tag>;
+  // min-w-0: as a grid/flex item the card must be able to shrink below its content (charts, tables) on small screens.
+  return <Tag className={cn("min-w-0 rounded-(--radius-md) border border-(--line) bg-paper shadow-sm", className)}>{children}</Tag>;
 }
 
 export function CardHeader({ title, description, actions, eyebrow, className }: { title: ReactNode; description?: ReactNode; actions?: ReactNode; eyebrow?: ReactNode; className?: string }) {

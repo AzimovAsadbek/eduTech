@@ -286,4 +286,5 @@ Dev uchun faqat DB: `docker compose -f docker-compose.dev.yml up -d`.
 | Inline tugmalar ishlamayapti | `npm run telegram:webhook info` — URL HTTPS boʻlishi shart; `TELEGRAM_WEBHOOK_SECRET` mos |
 | 403 `Cross-site request blocked` | `NEXT_PUBLIC_SITE_URL` sayt domeni bilan bir xil boʻlishi kerak |
 | Rasm yuklanmayapti | `UPLOAD_DIR` yozish huquqi; hajm `UPLOAD_MAX_MB`; format JPEG/PNG/WebP/GIF/AVIF |
+| Tashqi rasm URL qabul qilinmayapti | Rasmlar faqat media kutubxona orqali (sayt ichidagi `/uploads/...` yoʻl). Tashqi hostlar kerak boʻlsa `next.config.ts` → `images.remotePatterns` va `schema.ts` → `imagePath` ni kengaytiring |
 | Prod'da fontlar yoʻq | Build vaqtida Google Fonts'ga internet kerak (`next/font` self-host qiladi) |

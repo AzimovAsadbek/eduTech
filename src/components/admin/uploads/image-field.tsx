@@ -9,6 +9,23 @@ import { useToast } from "@/components/admin/ui/toast";
 import { MediaLibraryDialog } from "./media-library-dialog";
 import { useUploader } from "./use-uploader";
 
+/**
+ * Public pages render images through `next/image`, which only knows this site's origin —
+ * so a pasted URL is accepted only when it resolves to a site-local path (e.g. a copied library URL).
+ */
+function toLocalImagePath(raw: string): string | null {
+  const v = raw.trim();
+  if (!v) return null;
+  if (/^\/(?!\/)/.test(v)) return v;
+  try {
+    const u = new URL(v, window.location.origin);
+    if (u.origin === window.location.origin) return `${u.pathname}${u.search}`;
+  } catch {
+    /* not a URL */
+  }
+  return null;
+}
+
 export function ImageField({ label, value, onChange, error, hint, required }: { label: string; value: string; onChange: (url: string) => void; error?: string; hint?: string; required?: boolean }) {
   const id = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,6 +51,17 @@ export function ImageField({ label, value, onChange, error, hint, required }: { 
   };
 
   const uploading = progress !== null;
+
+  const applyUrl = (raw: string): boolean => {
+    if (!raw.trim()) return false;
+    const path = toLocalImagePath(raw);
+    if (!path) {
+      toast.error("Tashqi rasm manzili qoʻllab-quvvatlanmaydi", "Rasmni kutubxonaga yuklang yoki /uploads/… koʻrinishidagi yoʻlni kiriting.");
+      return false;
+    }
+    onChange(path);
+    return true;
+  };
 
   return (
     <FieldWrap id={id} label={label} hint={hint} error={error ?? uploadError ?? undefined} required={required} as="div">
@@ -103,6 +131,7 @@ export function ImageField({ label, value, onChange, error, hint, required }: { 
           id={id}
           type="file"
           accept="image/*"
+          aria-label={`${label} — fayl tanlash`}
           className="sr-only"
           onChange={(e) => {
             clearError();
@@ -114,19 +143,17 @@ export function ImageField({ label, value, onChange, error, hint, required }: { 
       {urlMode && !value ? (
         <input
           aria-label={`${label} URL`}
-          placeholder="https://… yoki /uploads/…"
+          placeholder="/uploads/… (sayt ichidagi yoʻl)"
           className={cn(controlBase, "mt-2 h-9 font-mono text-[13px]")}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              const v = (e.target as HTMLInputElement).value.trim();
-              if (v) onChange(v);
-              setUrlMode(false);
+              const v = (e.target as HTMLInputElement).value;
+              if (!v.trim() || applyUrl(v)) setUrlMode(false);
             }
           }}
           onBlur={(e) => {
-            const v = e.target.value.trim();
-            if (v) onChange(v);
+            applyUrl(e.target.value);
           }}
           autoFocus
         />

@@ -3,7 +3,9 @@ import { cn } from "@/lib/utils";
 
 export function Table({ children, className, ...props }: HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="overflow-x-auto">
+    // `relative` keeps absolutely-positioned sr-only header text inside the scroll container;
+    // otherwise it escapes to the document and widens the page on narrow viewports.
+    <div className="relative overflow-x-auto">
       <table className={cn("w-full min-w-[640px] border-collapse text-sm", className)} {...props}>
         {children}
       </table>

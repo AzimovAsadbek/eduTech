@@ -2,7 +2,7 @@ import "server-only";
 import type { Prisma } from "@prisma/client";
 import { db } from "@/server/db";
 import { invalidate } from "@/server/cache";
-import { conflict, notFound } from "@/server/http/errors";
+import { conflict, HttpError, notFound } from "@/server/http/errors";
 import { audit } from "@/server/modules/audit/service";
 import { resources, type ResourceDef, type ResourceKey } from "./registry";
 import type { ListQuery } from "./schema";
@@ -106,8 +106,16 @@ export async function reorderResource(key: ResourceKey, ids: string[], actorId: 
 }
 
 function mapPrismaError(e: unknown): unknown {
-  const code = (e as { code?: string })?.code;
+  const err = e as { code?: string; meta?: { field_name?: unknown; constraint?: unknown } } | null;
+  const code = err?.code;
   if (code === "P2002") return conflict("Bu slug yoki nom allaqachon mavjud");
   if (code === "P2025") return notFound("Element topilmadi");
+  if (code === "P2003") {
+    // Referenced row (category, course, service, teacher) no longer exists → a field error, not a 500.
+    const hint = String(err?.meta?.field_name ?? err?.meta?.constraint ?? "");
+    const field = /_([A-Za-z]+Id)_fkey/.exec(hint)?.[1] ?? /^([A-Za-z]+Id)/.exec(hint)?.[1] ?? "";
+    const message = "Tanlangan bogʻliq element topilmadi (oʻchirilgan boʻlishi mumkin)";
+    return new HttpError(422, "Maʼlumotlar notoʻgʻri toʻldirilgan", "validation_error", [{ path: field, message }]);
+  }
   return e;
 }

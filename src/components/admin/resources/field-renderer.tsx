@@ -24,7 +24,9 @@ const asString = (v: unknown) => (typeof v === "string" ? v : v === null || v ==
 const asStringArray = (v: unknown) => (Array.isArray(v) ? v.map(asString) : []);
 
 export function FieldRenderer({ field: f, value, onChange, errors, relations, onSlugTouched }: FieldRendererProps) {
-  const error = errors[f.name];
+  // List fields get item-level issues ("images.2"); surface the first one on the field itself.
+  const nested = Object.entries(errors).find(([k]) => k.startsWith(`${f.name}.`));
+  const error = errors[f.name] ?? (nested ? `${Number(nested[0].split(".")[1]) + 1}-element: ${nested[1]}` : undefined);
   switch (f.type) {
     case "text":
       return <Input label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={(e) => onChange(e.target.value)} placeholder={f.placeholder} maxLength={f.maxLength} />;

@@ -24,8 +24,9 @@ describe("slugify", () => {
   it("strips leading/trailing dashes and special characters", () => {
     expect(slugify("  --Hello, World!--  ")).toBe("hello-world");
   });
-  it("keeps Cyrillic letters", () => {
-    expect(slugify("Дастурлаш курси")).toBe("дастурлаш-курси");
+  it("transliterates Cyrillic into a URL-safe Latin slug", () => {
+    expect(slugify("Дастурлаш курси")).toBe("dasturlash-kursi");
+    expect(slugify("Sunʼiy intellekt")).toBe("suniy-intellekt");
   });
   it("caps length at 80", () => {
     expect(slugify("a".repeat(120)).length).toBe(80);

@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { db } from "@/server/db";
 import { CacheTags } from "@/server/cache";
+import { getAuth } from "@/server/modules/auth/service";
 
 const PUBLISHED = { status: "PUBLISHED" } as const;
 
@@ -49,8 +50,16 @@ export const courseDetailInclude = {
 
 export type CourseDetail = Prisma.CourseGetPayload<{ include: typeof courseDetailInclude }>;
 
-export const getCourseBySlug = (slug: string, opts?: { preview?: boolean }) =>
-  opts?.preview
+/**
+ * Draft preview is only honoured for a signed-in admin. Enforced here (not only in the page) so that
+ * `generateMetadata` and any other caller can never leak an unpublished title/description to anonymous visitors.
+ */
+async function canPreview(opts?: { preview?: boolean }): Promise<boolean> {
+  return Boolean(opts?.preview) && Boolean(await getAuth());
+}
+
+export const getCourseBySlug = async (slug: string, opts?: { preview?: boolean }) =>
+  (await canPreview(opts))
     ? db.course.findUnique({ where: { slug }, include: courseDetailInclude })
     : unstable_cache(
         () => db.course.findFirst({ where: { slug, ...PUBLISHED }, include: courseDetailInclude }),
@@ -64,8 +73,8 @@ export const getPublishedServices = unstable_cache(
   { tags: [CacheTags.services] },
 );
 
-export const getServiceBySlug = (slug: string, opts?: { preview?: boolean }) =>
-  opts?.preview
+export const getServiceBySlug = async (slug: string, opts?: { preview?: boolean }) =>
+  (await canPreview(opts))
     ? db.service.findUnique({ where: { slug }, include: { projects: { where: PUBLISHED, orderBy: { order: "asc" }, take: 6 } } })
     : unstable_cache(
         () =>
@@ -88,8 +97,8 @@ export const getPublishedProjects = unstable_cache(
   { tags: [CacheTags.mediaProjects] },
 );
 
-export const getProjectBySlug = (slug: string, opts?: { preview?: boolean }) =>
-  opts?.preview
+export const getProjectBySlug = async (slug: string, opts?: { preview?: boolean }) =>
+  (await canPreview(opts))
     ? db.mediaProject.findUnique({ where: { slug }, include: { service: true } })
     : unstable_cache(
         () => db.mediaProject.findFirst({ where: { slug, ...PUBLISHED }, include: { service: true } }),

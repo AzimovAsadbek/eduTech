@@ -15,15 +15,15 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return { title: isResourceKey(resource) ? `Yangi ${RESOURCES[resource].singular.toLowerCase()}` : "Yangi" };
 }
 
-/** Builds a duplicate template: same content, fresh slug, draft status. */
-function asTemplate(src: Record<string, unknown>): Record<string, unknown> {
+/** Builds a duplicate template: same content, fresh slug, draft status, "(nusxa)" only on the display-title field. */
+function asTemplate(src: Record<string, unknown>, titleField: string): Record<string, unknown> {
   const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = src;
   void _id;
   void _c;
   void _u;
   const t: Record<string, unknown> = { ...rest, status: "DRAFT" };
   if (typeof t.slug === "string") t.slug = `${t.slug}-nusxa`.slice(0, 80);
-  for (const k of ["title", "name"]) if (typeof t[k] === "string") t[k] = `${t[k]} (nusxa)`;
+  if (typeof t[titleField] === "string") t[titleField] = `${t[titleField]} (nusxa)`;
   return t;
 }
 
@@ -35,7 +35,7 @@ export default async function ResourceNewPage({ params, searchParams }: { params
 
   const [relations, template] = await Promise.all([
     loadRelations(resource),
-    from ? getResource(resource, from).then((r) => asTemplate(r as Record<string, unknown>)).catch(() => null) : Promise.resolve(null),
+    from ? getResource(resource, from).then((r) => asTemplate(r as Record<string, unknown>, ui.titleField)).catch(() => null) : Promise.resolve(null),
   ]);
 
   return (

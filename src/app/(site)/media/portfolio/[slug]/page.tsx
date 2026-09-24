@@ -53,6 +53,7 @@ export default async function ProjectPage({ params, searchParams }: { params: Pa
   return (
     <div data-world="media" className="bg-(--surface) text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Portfolio", path: "/media/portfolio" }, { name: project.title, path: `/media/portfolio/${project.slug}` }])} />
+      {isPreview ? <p className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-4 py-2 text-sm text-white">Preview rejimi · {project.status}</p> : null}
       <section className="relative overflow-hidden pt-36 pb-12 lg:pt-44">
         <div className="container-x">
           <Eyebrow className="mb-5 text-white/60">

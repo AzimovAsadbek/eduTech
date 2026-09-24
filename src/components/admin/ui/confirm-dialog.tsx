@@ -3,6 +3,7 @@
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "./button";
+import { useFocusTrap } from "./use-focus-trap";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -19,6 +20,7 @@ export interface ConfirmDialogProps {
 export function ConfirmDialog({ open, title, description, confirmLabel = "Tasdiqlash", cancelLabel = "Bekor qilish", tone = "default", onConfirm, onClose }: ConfirmDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const [busy, setBusy] = useState(false);
+  useFocusTrap(ref, open);
 
   useEffect(() => {
     const el = ref.current;

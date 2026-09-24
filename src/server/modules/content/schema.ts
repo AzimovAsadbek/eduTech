@@ -11,11 +11,19 @@ const text = (max: number) => z.string().trim().max(max);
 const optText = (max: number) => z.string().trim().max(max).nullable().optional();
 const strList = z.array(z.string().trim().min(1).max(300)).max(50).default([]);
 const url = z.string().trim().max(500).nullable().optional();
+/**
+ * Public pages render CMS images through `next/image`, which has no remote hosts configured —
+ * an external URL would 500 the page. Images must therefore be site-local paths (uploads from the library).
+ */
+export const IMAGE_PATH_MESSAGE = "Rasm manzili sayt ichidagi yoʻl boʻlishi kerak (masalan /uploads/…)";
+const imagePath = z.string().trim().max(500).regex(/^\/(?!\/)\S*$/, IMAGE_PATH_MESSAGE);
+const optImagePath = imagePath.nullable().optional();
+const imageList = z.array(imagePath).max(50).default([]);
 
 export const curriculumSchema = z.array(z.object({ title: text(200), lessons: z.array(text(300)).max(40) })).max(30);
 export const projectsSchema = z.array(z.object({ title: text(200), description: text(600).optional() })).max(20);
 export const processSchema = z.array(z.object({ step: text(10), title: text(200), description: text(600) })).max(12);
-export const videosSchema = z.array(z.object({ url: text(500), title: text(200).optional(), poster: text(500).optional() })).max(20);
+export const videosSchema = z.array(z.object({ url: text(500), title: text(200).optional(), poster: imagePath.optional() })).max(20);
 export const socialsSchema = z.object({ telegram: text(200).optional(), instagram: text(200).optional(), linkedin: text(200).optional() });
 
 const base = { status: contentStatusSchema.default("DRAFT"), order: z.coerce.number().int().min(0).default(0) };
@@ -35,7 +43,7 @@ export const courseSchema = z.object({
   priceLabel: optText(80),
   ageLabel: optText(30),
   accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).nullable().optional(),
-  coverImage: url,
+  coverImage: optImagePath,
   whoFor: strList,
   skills: strList,
   outcomes: strList,
@@ -55,7 +63,7 @@ export const teacherSchema = z.object({
   name: text(100).min(2),
   title: text(120).min(2),
   bio: optText(2000),
-  photo: url,
+  photo: optImagePath,
   socials: socialsSchema.nullable().optional(),
   ...base,
 });
@@ -68,7 +76,7 @@ export const serviceSchema = z.object({
   attributes: strList,
   deliverables: strList,
   process: processSchema.nullable().optional(),
-  coverImage: url,
+  coverImage: optImagePath,
   featured: z.boolean().default(false),
   seoTitle: optText(70),
   seoDescription: optText(170),
@@ -85,12 +93,12 @@ export const mediaProjectSchema = z.object({
   challenge: optText(3000),
   solution: optText(3000),
   results: optText(3000),
-  coverImage: url,
+  coverImage: optImagePath,
   videos: videosSchema.nullable().optional(),
-  images: strList,
+  images: imageList,
   tags: strList,
-  beforeImage: url,
-  afterImage: url,
+  beforeImage: optImagePath,
+  afterImage: optImagePath,
   featured: z.boolean().default(false),
   ...base,
 });
@@ -99,7 +107,7 @@ export const testimonialSchema = z.object({
   name: text(100).min(2),
   role: optText(160),
   courseId: z.string().nullable().optional(),
-  photo: url,
+  photo: optImagePath,
   quote: text(1200).min(5),
   resultLabel: optText(160),
   videoUrl: url,
@@ -113,9 +121,9 @@ export const resultSchema = z.object({
   courseId: z.string().nullable().optional(),
   description: optText(2000),
   metricLabel: optText(80),
-  image: url,
-  beforeImage: url,
-  afterImage: url,
+  image: optImagePath,
+  beforeImage: optImagePath,
+  afterImage: optImagePath,
   link: url,
   featured: z.boolean().default(false),
   ...base,
@@ -123,7 +131,7 @@ export const resultSchema = z.object({
 
 export const galleryItemSchema = z.object({
   title: optText(160),
-  image: z.string().trim().min(1).max(500),
+  image: imagePath.min(1),
   alt: text(200).min(2),
   category: z.enum(["CLASSROOM", "EVENT", "PRODUCTION", "CAMPUS"]).default("CLASSROOM"),
   ...base,

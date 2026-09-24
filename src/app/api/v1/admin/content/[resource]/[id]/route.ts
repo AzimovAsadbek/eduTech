@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { adminRoute } from "@/server/http/admin";
 import { notFound } from "@/server/http/errors";
 import { parseJson } from "@/server/http/request";
@@ -16,8 +17,12 @@ export const GET = adminRoute<P>("EDITOR", async (_req, { params }) => ok(await 
 
 export const PATCH = adminRoute<P>("EDITOR", async (req, { params, auth }) => {
   const k = key(params.resource);
-  const input = await parseJson(req, resources[k].schema.partial());
-  return ok(await updateResource(k, params.id, input as Record<string, unknown>, auth.user.id));
+  const raw = await parseJson(req, z.record(z.string(), z.unknown()));
+  // `.partial()` still fills Zod defaults (status → DRAFT, order → 0, lists → []) for absent keys,
+  // so only the keys the client actually sent may reach the update — otherwise a partial PATCH would unpublish.
+  const parsed = resources[k].schema.partial().parse(raw) as Record<string, unknown>;
+  const input = Object.fromEntries(Object.entries(parsed).filter(([field]) => field in raw));
+  return ok(await updateResource(k, params.id, input, auth.user.id));
 });
 
 export const DELETE = adminRoute<P>("ADMIN", async (_req, { params, auth }) => {

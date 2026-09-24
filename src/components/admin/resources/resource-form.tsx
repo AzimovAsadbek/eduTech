@@ -44,7 +44,8 @@ export function ResourceForm({ resource, mode, item, relations, role }: Resource
   const { values, setValue, errors, setErrors, reset, dirty } = useFormState(initial);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const slugTouched = useRef(mode === "edit");
+  // A duplicate template already carries a "-nusxa" slug: keep it instead of regenerating from the "(nusxa)" title.
+  const slugTouched = useRef(mode === "edit" || item !== null);
   const firstErrorRef = useRef<string | null>(null);
 
   const slugField = useMemo(() => ui.sections.flatMap((s) => s.fields).find((f) => f.type === "slug"), [ui]);

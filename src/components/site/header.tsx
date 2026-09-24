@@ -71,10 +71,6 @@ export function Header() {
   // crosses the upper third of the viewport becomes active.
   useEffect(() => {
     const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-nav]"));
-    if (!sections.length) {
-      setSpy(null);
-      return;
-    }
     const check = () => {
       const line = window.innerHeight * 0.35;
       let current: string | null = null;
@@ -84,7 +80,8 @@ export function Header() {
       }
       setSpy((prev) => (prev === current ? prev : current));
     };
-    check();
+    check(); // pages without `data-nav` sections resolve to null here
+    if (!sections.length) return;
     window.addEventListener("scroll", check, { passive: true });
     window.addEventListener("resize", check);
     return () => {

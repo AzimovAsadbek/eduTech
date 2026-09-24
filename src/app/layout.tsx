@@ -60,7 +60,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="uz" className={`${bricolage.variable} ${manrope.variable} ${jetbrains.variable}`}>
+    <html lang="uz" data-scroll-behavior="smooth" className={`${bricolage.variable} ${manrope.variable} ${jetbrains.variable}`}>
       <body>{children}</body>
     </html>
   );

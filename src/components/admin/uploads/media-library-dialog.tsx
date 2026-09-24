@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/admin/ui/button";
 import { EmptyState } from "@/components/admin/ui/empty-state";
 import { Skeleton } from "@/components/admin/ui/skeleton";
+import { useFocusTrap } from "@/components/admin/ui/use-focus-trap";
 import { formatBytes, type UploadItem } from "./types";
 
 export function MediaLibraryDialog({ open, onClose, onSelect }: { open: boolean; onClose: () => void; onSelect: (item: UploadItem) => void }) {
@@ -17,6 +18,7 @@ export function MediaLibraryDialog({ open, onClose, onSelect }: { open: boolean;
   const items = result && result.page === page ? result.items : null;
   const meta = result && result.page === page ? result.meta : null;
   const error = failure && failure.page === page ? failure.message : null;
+  useFocusTrap(ref, open);
 
   useEffect(() => {
     const el = ref.current;

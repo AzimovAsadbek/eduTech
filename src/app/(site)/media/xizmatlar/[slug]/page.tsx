@@ -46,6 +46,7 @@ export default async function ServicePage({ params, searchParams }: { params: Pa
   return (
     <div data-world="media" className="bg-(--surface) text-white">
       <ServiceView slug={service.slug} />
+      {isPreview ? <p className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-4 py-2 text-sm text-white">Preview rejimi · {service.status}</p> : null}
       <JsonLd data={serviceJsonLd(service)} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Media", path: "/media" }, { name: service.title, path: `/media/xizmatlar/${service.slug}` }])} />
 

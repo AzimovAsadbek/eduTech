@@ -74,6 +74,7 @@ export function StringListField({
         <div className="flex gap-1.5">
           <input
             id={id}
+            aria-label={`${label ?? "Element"} — yangi element`}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {

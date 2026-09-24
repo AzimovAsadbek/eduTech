@@ -2,7 +2,7 @@
 
 import { KeyRound, Plus, UserRoundX, UserRoundCheck, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { Role } from "@prisma/client";
 import { adminApi, errorMessage, isApiError } from "@/lib/admin-api";
@@ -17,11 +17,14 @@ import { Input, Select } from "@/components/admin/ui/field";
 import { RoleBadge } from "@/components/admin/ui/status-badge";
 import { Table, TBody, Td, Th, THead, Tr } from "@/components/admin/ui/table";
 import { useToast } from "@/components/admin/ui/toast";
+import { useFocusTrap } from "@/components/admin/ui/use-focus-trap";
 
 const ROLE_OPTIONS = (Object.keys(ROLE_LABELS) as Role[]).map((r) => ({ value: r, label: ROLE_LABELS[r] }));
 
 function Modal({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  useFocusTrap(ref, open);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -35,10 +38,13 @@ function Modal({ open, onClose, title, children }: { open: boolean; onClose: () 
       onClick={(e) => {
         if (e.target === ref.current) onClose();
       }}
+      aria-labelledby={titleId}
       className="m-auto w-[min(440px,calc(100vw-2rem))] rounded-(--radius-lg) border border-(--line) bg-paper p-0 text-ink shadow-lg backdrop:bg-ink/40 backdrop:backdrop-blur-[2px]"
     >
       <div className="flex items-center justify-between border-b border-(--line) px-5 py-3">
-        <h2 className="t-h4">{title}</h2>
+        <h2 id={titleId} className="t-h4">
+          {title}
+        </h2>
         <button type="button" onClick={onClose} aria-label="Yopish" className="grid size-9 place-items-center rounded-md text-muted hover:bg-ink/5 hover:text-ink">
           <X size={18} />
         </button>
@@ -60,7 +66,13 @@ function CreateUserForm({ onDone }: { onDone: () => void }) {
   const submit = handleSubmit(async (values) => {
     const parsed = adminUserCreateSchema.safeParse(values);
     if (!parsed.success) {
-      for (const i of parsed.error.issues) setError(i.path[0] as keyof AdminUserCreateInput, { message: i.message });
+      const seen = new Set<string>();
+      for (const i of parsed.error.issues) {
+        const k = String(i.path[0]);
+        if (seen.has(k)) continue; // first failing rule per field wins (e.g. "Kamida 10 ta belgi" before "Kamida bitta raqam")
+        seen.add(k);
+        setError(k as keyof AdminUserCreateInput, { message: i.message });
+      }
       return;
     }
     try {
