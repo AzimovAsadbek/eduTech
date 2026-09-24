@@ -69,7 +69,7 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       <JsonLd data={courseListJsonLd(courses, locale, t("jsonLd.courseList"))} />
-      <Hero stats={settings.stats} heroImage={gallery.find((g) => g.category === "CLASSROOM")?.image} directions={courses.map((c) => ({ slug: c.slug, title: c.title }))} />
+      <Hero stats={settings.stats} heroImage={gallery.find((g) => g.category === "CLASSROOM")?.image} />
       <Journey />
       <CourseIndex courses={courses} categories={categories} />
       <Manifesto gallery={gallery} />

@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 
-const CARDS = ["Reels", "YouTube", "Video"] as const;
-
 /**
  * SIGNATURE MOMENT: the EDU → MEDIA transition.
  * Desktop: a pinned curtain darkens the viewport while "EDU" morphs into "MEDIA".
@@ -62,7 +60,7 @@ export function WorldShift() {
           .fromTo("[data-m-media]", { x: "35%", autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power2.out", duration: 0.35 }, 0.22)
           .fromTo("[data-rail]", { scaleX: 0 }, { scaleX: 1, ease: "none", duration: 0.4 }, 0.35)
           .fromTo("[data-m-tag]", { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.45)
-          .fromTo("[data-card]", { y: 60, rotate: 0, autoAlpha: 0 }, { y: 0, rotate: (i: number) => [-8, 0, 8][i], autoAlpha: 1, stagger: 0.08, duration: 0.5, ease: "power2.out" }, 0.5);
+          .fromTo("[data-card]", { y: 70, rotate: 0, autoAlpha: 0 }, { y: 0, rotate: (i: number) => [-8, 0, 8][i], autoAlpha: 1, stagger: 0.08, duration: 0.5, ease: "power2.out" }, 0.5);
         // 3. Idle glow drift keeps the sheet alive after the scrub finishes.
         gsap.to("[data-glow]", { xPercent: 12, yPercent: -8, duration: 5, yoyo: true, repeat: -1, ease: "sine.inOut" });
       });
@@ -112,20 +110,72 @@ export function WorldShift() {
             {t("lead")}
           </p>
 
-          <div className="relative mt-10 flex h-40 items-end justify-center" aria-hidden>
-            {CARDS.map((c, i) => (
-              <div
-                key={c}
-                data-card
-                className={`glass absolute bottom-0 flex h-36 w-24 flex-col justify-between rounded-2xl p-3 opacity-0 will-change-transform ${i === 1 ? "[--glass-bg:rgba(255,107,26,.22)] [--glass-border:rgba(255,107,26,.5)]" : "[--glass-bg:rgba(255,255,255,.08)]"}`}
-                style={{ left: `calc(50% + ${(i - 1) * 76}px - 3rem)`, transformOrigin: "50% 120%", zIndex: i === 1 ? 2 : 1 }}
-              >
-                <span className="grid size-7 place-items-center rounded-full bg-orange text-white">
+          <div className="relative mt-10 flex h-48 items-end justify-center" aria-hidden>
+            <div className="absolute bottom-2 left-1/2 h-16 w-64 -translate-x-1/2 rounded-full bg-orange/40 blur-2xl" />
+            {/* Reels — vertical phone frame */}
+            <div data-card className="absolute bottom-0 h-44 w-[6.75rem] overflow-hidden rounded-[18px] bg-[linear-gradient(165deg,#ff8a3d_0%,#ff6b1a_55%,#c94a08_100%)] p-2.5 opacity-0 shadow-[0_18px_40px_-16px_rgba(255,107,26,.7)] will-change-transform" style={{ left: "calc(50% - 9.75rem)", transformOrigin: "50% 120%" }}>
+              <div className="grain absolute inset-0" />
+              <div className="relative flex items-center justify-between">
+                <span className="t-meta text-[9px] text-white/90">REELS</span>
+                <span className="size-1.5 rounded-full bg-white/80 animate-pulse-soft" />
+              </div>
+              <div className="relative mt-2 flex h-24 items-center justify-center rounded-xl border border-white/30 bg-white/15">
+                <span className="grid size-8 place-items-center rounded-full bg-white text-orange">
                   <Play size={12} fill="currentColor" />
                 </span>
-                <span className="t-meta text-white/85">{c}</span>
               </div>
-            ))}
+              <div className="relative mt-2 flex items-end gap-0.5">
+                {[6, 10, 7, 12, 9, 14, 8, 11, 6].map((h, i) => (
+                  <span key={i} className="w-full rounded-sm bg-white/70" style={{ height: h }} />
+                ))}
+              </div>
+            </div>
+            {/* YouTube — landscape thumbnail card (front) */}
+            <div data-card className="glass absolute bottom-0 z-10 h-48 w-32 overflow-hidden rounded-[20px] p-2.5 opacity-0 shadow-[0_24px_50px_-16px_rgba(0,0,0,.6)] will-change-transform [--glass-bg:rgba(28,28,31,.85)] [--glass-border:rgba(255,255,255,.14)]" style={{ left: "calc(50% - 4rem)", transformOrigin: "50% 120%" }}>
+              <div className="relative aspect-video overflow-hidden rounded-xl bg-[linear-gradient(140deg,#ff6b1a,#ffb27a)]">
+                <div className="grain absolute inset-0" />
+                <span className="absolute top-1/2 left-1/2 grid size-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-orange">
+                  <Play size={12} fill="currentColor" />
+                </span>
+                <span className="t-meta absolute right-1.5 bottom-1.5 rounded bg-black/60 px-1 py-0.5 text-[8px] text-white">12:40</span>
+              </div>
+              <div className="mt-2.5 space-y-1.5">
+                <span className="block h-1.5 w-11/12 rounded-full bg-white/70" />
+                <span className="block h-1.5 w-2/3 rounded-full bg-white/35" />
+              </div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <span className="size-5 rounded-full bg-orange" />
+                <span className="t-meta text-[9px] text-white/80">YouTube</span>
+              </div>
+              <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-white/15">
+                <span className="block h-full w-2/3 rounded-full bg-orange" />
+              </div>
+            </div>
+            {/* Video — film frame */}
+            <div data-card className="absolute bottom-0 h-44 w-[6.75rem] overflow-hidden rounded-[18px] bg-ink-3 p-2.5 opacity-0 shadow-[0_18px_40px_-16px_rgba(0,0,0,.7)] will-change-transform ring-1 ring-white/10" style={{ left: "calc(50% + 3rem)", transformOrigin: "50% 120%" }}>
+              <div className="absolute inset-y-0 left-1 flex flex-col justify-around">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <span key={i} className="block size-1 rounded-[2px] bg-white/30" />
+                ))}
+              </div>
+              <div className="absolute inset-y-0 right-1 flex flex-col justify-around">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <span key={i} className="block size-1 rounded-[2px] bg-white/30" />
+                ))}
+              </div>
+              <div className="relative mx-2 mt-1 space-y-1.5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className={`h-9 rounded-md ${i === 1 ? "bg-[linear-gradient(140deg,#ff6b1a,#e5560a)]" : "bg-white/10"}`}>
+                    {i === 1 ? (
+                      <span className="grid h-full place-items-center text-white">
+                        <Play size={12} fill="currentColor" />
+                      </span>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <span className="t-meta absolute bottom-2.5 left-0 w-full text-center text-[9px] text-white/80">VIDEO</span>
+            </div>
           </div>
         </div>
       </div>
