@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { Conversion } from "@/components/site/home/conversion";
+import { Manifesto } from "@/components/site/home/manifesto";
 import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from "@/components/site/json-ld";
 import { PageHeader } from "@/components/site/page-header";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -69,6 +70,8 @@ export default async function AboutPage({ params }: Props) {
           </Reveal>
         </div>
       </section>
+
+      <Manifesto gallery={gallery} />
 
       <section className="section-y bg-paper-2" aria-labelledby="philosophy-title">
         <div className="container-x grid gap-12 lg:grid-cols-12">

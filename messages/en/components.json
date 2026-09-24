@@ -298,5 +298,12 @@
   },
   "mobileBar": {
     "call": "Call"
+  },
+  "servicesTeaser": {
+    "eyebrow": "Media services",
+    "title": "Content and marketing for business.",
+    "lead": "Reels, YouTube, SMM, paid ads and full video production — one team. The full list and process live on the Media page.",
+    "cta": "All services",
+    "count": "{count} services"
   }
 }

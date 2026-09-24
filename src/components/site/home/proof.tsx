@@ -14,6 +14,8 @@ type Result = Prisma.ResultGetPayload<{ include: { course: { select: { title: tr
 
 interface Props {
   stats: { students: string; courses: string; projects: string };
+  /** Homepage teaser: numbers and a link only — stories live on /natijalar. */
+  compact?: boolean;
   testimonials: Testimonial[];
   results: Result[];
 }
@@ -22,9 +24,9 @@ interface Props {
  * PROOF: numbers first, then real stories. Story rails only render when the CMS has published entries —
  * no fabricated testimonials.
  */
-export async function Proof({ stats, testimonials, results }: Props) {
+export async function Proof({ stats, testimonials, results, compact }: Props) {
   const [t, tc] = await Promise.all([getTranslations("proof"), getTranslations("common")]);
-  const hasStories = testimonials.length > 0 || results.length > 0;
+  const hasStories = !compact && (testimonials.length > 0 || results.length > 0);
   return (
     <section className="section-y" aria-labelledby="proof-title" data-nav="/natijalar">
       <div className="container-x">
@@ -45,6 +47,12 @@ export async function Proof({ stats, testimonials, results }: Props) {
             </div>
           ))}
         </Reveal>
+
+        {compact ? (
+          <Link href={routes.results} className="mt-8 inline-flex items-center gap-1 font-semibold text-orange hover:underline">
+            {tc("actions.allResults")} <ArrowUpRight size={16} />
+          </Link>
+        ) : null}
 
         {hasStories ? (
           <div className="mt-16">

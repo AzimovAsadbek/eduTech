@@ -17,6 +17,8 @@ interface Props {
   categories: { id: string; slug: string; name: string }[];
   compact?: boolean;
   heading?: boolean;
+  /** Teaser mode: show only the first N courses (featured first) and hide the category filters. */
+  limit?: number;
 }
 
 /**
@@ -24,7 +26,8 @@ interface Props {
  * Left: the index rows. Right (desktop): a sticky spotlight panel that shows the hovered course —
  * cover, profession, tagline and outcomes — cross-fading between courses. No cursor-following elements.
  */
-export function CourseIndex({ courses, categories, compact, heading = true }: Props) {
+export function CourseIndex({ courses: allCourses, categories, compact, heading = true, limit }: Props) {
+  const courses = useMemo(() => (limit ? [...allCourses].sort((a, b) => Number(b.featured) - Number(a.featured)).slice(0, limit) : allCourses), [allCourses, limit]);
   const t = useTranslations("courseIndex");
   const tc = useTranslations("common");
   const [cat, setCat] = useState<string>("all");
@@ -97,7 +100,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
           />
         ) : null}
 
-        {usedCats.length > 1 ? (
+        {usedCats.length > 1 && !limit ? (
           <div
             className="mt-10 flex flex-wrap gap-2 lg:glass lg:sticky lg:top-20 lg:z-20 lg:-mx-2 lg:rounded-full lg:px-3 lg:py-2"
             role="tablist"

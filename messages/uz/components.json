@@ -298,5 +298,12 @@
   },
   "mobileBar": {
     "call": "Qoʻngʻiroq qilish"
+  },
+  "servicesTeaser": {
+    "eyebrow": "Media xizmatlar",
+    "title": "Bizneslar uchun kontent va marketing.",
+    "lead": "Reels, YouTube, SMM, target va toʻliq video prodakshn — bir jamoada. Toʻliq roʻyxat va jarayon Media sahifasida.",
+    "cta": "Barcha xizmatlar",
+    "count": "{count} ta xizmat"
   }
 }
