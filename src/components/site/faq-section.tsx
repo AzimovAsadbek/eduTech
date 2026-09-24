@@ -1,5 +1,6 @@
 import type { Faq } from "@prisma/client";
 import { ArrowUpRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Accordion } from "@/components/ui/accordion";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -13,22 +14,23 @@ interface Props {
   lead?: string;
 }
 
-/** FAQ as an editorial split: sticky intro + contact nudge on the left, numbered accordion on the right. */
-export function FaqSection({ faqs, title = "Koʻp beriladigan savollar", eyebrow = "FAQ", lead = "Javob topolmadingizmi? Bir xabar yozing — jamoamiz ish kuni davomida javob beradi." }: Props) {
+/** FAQ as an editorial split: sticky intro + contact nudge (glass card) on the left, numbered accordion on the right. */
+export async function FaqSection({ faqs, title, eyebrow, lead }: Props) {
   if (!faqs.length) return null;
+  const [t, tc] = await Promise.all([getTranslations("faqSection"), getTranslations("common.actions")]);
   return (
     <section className="section-y border-t border-(--line)" aria-labelledby="faq-title">
       <JsonLd data={faqJsonLd(faqs)} />
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
-          <div className="lg:sticky lg:top-28">
-            <Eyebrow className="mb-4">{eyebrow}</Eyebrow>
+          <div className="glass rounded-(--radius-xl) p-6 sm:p-8 lg:sticky lg:top-28">
+            <Eyebrow className="mb-4">{eyebrow ?? t("eyebrow")}</Eyebrow>
             <h2 id="faq-title" className="t-h2">
-              {title}
+              {title ?? t("title")}
             </h2>
-            <p className="mt-4 max-w-sm text-(--fg-muted)">{lead}</p>
+            <p className="mt-4 max-w-sm text-(--fg-muted)">{lead ?? t("lead")}</p>
             <Link href={routes.contact} className="group mt-6 inline-flex items-center gap-2 rounded-full border border-(--line) px-5 py-2.5 font-semibold transition-colors hover:border-orange hover:text-orange media-world:border-white/15">
-              Savol berish
+              {tc("askQuestion")}
               <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:rotate-45" />
             </Link>
           </div>

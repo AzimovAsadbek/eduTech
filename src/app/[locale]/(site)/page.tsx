@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Conversion } from "@/components/site/home/conversion";
 import { CourseIndex } from "@/components/site/home/course-index";
 import { Hero } from "@/components/site/home/hero";
@@ -10,6 +12,10 @@ import { ServiceExplorer } from "@/components/site/home/service-explorer";
 import { WorldShift } from "@/components/site/home/world-shift";
 import { FaqSection } from "@/components/site/faq-section";
 import { JsonLd, courseListJsonLd } from "@/components/site/json-ld";
+import { localizeAll } from "@/i18n/localize";
+import { localizeCourses, localizeProjects, localizeWithCourse } from "@/i18n/localize-content";
+import { localizeSettings } from "@/i18n/localize-settings";
+import { resolveLocale, type LocaleParams } from "@/i18n/params";
 import { pageMetadata } from "@/lib/seo";
 import {
   getActiveBranches,
@@ -24,14 +30,19 @@ import {
 } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 
-export const metadata = pageMetadata({
-  title: "Zamonaviy kasblar akademiyasi va media studiya",
-  description: "EduTech Namangan: dasturlash, AI, robototexnika, SMM, mobilografiya va videografiya kurslari. Bizneslar uchun Reels, YouTube, SMM va video prodakshn.",
-  path: "/",
-});
+type Props = { params: LocaleParams };
 
-export default async function HomePage() {
-  const [settings, courses, categories, services, projects, testimonials, results, gallery, faqs, branches] = await Promise.all([
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: "pages.home" });
+  return pageMetadata({ title: t("seo.title"), description: t("seo.description"), path: "/", locale });
+}
+
+export default async function HomePage({ params }: Props) {
+  const locale = await resolveLocale(params);
+  setRequestLocale(locale);
+  const [t, rawSettings, rawCourses, rawCategories, rawServices, rawProjects, rawTestimonials, rawResults, gallery, rawFaqs, rawBranches] = await Promise.all([
+    getTranslations("pages"),
     getSiteSettings(),
     getPublishedCourses(),
     getCourseCategories(),
@@ -43,12 +54,21 @@ export default async function HomePage() {
     getPublishedFaqs(),
     getActiveBranches(),
   ]);
+  const settings = localizeSettings(rawSettings, locale);
+  const courses = localizeCourses(rawCourses, locale);
+  const categories = localizeAll(rawCategories, locale);
+  const services = localizeAll(rawServices, locale);
+  const projects = localizeProjects(rawProjects, locale);
+  const testimonials = localizeWithCourse(rawTestimonials, locale);
+  const results = localizeWithCourse(rawResults, locale);
+  const faqs = localizeAll(rawFaqs, locale);
+  const branches = localizeAll(rawBranches, locale);
 
   const opt = <T extends { slug?: string; id?: string; title?: string; name?: string }>(x: T) => ({ value: x.slug ?? x.id ?? "", label: x.title ?? x.name ?? "" });
 
   return (
     <>
-      <JsonLd data={courseListJsonLd(courses)} />
+      <JsonLd data={courseListJsonLd(courses, locale, t("jsonLd.courseList"))} />
       <Hero stats={settings.stats} heroImage={gallery.find((g) => g.category === "CLASSROOM")?.image} />
       <Journey />
       <CourseIndex courses={courses} categories={categories} />

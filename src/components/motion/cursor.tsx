@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { gsap, isDesktop, prefersReducedMotion } from "./gsap";
 
@@ -8,6 +9,7 @@ import { gsap, isDesktop, prefersReducedMotion } from "./gsap";
  * snaps to elements marked `data-magnetic`. Disabled on touch and under reduced motion.
  */
 export function Cursor() {
+  const t = useTranslations("cursor");
   const dot = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
 
@@ -94,7 +96,7 @@ export function Cursor() {
         ref={ring}
         className="absolute -top-[18px] -left-[18px] flex size-9 items-center justify-center rounded-full border border-orange/70 text-[10px] font-semibold tracking-wider text-white uppercase transition-[background-color] data-[mode=view]:bg-orange/90 data-[mode=view]:border-transparent"
       >
-        <span className="opacity-0 transition-opacity [[data-mode=view]>&]:opacity-100">Koʻrish</span>
+        <span className="opacity-0 transition-opacity [[data-mode=view]>&]:opacity-100">{t("view")}</span>
       </div>
     </div>
   );

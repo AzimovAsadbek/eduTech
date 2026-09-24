@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap, isDesktop, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
 import { Chip } from "@/components/ui/chip";
@@ -10,9 +11,6 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { routes } from "@/config/site";
 import { cn, pad2 } from "@/lib/utils";
 import type { CourseCard } from "@/server/modules/content/public";
-
-const LEVEL: Record<string, string> = { BEGINNER: "Boshlangʻich", INTERMEDIATE: "Oʻrta", ADVANCED: "Yuqori" };
-const FORMAT: Record<string, string> = { OFFLINE: "Offlayn", ONLINE: "Onlayn", HYBRID: "Gibrid" };
 
 interface Props {
   courses: CourseCard[];
@@ -27,6 +25,8 @@ interface Props {
  * cover, profession, tagline and outcomes — cross-fading between courses. No cursor-following elements.
  */
 export function CourseIndex({ courses, categories, compact, heading = true }: Props) {
+  const t = useTranslations("courseIndex");
+  const tc = useTranslations("common");
   const [cat, setCat] = useState<string>("all");
   const [activeId, setActiveId] = useState<string | null>(courses[0]?.id ?? null);
   const list = useRef<HTMLOListElement>(null);
@@ -68,22 +68,26 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
       <div className="container-x">
         {heading ? (
           <SectionHeading
-            eyebrow="Kurslar"
-            title={<span id="courses-title">Qaysi kasbni tanlaysiz?</span>}
-            lead="Har bir kurs bitta savolga javob beradi: tugatganingizdan keyin nima qila olasiz?"
+            eyebrow={tc("nav.courses")}
+            title={<span id="courses-title">{t("title")}</span>}
+            lead={t("lead")}
             align="split"
             aside={
               <Link href={routes.courses} className="mt-4 inline-flex items-center gap-1 font-semibold text-orange hover:underline">
-                Barcha kurslar <ArrowUpRight size={16} />
+                {tc("actions.allCourses")} <ArrowUpRight size={16} />
               </Link>
             }
           />
         ) : null}
 
         {usedCats.length > 1 ? (
-          <div className="mt-10 flex flex-wrap gap-2" role="tablist" aria-label="Kurs yoʻnalishlari">
+          <div
+            className="mt-10 flex flex-wrap gap-2 lg:glass lg:sticky lg:top-20 lg:z-20 lg:-mx-2 lg:rounded-full lg:px-3 lg:py-2"
+            role="tablist"
+            aria-label={t("filterLabel")}
+          >
             <Chip as="button" role="tab" aria-selected={cat === "all"} active={cat === "all"} onClick={() => setCat("all")}>
-              Barchasi
+              {t("all")}
             </Chip>
             {usedCats.map((c) => (
               <Chip key={c.id} as="button" role="tab" aria-selected={cat === c.slug} active={cat === c.slug} onClick={() => setCat(c.slug)}>
@@ -133,7 +137,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
                 </li>
               );
             })}
-            {visible.length === 0 ? <li className="py-12 text-center text-(--fg-muted)">Bu yoʻnalishda hozircha kurs yoʻq.</li> : null}
+            {visible.length === 0 ? <li className="py-12 text-center text-(--fg-muted)">{t("empty")}</li> : null}
           </ol>
 
           {/* Spotlight (desktop) */}
@@ -143,7 +147,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <div data-cover className="absolute inset-0 will-change-transform">
                     {active.coverImage ? (
-                      <PlaceholderImage key={active.id} src={active.coverImage} alt={`${active.title} kursi`} className="absolute inset-0" sizes="33vw" />
+                      <PlaceholderImage key={active.id} src={active.coverImage} alt={t("coverAlt", { title: active.title })} className="absolute inset-0" sizes="33vw" />
                     ) : (
                       <div className="grain absolute inset-0" style={{ background: `linear-gradient(150deg, ${active.accent ?? "#FF6B1A"} 0%, #FF6B1A 55%, #E5560A 100%)` }} aria-hidden>
                         <span className="font-display absolute -top-4 -right-2 text-[9rem] leading-none font-bold text-white/15 select-none">{pad2(visible.findIndex((c) => c.id === active.id) + 1)}</span>
@@ -163,7 +167,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
                 <div className="p-6">
                   <div data-anim className="flex flex-wrap gap-2">
                     <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{active.durationLabel}</span>
-                    <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{compact ? FORMAT[active.format] : LEVEL[active.level]}</span>
+                    <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{compact ? tc(`format.${active.format}`) : tc(`level.${active.level}`)}</span>
                     {active.ageLabel ? <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{active.ageLabel}</span> : null}
                   </div>
                   {active.outcomes.length ? (
@@ -179,7 +183,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
                     </ul>
                   ) : null}
                   <Link data-anim href={routes.course(active.slug)} className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 font-semibold text-white transition-colors hover:bg-orange">
-                    Kurs haqida <ArrowUpRight size={16} />
+                    {tc("actions.aboutCourse")} <ArrowUpRight size={16} />
                   </Link>
                 </div>
               </div>

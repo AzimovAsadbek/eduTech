@@ -1,6 +1,7 @@
 "use client";
 
 import { Play } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 
@@ -14,6 +15,7 @@ function toEmbed(url: string): { kind: "iframe" | "file"; src: string } {
 
 /** Click-to-play: nothing loads until the user asks — better LCP and privacy. */
 export function VideoEmbed({ url, title, poster }: { url: string; title: string; poster?: string | null }) {
+  const t = useTranslations("videoEmbed");
   const [playing, setPlaying] = useState(false);
   const embed = toEmbed(url);
   return (
@@ -25,7 +27,7 @@ export function VideoEmbed({ url, title, poster }: { url: string; title: string;
           <video src={embed.src} controls autoPlay playsInline className="absolute inset-0 size-full object-cover" />
         )
       ) : (
-        <button type="button" onClick={() => setPlaying(true)} aria-label={`${title} — videoni ijro etish`} className="group absolute inset-0">
+        <button type="button" onClick={() => setPlaying(true)} aria-label={t("play", { title })} className="group absolute inset-0">
           <PlaceholderImage src={poster} alt="" className="absolute inset-0" sizes="100vw" />
           <span className="absolute inset-0 grid place-items-center bg-black/20 transition-colors group-hover:bg-black/30">
             <span className="glass grid size-20 place-items-center rounded-full text-white transition-transform group-hover:scale-110">

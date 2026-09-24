@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { LeadForm, type LeadFormOption } from "./lead-form";
 
@@ -16,6 +17,8 @@ export const useApplyDialog = () => useContext(ApplyContext);
  * Global "Kursga yozilish" dialog. Native <dialog> gives focus trapping, Esc and inert background for free.
  */
 export function ApplyDialogProvider({ children, courses, branches }: { children: React.ReactNode; courses: LeadFormOption[]; branches: LeadFormOption[] }) {
+  const t = useTranslations("applyDialog");
+  const tc = useTranslations("common.actions");
   const ref = useRef<HTMLDialogElement>(null);
   const [preset, setPreset] = useState<{ courseSlug?: string }>({});
   const [mounted, setMounted] = useState(false);
@@ -54,14 +57,14 @@ export function ApplyDialogProvider({ children, courses, branches }: { children:
       >
         {mounted ? (
           <div className="relative p-6 sm:p-8">
-            <button type="button" onClick={close} aria-label="Yopish" className="absolute top-4 right-4 grid size-10 place-items-center rounded-full border border-(--line) hover:bg-ink/5">
+            <button type="button" onClick={close} aria-label={tc("close")} className="absolute top-4 right-4 grid size-10 place-items-center rounded-full border border-(--line) hover:bg-ink/5">
               <X size={18} />
             </button>
-            <p className="t-eyebrow mb-3 text-orange">Kursga yozilish</p>
+            <p className="t-eyebrow mb-3 text-orange">{tc("apply")}</p>
             <h2 id="apply-title" className="t-h3 mb-2 pr-10">
-              Bepul konsultatsiya oling
+              {t("title")}
             </h2>
-            <p className="mb-6 text-(--fg-muted)">Maʼlumotlaringizni qoldiring — bir ish kuni ichida bogʻlanamiz va sizga mos kursni tanlashga yordam beramiz.</p>
+            <p className="mb-6 text-(--fg-muted)">{t("lead")}</p>
             <LeadForm type="EDUCATION" courses={courses} branches={branches} defaultCourseSlug={preset.courseSlug} source={typeof window !== "undefined" ? `dialog:${window.location.pathname}` : "dialog"} onDone={close} />
           </div>
         ) : null}

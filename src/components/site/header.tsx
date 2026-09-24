@@ -1,13 +1,15 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
-import { usePathname } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { nav } from "@/config/site";
+import { nav, routes } from "@/config/site";
+import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
+import { LanguageSwitcher } from "./language-switcher";
 import { useApplyDialog } from "./apply-dialog";
 
 type Stage = "top" | "glass" | "compact";
@@ -17,6 +19,8 @@ type Stage = "top" | "glass" | "compact";
  * and automatic inversion while a `[data-world="media"]` section is under it.
  */
 export function Header() {
+  const t = useTranslations("common");
+  const locale = useLocale();
   const pathname = usePathname();
   const [stage, setStage] = useState<Stage>("top");
   const [dark, setDark] = useState(false);
@@ -109,6 +113,8 @@ export function Header() {
   }, [openApply]);
 
   const inverted = dark || open;
+  // The brand lockup uses a plain <a>, so the locale prefix is applied by hand.
+  const homeHref = locale === routing.defaultLocale ? routes.home : `/${locale}`;
 
   return (
     <>
@@ -125,8 +131,8 @@ export function Header() {
         )}
       >
         <div className="container-x flex h-full items-center justify-between gap-6">
-          <Logo tone={inverted ? "dark" : "light"} tagline height={stage === "compact" ? 36 : 42} className="max-sm:[&_svg]:h-9 max-sm:[&_svg]:w-auto" />
-          <nav aria-label="Asosiy navigatsiya" className="hidden items-center gap-1 lg:flex">
+          <Logo tone={inverted ? "dark" : "light"} tagline height={stage === "compact" ? 36 : 42} href={homeHref} label={t("a11y.home")} className="max-sm:[&_svg]:h-9 max-sm:[&_svg]:w-auto" />
+          <nav aria-label={t("a11y.mainNav")} className="hidden items-center gap-1 lg:flex">
             {nav.map((item) => {
               const active = spy ? spy === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
@@ -141,7 +147,7 @@ export function Header() {
                   )}
                 >
                   <span className="relative">
-                    {item.label}
+                    {t(`nav.${item.key}`)}
                     <span
                       aria-hidden
                       className={cn(
@@ -155,15 +161,16 @@ export function Header() {
             })}
           </nav>
           <div className="flex items-center gap-2">
+            <LanguageSwitcher inverted={inverted} className="hidden lg:inline-flex" />
             <Button size={stage === "compact" ? "sm" : "md"} onClick={onApply} className="hidden sm:inline-flex" magnetic icon={<ArrowUpRight size={16} />}>
-              Kursga yozilish
+              {t("actions.apply")}
             </Button>
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              aria-label={open ? "Menyuni yopish" : "Menyuni ochish"}
+              aria-label={open ? t("a11y.closeMenu") : t("a11y.openMenu")}
               className={cn("grid size-11 place-items-center rounded-full border transition-colors lg:hidden", inverted ? "border-white/20 hover:bg-white/10" : "border-(--line) hover:bg-ink/5")}
             >
               {open ? <X size={20} /> : <Menu size={20} />}
@@ -178,13 +185,13 @@ export function Header() {
         ref={menuRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Menyu"
+        aria-label={t("a11y.menu")}
         hidden={!open}
         className={cn("fixed inset-0 z-40 flex flex-col bg-ink text-white transition-opacity duration-300 lg:hidden", open ? "opacity-100" : "pointer-events-none opacity-0")}
       >
         <div className="orange-glow absolute inset-0 overflow-hidden" aria-hidden />
         <div className="container-x relative flex flex-1 flex-col pt-28 pb-10">
-          <nav aria-label="Mobil navigatsiya" className="flex flex-col">
+          <nav aria-label={t("a11y.mobileNav")} className="flex flex-col">
             {nav.map((item, i) => (
               <Link
                 key={item.href}
@@ -195,17 +202,21 @@ export function Header() {
                   open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
                 )}
               >
-                {item.label}
+                {t(`nav.${item.key}`)}
                 <ArrowUpRight className="text-orange" />
               </Link>
             ))}
           </nav>
           <div className={cn("mt-auto flex flex-col gap-3 pt-10 transition-opacity duration-500 delay-300", open ? "opacity-100" : "opacity-0")}>
+            <div className="mb-2 flex items-center justify-between gap-4">
+              <span className="t-meta text-white/50">{t("language.label")}</span>
+              <LanguageSwitcher inverted size="md" />
+            </div>
             <Button size="lg" onClick={onApply} icon={<ArrowUpRight size={18} />}>
-              Kursga yozilish
+              {t("actions.apply")}
             </Button>
-            <Button size="lg" variant="outline-inverse" href="/media">
-              Media xizmatlar
+            <Button size="lg" variant="outline-inverse" href={routes.media}>
+              {t("actions.mediaServices")}
             </Button>
           </div>
         </div>

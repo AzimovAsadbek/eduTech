@@ -1,1 +1,209 @@
-{}
+{
+  "footer": {
+    "tagline": "{tagline}. IT + AI + Digital + Creative — an academy of modern professions and media studio in {city}.",
+    "site": "Site",
+    "directions": "Explore",
+    "contact": "Contact",
+    "rights": "© {year} {brand}. All rights reserved."
+  },
+  "hero": {
+    "headline": "Learn the professions of tomorrow, today.",
+    "accent": ["professions"],
+    "lead": "Hands-on knowledge, modern technology and real projects — that is how you land a new profession.",
+    "photoAlt": "EduTech students during a hands-on class",
+    "tiles": {
+      "codeFile": "app.tsx",
+      "code": "const career = await\n  edutech.learn(\"dev\")\n// → Junior Developer",
+      "ai": "AI model · training",
+      "reels": "Reels",
+      "reelsTitle": "Mobile filmmaking",
+      "robot": "Robot · sensor",
+      "robotValue": "Arduino · obstacle at 12 cm"
+    }
+  },
+  "journey": {
+    "eyebrow": "Learning model",
+    "title": "From knowledge to skill.",
+    "titleAccent": "From skill to profession.",
+    "lead": "Four stages. Each one grows out of the last — from theory to a real profession.",
+    "steps": [
+      { "n": "01", "key": "Learn", "title": "Learn", "text": "Live classes with a mentor. Only as much theory as practice actually needs.", "detail": "2–3 classes a week · small groups" },
+      { "n": "02", "key": "Practice", "title": "Practise", "text": "Every class is a task. Every week is a mini project. Mistakes are fine — stopping is not.", "detail": "Code review · feedback · retakes" },
+      { "n": "03", "key": "Build", "title": "Build", "text": "You ship a product for a real client or a real problem. That is a portfolio, not a certificate.", "detail": "Capstone project · teamwork" },
+      { "n": "04", "key": "Grow", "title": "Grow", "text": "A job, freelance work or your own project. We stay by your side after graduation too.", "detail": "Career support · community" }
+    ]
+  },
+  "courseIndex": {
+    "title": "Which profession will you choose?",
+    "lead": "Every course answers one question: what will you be able to do once you finish?",
+    "filterLabel": "Course categories",
+    "all": "All",
+    "empty": "No courses in this category yet.",
+    "coverAlt": "{title} course"
+  },
+  "manifesto": {
+    "eyebrow": "Why EduTech",
+    "title": "We don't sell courses. We give you a profession.",
+    "accent": ["profession."],
+    "lead": "Six principles define how we work. They are not slogans — they are rules we check in class every day.",
+    "statements": [
+      { "title": "Hands-on learning", "text": "A class is not a lecture. Every topic is tried by hand the same day." },
+      { "title": "Modern technology", "text": "AI, robotics, mobile production — the tools the market needs right now." },
+      { "title": "Experienced mentors", "text": "Our teachers work in their field and bring that experience into the classroom." },
+      { "title": "Real projects", "text": "You graduate with a portfolio, not just a certificate." },
+      { "title": "Career-focused", "text": "Each curriculum starts from what employers need — never the other way round." },
+      { "title": "Creative environment", "text": "Studio, cameras, a team — learning itself runs like a project." }
+    ],
+    "photoAlt": "The EduTech environment — placeholder for a real photo",
+    "photoLabels": ["In class", "Studio", "Team", "Event"]
+  },
+  "proof": {
+    "title": "Our results speak for themselves.",
+    "lead": "Numbers are only the start. The real proof is our students' work and where they work now.",
+    "statsDesc": {
+      "students": "started a new profession with us",
+      "courses": "IT, AI, media and marketing",
+      "projects": "for portfolios and clients"
+    },
+    "railLabel": "Student stories"
+  },
+  "worldShift": {
+    "ariaLabel": "Transition from education to media",
+    "eyebrow": "Two worlds — one team",
+    "edu": "EDU",
+    "media": "MEDIA",
+    "lead": "Education is the beginning. Media is your brand's voice. Content, marketing and production for businesses."
+  },
+  "mediaHero": {
+    "eyebrow": "EduTech Media · for businesses",
+    "title": "Show your brand through content.",
+    "accent": ["content."],
+    "lead": "Creative content, SMM and digital marketing for your business — all in one place."
+  },
+  "serviceExplorer": {
+    "eyebrow": "Services",
+    "title": "Everything you need — one team.",
+    "lead": "From Reels to full-scale production. Pick a service and see what's included.",
+    "panelEyebrow": "Service",
+    "explore": "Explore"
+  },
+  "portfolio": {
+    "eyebrow": "Portfolio",
+    "title": "Content we've created.",
+    "lead": "Every project is a client's challenge, our strategy and a measurable result."
+  },
+  "conversion": {
+    "eyebrow": "Shall we start?",
+    "title": "One step —",
+    "titleAccent": "one application.",
+    "lead": "Need help choosing a course, or content for your brand? Write to us — we reply within one business day.",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Working hours",
+    "tabsLabel": "Request type",
+    "tabMedia": "Media service",
+    "submitEducation": "Send application",
+    "submitMedia": "Send request"
+  },
+  "faqSection": {
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "lead": "Didn't find your answer? Send us a message — our team replies within a business day."
+  },
+  "leadForm": {
+    "errors": {
+      "name": "Enter your name",
+      "phone": "Enter your phone number",
+      "phoneFormat": "Digits only",
+      "generic": "Something went wrong",
+      "network": "Network error. Please try again."
+    },
+    "success": {
+      "title": "Your application has been received",
+      "text": "Thank you! We'll be in touch shortly."
+    },
+    "fields": {
+      "name": "Your name",
+      "namePlaceholder": "First and last name",
+      "phone": "Phone",
+      "phonePlaceholder": "+998 90 123 45 67",
+      "course": "Course of interest",
+      "coursePlaceholder": "Choose a course",
+      "branch": "Branch",
+      "company": "Company / brand",
+      "companyPlaceholder": "Company name",
+      "service": "Service",
+      "servicePlaceholder": "Choose a service",
+      "budget": "Approximate budget",
+      "interest": "I'm interested in",
+      "selectPlaceholder": "Select",
+      "message": "Message",
+      "messagePlaceholderMedia": "A few words about the project…",
+      "messagePlaceholder": "Your question or comment…"
+    },
+    "budgets": ["Up to 1M UZS", "1–3M UZS", "3–10M UZS", "Over 10M UZS", "Not sure yet"],
+    "interests": ["Courses", "Media services", "Partnership", "Other"],
+    "privacy": "Your details are used only to get in touch with you.",
+    "submitting": "Sending…"
+  },
+  "applyDialog": {
+    "title": "Get a free consultation",
+    "lead": "Leave your details — we'll get back to you within one business day and help you pick the right course."
+  },
+  "courseHero": {
+    "duration": "Duration",
+    "format": "Format",
+    "level": "Level",
+    "price": "Price",
+    "priceOnRequest": "Agreed at consultation",
+    "fallbackCategory": "Course",
+    "coverAlt": "{title} course",
+    "coverLabel": "Course photo"
+  },
+  "courseBody": {
+    "sectionsNav": "Course sections",
+    "anchors": {
+      "whoFor": "Who it's for",
+      "curriculum": "Curriculum",
+      "skills": "Skills",
+      "projects": "Projects",
+      "outcomes": "Outcome",
+      "mentor": "Mentor",
+      "faq": "FAQ"
+    },
+    "whoFor": { "eyebrow": "Who it's for", "title": "This course is for you if…" },
+    "curriculum": { "eyebrow": "Curriculum", "title": "{count, plural, one {# module} other {# modules}}" },
+    "skills": { "eyebrow": "Skills", "title": "What you'll learn" },
+    "projects": { "eyebrow": "Practice", "title": "Projects you'll build during the course", "item": "Project {n}" },
+    "outcomes": { "eyebrow": "Outcome", "title": "What you'll be able to do after the course" },
+    "mentor": { "eyebrow": "Mentor", "title": "{count, plural, one {Mentor} other {Mentors}}" },
+    "testimonials": { "eyebrow": "Graduates", "title": "What they say" },
+    "faq": { "eyebrow": "FAQ", "title": "Questions" },
+    "otherCourses": "Other courses"
+  },
+  "courseApply": {
+    "priceOnRequest": "price agreed at consultation",
+    "submit": "Send application"
+  },
+  "mediaInquiry": {
+    "eyebrow": "Request",
+    "title": "Let's discuss",
+    "titleAccent": "your project.",
+    "lead": "Tell us briefly what you need and by when. Within 24 hours we'll reply with a proposal and an estimated budget.",
+    "telegram": "Message us on Telegram",
+    "submit": "Send request"
+  },
+  "videoEmbed": {
+    "play": "{title} — play video"
+  },
+  "beforeAfter": {
+    "before": "BEFORE",
+    "after": "AFTER",
+    "beforeAlt": "{alt} — before",
+    "afterAlt": "{alt} — after",
+    "label": "Before / after comparison"
+  },
+  "cursor": {
+    "view": "View"
+  }
+}

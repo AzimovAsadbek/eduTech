@@ -16,7 +16,24 @@ import {
   testimonialSchema,
 } from "@/server/modules/content/schema";
 
-export const RESOURCE_KEYS = ["courses", "course-categories", "teachers", "services", "media-projects", "testimonials", "results", "gallery", "faq", "branches"] as const;
+/** Locales that carry translated copies of the Uzbek base content. */
+export const TRANSLATION_LOCALES = ["ru", "en"] as const;
+export type TranslationLocale = (typeof TRANSLATION_LOCALES)[number];
+export type FormLocale = "uz" | TranslationLocale;
+export const LOCALE_LABELS: Record<FormLocale, string> = { uz: "Oʻzbek", ru: "Русский", en: "English" };
+
+export const RESOURCE_KEYS = [
+  "courses",
+  "course-categories",
+  "teachers",
+  "services",
+  "media-projects",
+  "testimonials",
+  "results",
+  "gallery",
+  "faq",
+  "branches",
+] as const;
 export type ResourceKey = (typeof RESOURCE_KEYS)[number];
 
 export type RelationKey = "course-categories" | "courses" | "services";
@@ -52,7 +69,7 @@ export type FieldDef =
   | (BaseField & { type: "json-list"; shape: JsonShape })
   | (BaseField & { type: "socials" });
 
-export type ColumnKind = "text" | "mono" | "date" | "status" | "image" | "boolean" | "number" | "relation";
+export type ColumnKind = "text" | "mono" | "date" | "status" | "image" | "boolean" | "number" | "relation" | "translations";
 
 export interface ColumnDef {
   key: string;
@@ -80,7 +97,9 @@ export interface ResourceUi {
   hasStatus: boolean;
   /** Extra boolean shown in the publish panel (e.g. featured / isActive). */
   panelToggle?: { name: string; label: string; hint?: string };
-  schema: z.ZodType;
+  schema: z.ZodObject;
+  /** Text fields that get a Russian / English copy under `translations.<locale>.<field>`. */
+  translatable: string[];
   columns: ColumnDef[];
   sections: Section[];
   preview?: (item: Record<string, unknown>) => string | null;
@@ -132,6 +151,23 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     hasStatus: true,
     panelToggle: { name: "featured", label: "Tavsiya etilgan", hint: "Bosh sahifada ajratib koʻrsatiladi" },
     schema: courseSchema,
+    translatable: [
+      "title",
+      "roleLabel",
+      "tagline",
+      "description",
+      "durationLabel",
+      "schedule",
+      "priceLabel",
+      "ageLabel",
+      "whoFor",
+      "skills",
+      "outcomes",
+      "curriculum",
+      "projects",
+      "seoTitle",
+      "seoDescription",
+    ],
     preview: (i) => (typeof i.slug === "string" ? `/kurslar/${i.slug}?preview=1` : null),
     columns: [
       { key: "coverImage", label: "", kind: "image", width: "w-14" },
@@ -188,6 +224,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     titleField: "name",
     hasStatus: false,
     schema: courseCategorySchema,
+    translatable: ["name"],
     columns: [
       { key: "name", label: "Nomi" },
       { key: "slug", label: "Slug", kind: "mono", hideBelow: "md" },
@@ -210,6 +247,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     titleField: "name",
     hasStatus: true,
     schema: teacherSchema,
+    translatable: ["title", "bio"],
     columns: [
       { key: "photo", label: "", kind: "image", width: "w-14" },
       { key: "name", label: "Ism", sub: "title" },
@@ -238,6 +276,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     hasStatus: true,
     panelToggle: { name: "featured", label: "Tavsiya etilgan" },
     schema: serviceSchema,
+    translatable: ["title", "tagline", "description", "attributes", "deliverables", "process", "seoTitle", "seoDescription"],
     preview: (i) => (typeof i.slug === "string" ? `/media/xizmatlar/${i.slug}?preview=1` : null),
     columns: [
       { key: "coverImage", label: "", kind: "image", width: "w-14" },
@@ -275,6 +314,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     hasStatus: true,
     panelToggle: { name: "featured", label: "Tavsiya etilgan" },
     schema: mediaProjectSchema,
+    translatable: ["title", "category", "description", "challenge", "solution", "results", "tags"],
     preview: (i) => (typeof i.slug === "string" ? `/media/portfolio/${i.slug}?preview=1` : null),
     columns: [
       { key: "coverImage", label: "", kind: "image", width: "w-14" },
@@ -324,6 +364,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     titleField: "name",
     hasStatus: true,
     schema: testimonialSchema,
+    translatable: ["role", "quote", "resultLabel"],
     columns: [
       { key: "photo", label: "", kind: "image", width: "w-14" },
       { key: "name", label: "Ism", sub: "role" },
@@ -354,6 +395,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     hasStatus: true,
     panelToggle: { name: "featured", label: "Tavsiya etilgan" },
     schema: resultSchema,
+    translatable: ["title", "description", "metricLabel"],
     columns: [
       { key: "image", label: "", kind: "image", width: "w-14" },
       { key: "title", label: "Natija", sub: "studentName" },
@@ -391,6 +433,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     titleField: "alt",
     hasStatus: true,
     schema: galleryItemSchema,
+    translatable: ["title", "alt"],
     columns: [
       { key: "image", label: "", kind: "image", width: "w-14" },
       { key: "alt", label: "Alt matn", sub: "title" },
@@ -416,6 +459,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     titleField: "question",
     hasStatus: true,
     schema: faqSchema,
+    translatable: ["question", "answer"],
     columns: [
       { key: "question", label: "Savol" },
       { key: "scope", label: "Boʻlim", kind: "mono", width: "w-24" },
@@ -442,6 +486,7 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
     hasStatus: false,
     panelToggle: { name: "isActive", label: "Faol", hint: "Nofaol filiallar saytda koʻrinmaydi" },
     schema: branchSchema,
+    translatable: ["name", "address", "workingHours"],
     columns: [
       { key: "name", label: "Filial", sub: "address" },
       { key: "phone", label: "Telefon", kind: "mono", hideBelow: "md" },
@@ -465,6 +510,11 @@ export const RESOURCES: Record<ResourceKey, ResourceUi> = {
 
 export function isResourceKey(key: string): key is ResourceKey {
   return (RESOURCE_KEYS as readonly string[]).includes(key);
+}
+
+/** Translatable field definitions in form order. */
+export function translatableFields(ui: ResourceUi): FieldDef[] {
+  return ui.sections.flatMap((s) => s.fields).filter((f) => ui.translatable.includes(f.name));
 }
 
 export function relationKeysOf(ui: ResourceUi): RelationKey[] {

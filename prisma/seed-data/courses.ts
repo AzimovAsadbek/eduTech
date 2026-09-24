@@ -1,19 +1,24 @@
 import type { Prisma } from "@prisma/client";
 
 export const categories = [
-  { slug: "it", name: "IT va dasturlash", order: 0 },
-  { slug: "ai-robotics", name: "AI va robototexnika", order: 1 },
-  { slug: "kids", name: "Bolalar uchun", order: 2 },
-  { slug: "creative", name: "Kreativ va media", order: 3 },
-  { slug: "marketing", name: "Marketing", order: 4 },
-  { slug: "soft-skills", name: "Shaxsiy rivojlanish", order: 5 },
-];
+  { slug: "it", name: "IT va dasturlash", order: 0, translations: { ru: { name: "IT и программирование" }, en: { name: "IT & Programming" } } },
+  { slug: "ai-robotics", name: "AI va robototexnika", order: 1, translations: { ru: { name: "AI и робототехника" }, en: { name: "AI & Robotics" } } },
+  { slug: "kids", name: "Bolalar uchun", order: 2, translations: { ru: { name: "Для детей" }, en: { name: "For Kids" } } },
+  { slug: "creative", name: "Kreativ va media", order: 3, translations: { ru: { name: "Креатив и медиа" }, en: { name: "Creative & Media" } } },
+  { slug: "marketing", name: "Marketing", order: 4, translations: { ru: { name: "Маркетинг" }, en: { name: "Marketing" } } },
+  { slug: "soft-skills", name: "Shaxsiy rivojlanish", order: 5, translations: { ru: { name: "Личностное развитие" }, en: { name: "Personal Development" } } },
+] satisfies (Prisma.CourseCategoryCreateInput & { translations: Prisma.InputJsonValue })[];
 
-type CourseSeed = Omit<Prisma.CourseUncheckedCreateInput, "categoryId"> & { category: string };
+type CourseSeed = Omit<Prisma.CourseUncheckedCreateInput, "categoryId" | "translations"> & {
+  category: string;
+  translations?: Prisma.InputJsonValue;
+};
 
 /**
  * Nine directions from the business brief. Duration, schedule and price fields are
  * editorial placeholders and must be confirmed in the admin panel before publishing.
+ *
+ * `translations` holds ru/en copies of the text fields; shapes mirror the Uzbek originals.
  */
 export const courses: CourseSeed[] = [
   {
@@ -49,6 +54,56 @@ export const courses: CourseSeed[] = [
     featured: true,
     order: 0,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Программирование",
+        roleLabel: "Developer",
+        tagline: "Создавайте реальные продукты.",
+        description:
+          "Освойте веб-разработку с нуля: HTML, CSS, JavaScript, современный фронтенд и основы бэкенда. В течение курса вы работаете над настоящими проектами и выпускаетесь с готовым портфолио.",
+        durationLabel: "8 месяцев",
+        schedule: "3 дня в неделю · 90 минут",
+        whoFor: ["Тем, кто хочет начать программировать с нуля", "Молодым людям, которые хотят войти в IT как в профессию", "Тем, кто хочет превратить свою идею в продукт"],
+        skills: ["HTML & CSS", "JavaScript", "TypeScript", "React", "Node.js", "Git & GitHub", "REST API", "Базы данных"],
+        outcomes: ["Трудоустройство на позицию Junior Developer", "Запуск собственного веб-проекта", "Выполнение заказов на фрилансе", "Портфолио: минимум 3 реальных проекта"],
+        curriculum: [
+          { title: "Основы веба", lessons: ["Как работает интернет", "Семантика HTML", "CSS-раскладка: Flexbox, Grid", "Адаптивный дизайн"] },
+          { title: "JavaScript", lessons: ["Основы языка", "DOM и события", "Асинхронный код", "Работа с API"] },
+          { title: "Фронтенд", lessons: ["Компоненты React", "Управление состоянием", "Роутинг", "Реальный проект"] },
+          { title: "Основы бэкенда", lessons: ["Node.js", "REST API", "Базы данных", "Аутентификация"] },
+          { title: "Дипломный проект", lessons: ["Идея и планирование", "Командная разработка", "Деплой", "Защита"] },
+        ],
+        projects: [
+          { title: "Персональный сайт-портфолио", description: "Адаптивный сайт с анимациями" },
+          { title: "Интернет-магазин", description: "С корзиной, оплатой и админ-панелью" },
+          { title: "Командный стартап-проект", description: "Для настоящих пользователей" },
+        ],
+      },
+      en: {
+        title: "Programming",
+        roleLabel: "Developer",
+        tagline: "Build real products.",
+        description:
+          "Learn web development from scratch: HTML, CSS, JavaScript, modern frontend and backend fundamentals. Throughout the course you work on real projects and graduate with a portfolio.",
+        durationLabel: "8 months",
+        schedule: "3 days a week · 90 minutes",
+        whoFor: ["Anyone who wants to start programming from scratch", "Young people who want to enter IT as a profession", "Anyone who wants to turn their idea into a product"],
+        skills: ["HTML & CSS", "JavaScript", "TypeScript", "React", "Node.js", "Git & GitHub", "REST API", "Databases"],
+        outcomes: ["Land a job as a Junior Developer", "Launch your own web project", "Take on freelance orders", "Portfolio: at least 3 real projects"],
+        curriculum: [
+          { title: "Web Fundamentals", lessons: ["How the internet works", "HTML semantics", "CSS layout: Flexbox, Grid", "Responsive design"] },
+          { title: "JavaScript", lessons: ["Language fundamentals", "DOM and events", "Asynchronous code", "Working with APIs"] },
+          { title: "Frontend", lessons: ["React components", "State management", "Routing", "Real project"] },
+          { title: "Backend Fundamentals", lessons: ["Node.js", "REST API", "Databases", "Authentication"] },
+          { title: "Capstone Project", lessons: ["Idea and planning", "Team development", "Deployment", "Defense"] },
+        ],
+        projects: [
+          { title: "Personal portfolio website", description: "Responsive site with animations" },
+          { title: "Online store", description: "With cart, checkout and admin panel" },
+          { title: "Team startup project", description: "Built for real users" },
+        ],
+      },
+    },
   },
   {
     slug: "robototexnika",
@@ -77,6 +132,44 @@ export const courses: CourseSeed[] = [
     projects: [{ title: "Avtonom robot", description: "Sensorlar orqali yoʻl topuvchi robot" }],
     order: 1,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Робототехника",
+        roleLabel: "Robotics Engineer",
+        tagline: "Приведите идею в движение.",
+        description: "От работы с Arduino и датчиками до создания автономных роботов. Электроника, механика и программирование — в одном курсе.",
+        durationLabel: "6 месяцев",
+        schedule: "2 дня в неделю · 120 минут",
+        whoFor: ["Ученикам, увлечённым техникой", "Тем, кто хочет поступить на инженерное направление", "Тем, кто готовится к олимпиадам и соревнованиям"],
+        skills: ["Arduino", "Основы электроники", "Датчики", "C/C++", "3D-моделирование", "Механика"],
+        outcomes: ["Проектирование и сборка собственного робота", "Участие в соревнованиях по робототехнике", "Основы инженерного мышления"],
+        curriculum: [
+          { title: "Основы электроники", lessons: ["Ток, напряжение, сопротивление", "Схемы", "Работа с макетной платой"] },
+          { title: "Arduino", lessons: ["Микроконтроллер", "Датчики", "Моторы", "Программирование"] },
+          { title: "Создание робота", lessons: ["Робот, следующий по линии", "Робот, объезжающий препятствия", "Дистанционное управление"] },
+          { title: "Проект", lessons: ["Ваш собственный робот", "Презентация"] },
+        ],
+        projects: [{ title: "Автономный робот", description: "Робот, находящий путь с помощью датчиков" }],
+      },
+      en: {
+        title: "Robotics",
+        roleLabel: "Robotics Engineer",
+        tagline: "Set your idea in motion.",
+        description: "From working with Arduino and sensors to building autonomous robots. Electronics, mechanics and programming — all in one course.",
+        durationLabel: "6 months",
+        schedule: "2 days a week · 120 minutes",
+        whoFor: ["Students fascinated by technology", "Anyone planning to pursue engineering", "Those preparing for olympiads and competitions"],
+        skills: ["Arduino", "Electronics fundamentals", "Sensors", "C/C++", "3D modeling", "Mechanics"],
+        outcomes: ["Design and build your own robot", "Compete in robotics competitions", "Fundamentals of engineering thinking"],
+        curriculum: [
+          { title: "Electronics Fundamentals", lessons: ["Current, voltage, resistance", "Circuits", "Working with a breadboard"] },
+          { title: "Arduino", lessons: ["Microcontroller", "Sensors", "Motors", "Programming"] },
+          { title: "Building a Robot", lessons: ["Line-following robot", "Obstacle-avoiding robot", "Remote control"] },
+          { title: "Project", lessons: ["Your own robot", "Presentation"] },
+        ],
+        projects: [{ title: "Autonomous robot", description: "A robot that navigates using sensors" }],
+      },
+    },
   },
   {
     slug: "ai",
@@ -106,6 +199,46 @@ export const courses: CourseSeed[] = [
     featured: true,
     order: 2,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Искусственный интеллект",
+        roleLabel: "AI Specialist",
+        tagline: "Освойте инструменты будущего уже сегодня.",
+        description:
+          "От основ Python до анализа данных и работы с современными AI-инструментами (LLM, генеративные модели). Через практические проекты вы научитесь применять AI к реальным задачам.",
+        durationLabel: "6 месяцев",
+        schedule: "3 дня в неделю · 90 минут",
+        whoFor: ["Тем, кто уже знаком с Python", "Тем, кто хочет работать с данными", "Тем, кто хочет применять AI-инструменты в бизнесе"],
+        skills: ["Python", "Pandas & NumPy", "Machine Learning", "Neural Networks", "LLM и prompt engineering", "AI-автоматизация"],
+        outcomes: ["Выполнение проектов по анализу данных", "Автоматизация рабочих процессов с помощью AI-инструментов", "Создание собственного AI-проекта"],
+        curriculum: [
+          { title: "Python и данные", lessons: ["Основы Python", "Pandas", "Визуализация"] },
+          { title: "Machine Learning", lessons: ["Регрессия и классификация", "Оценка моделей", "Практический кейс"] },
+          { title: "Нейронные сети", lessons: ["Основы", "Изображения и текст", "Transfer learning"] },
+          { title: "Генеративный AI", lessons: ["Работа с LLM", "Prompt engineering", "AI-агенты", "Проект"] },
+        ],
+        projects: [{ title: "AI-ассистент", description: "Чат-бот или автоматизация для бизнеса" }],
+      },
+      en: {
+        title: "Artificial Intelligence",
+        roleLabel: "AI Specialist",
+        tagline: "Master tomorrow's tools today.",
+        description:
+          "From Python fundamentals to data analysis and working with modern AI tools (LLMs, generative models). Through hands-on projects you learn to apply AI to real-world problems.",
+        durationLabel: "6 months",
+        schedule: "3 days a week · 90 minutes",
+        whoFor: ["Those already familiar with Python", "Anyone who wants to work with data", "Those who want to apply AI tools in business"],
+        skills: ["Python", "Pandas & NumPy", "Machine Learning", "Neural Networks", "LLMs and prompt engineering", "AI automation"],
+        outcomes: ["Deliver data analysis projects", "Automate workflows with AI tools", "Build your own AI project"],
+        curriculum: [
+          { title: "Python and Data", lessons: ["Python fundamentals", "Pandas", "Visualization"] },
+          { title: "Machine Learning", lessons: ["Regression and classification", "Model evaluation", "Hands-on case study"] },
+          { title: "Neural Networks", lessons: ["Fundamentals", "Images and text", "Transfer learning"] },
+          { title: "Generative AI", lessons: ["Working with LLMs", "Prompt engineering", "AI agents", "Project"] },
+        ],
+        projects: [{ title: "AI assistant", description: "A chatbot or automation for business" }],
+      },
+    },
   },
   {
     slug: "it-kids",
@@ -132,6 +265,42 @@ export const courses: CourseSeed[] = [
     ],
     order: 3,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "IT-KIDS",
+        roleLabel: "Young Creator",
+        tagline: "Технологии через игру.",
+        description:
+          "Первый шаг в мир программирования и технологий для детей. Scratch, создание игр и логическое мышление — в увлекательной и понятной форме.",
+        durationLabel: "4 месяца",
+        schedule: "2 дня в неделю · 60 минут",
+        whoFor: ["Детям 7–12 лет", "Детям, которые интересуются компьютером", "Тем, кто хочет развить логическое мышление"],
+        skills: ["Scratch", "Алгоритмическое мышление", "Дизайн игр", "Компьютерная грамотность", "Работа в команде"],
+        outcomes: ["Создание собственной игры", "Понимание основ программирования", "Подготовка к старшим курсам"],
+        curriculum: [
+          { title: "Мир компьютера", lessons: ["Знакомство с компьютером", "Безопасность в интернете"] },
+          { title: "Scratch", lessons: ["Первая анимация", "Игровая механика", "Моя игра"] },
+          { title: "Проект", lessons: ["Командная игра", "Презентация"] },
+        ],
+      },
+      en: {
+        title: "IT-KIDS",
+        roleLabel: "Young Creator",
+        tagline: "Technology through play.",
+        description:
+          "A child's first step into the world of programming and technology. Scratch, game creation and logical thinking — in a fun, easy-to-follow format.",
+        durationLabel: "4 months",
+        schedule: "2 days a week · 60 minutes",
+        whoFor: ["Children aged 7–12", "Kids who are curious about computers", "Anyone who wants to develop logical thinking"],
+        skills: ["Scratch", "Algorithmic thinking", "Game design", "Computer literacy", "Teamwork"],
+        outcomes: ["Create your own game", "Understand programming fundamentals", "Get ready for advanced courses"],
+        curriculum: [
+          { title: "The World of Computers", lessons: ["Making friends with the computer", "Internet safety"] },
+          { title: "Scratch", lessons: ["First animation", "Game mechanics", "My own game"] },
+          { title: "Project", lessons: ["Team game", "Presentation"] },
+        ],
+      },
+    },
   },
   {
     slug: "notiqlik",
@@ -158,6 +327,42 @@ export const courses: CourseSeed[] = [
     ],
     order: 4,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Ораторское искусство",
+        roleLabel: "Public Speaker",
+        tagline: "Пусть вас услышат.",
+        description:
+          "Публичные выступления, уверенное общение и искусство презентации. Свобода перед камерой и на сцене, чёткое и убедительное изложение мыслей.",
+        durationLabel: "3 месяца",
+        schedule: "2 дня в неделю · 90 минут",
+        whoFor: ["Тем, кто боится выступать", "Руководителям и предпринимателям", "Блогерам и создателям контента"],
+        skills: ["Структура речи", "Голос и дикция", "Язык тела", "Импровизация", "Презентация", "Речь перед камерой"],
+        outcomes: ["Уверенно выступать перед аудиторией", "Проводить убедительные презентации", "Уверенно держаться на интервью и переговорах"],
+        curriculum: [
+          { title: "Основы", lessons: ["Преодоление страха", "Работа с голосом", "Дикция"] },
+          { title: "Искусство речи", lessons: ["Структура выступления", "Storytelling", "Аргументация"] },
+          { title: "Практика", lessons: ["Перед камерой", "Сцена", "Финальное выступление"] },
+        ],
+      },
+      en: {
+        title: "Public Speaking",
+        roleLabel: "Public Speaker",
+        tagline: "Make your voice heard.",
+        description:
+          "Public speaking, confident communication and the art of presentation. Feel at ease in front of the camera and on stage, and deliver your ideas clearly and persuasively.",
+        durationLabel: "3 months",
+        schedule: "2 days a week · 90 minutes",
+        whoFor: ["Anyone afraid of speaking in public", "Leaders and entrepreneurs", "Bloggers and content creators"],
+        skills: ["Speech structure", "Voice and diction", "Body language", "Improvisation", "Presentation", "Speaking on camera"],
+        outcomes: ["Speak confidently in front of an audience", "Deliver persuasive presentations", "Hold your own in interviews and negotiations"],
+        curriculum: [
+          { title: "Fundamentals", lessons: ["Overcoming fear", "Voice training", "Diction"] },
+          { title: "The Art of Speech", lessons: ["Speech structure", "Storytelling", "Argumentation"] },
+          { title: "Practice", lessons: ["On camera", "On stage", "Final speech"] },
+        ],
+      },
+    },
   },
   {
     slug: "mobilografiya",
@@ -184,6 +389,40 @@ export const courses: CourseSeed[] = [
     ],
     order: 5,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Мобилография",
+        roleLabel: "Mobile Content Creator",
+        tagline: "Телефон — ваша студия.",
+        description: "Профессиональная фото- и видеосъёмка на смартфон, монтаж и создание контента для социальных сетей.",
+        durationLabel: "2 месяца",
+        schedule: "3 дня в неделю · 90 минут",
+        whoFor: ["Тем, кто хочет стать блогером", "Тем, кто хочет самостоятельно снимать свой бизнес", "SMM-специалистам"],
+        skills: ["Композиция", "Свет", "Мобильное видео", "Монтаж в CapCut / VN", "Цветокоррекция", "Форматы Reels"],
+        outcomes: ["Качественный контент, снятый на телефон", "Монтаж для Reels и Stories", "Собственный визуальный стиль"],
+        curriculum: [
+          { title: "Фото", lessons: ["Композиция", "Свет", "Мобильная обработка"] },
+          { title: "Видео", lessons: ["Кадр и движение", "Звук", "Монтаж"] },
+          { title: "Контент", lessons: ["Драматургия Reels", "Тренды", "Проект"] },
+        ],
+      },
+      en: {
+        title: "Smartphone Photo & Video",
+        roleLabel: "Mobile Content Creator",
+        tagline: "Your phone is your studio.",
+        description: "Shoot professional-quality photos and video on a smartphone, edit them and create content for social media.",
+        durationLabel: "2 months",
+        schedule: "3 days a week · 90 minutes",
+        whoFor: ["Aspiring bloggers", "Business owners who want to shoot their own content", "SMM specialists"],
+        skills: ["Composition", "Lighting", "Mobile video", "CapCut / VN editing", "Color correction", "Reels formats"],
+        outcomes: ["Create quality content on your phone", "Edit for Reels and Stories", "Your own visual style"],
+        curriculum: [
+          { title: "Photo", lessons: ["Composition", "Lighting", "Mobile editing"] },
+          { title: "Video", lessons: ["Framing and movement", "Sound", "Editing"] },
+          { title: "Content", lessons: ["Reels storytelling", "Trends", "Project"] },
+        ],
+      },
+    },
   },
   {
     slug: "videografiya",
@@ -211,6 +450,44 @@ export const courses: CourseSeed[] = [
     ],
     order: 6,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Видеография",
+        roleLabel: "Videographer",
+        tagline: "Каждый кадр — история.",
+        description:
+          "Работа с профессиональной камерой, светом и монтажом. Полный цикл производства видео для рекламных роликов, YouTube-контента и мероприятий.",
+        durationLabel: "4 месяца",
+        schedule: "3 дня в неделю · 120 минут",
+        whoFor: ["Тем, кто хочет сделать видеографию профессией", "Следующий уровень после мобилографии", "Тем, кто хочет работать в медиастудиях"],
+        skills: ["Камера и оптика", "Схемы света", "Premiere Pro / DaVinci", "Color grading", "Звук", "Продакшн-процесс"],
+        outcomes: ["Производство рекламных роликов", "Работа видеографом в медиастудии", "Портфолио: 3+ завершённые работы"],
+        curriculum: [
+          { title: "Камера", lessons: ["Экспозиция", "Оптика", "Движение"] },
+          { title: "Свет и звук", lessons: ["Студийный свет", "Естественный свет", "Запись звука"] },
+          { title: "Монтаж", lessons: ["Premiere Pro", "DaVinci Resolve", "Color grading"] },
+          { title: "Продакшн", lessons: ["Pre-production", "Съёмочный день", "Post-production", "Дипломная работа"] },
+        ],
+      },
+      en: {
+        title: "Videography",
+        roleLabel: "Videographer",
+        tagline: "Every frame tells a story.",
+        description:
+          "Working with professional cameras, lighting and editing. The full video production process for commercials, YouTube content and events.",
+        durationLabel: "4 months",
+        schedule: "3 days a week · 120 minutes",
+        whoFor: ["Anyone who wants to make videography a career", "The next step after Smartphone Photo & Video", "Those who want to work in media studios"],
+        skills: ["Camera and lenses", "Lighting setups", "Premiere Pro / DaVinci", "Color grading", "Sound", "Production workflow"],
+        outcomes: ["Produce commercials", "Work as a videographer in a media studio", "Portfolio: 3+ completed works"],
+        curriculum: [
+          { title: "Camera", lessons: ["Exposure", "Lenses", "Movement"] },
+          { title: "Lighting and Sound", lessons: ["Studio lighting", "Natural light", "Sound recording"] },
+          { title: "Editing", lessons: ["Premiere Pro", "DaVinci Resolve", "Color grading"] },
+          { title: "Production", lessons: ["Pre-production", "Shoot day", "Post-production", "Final project"] },
+        ],
+      },
+    },
   },
   {
     slug: "smm",
@@ -237,6 +514,42 @@ export const courses: CourseSeed[] = [
     ],
     order: 7,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "SMM",
+        roleLabel: "SMM Manager",
+        tagline: "Превратите аудиторию в сообщество.",
+        description:
+          "Ведение бренда в социальных сетях: стратегия, контент-план, визуал, копирайтинг, аналитика и рост. Практика с реальными брендами.",
+        durationLabel: "3 месяца",
+        schedule: "3 дня в неделю · 90 минут",
+        whoFor: ["Тем, кто хочет войти в сферу маркетинга", "Предпринимателям, которые хотят вести свой бизнес самостоятельно", "Тем, кто хочет стать SMM-фрилансером"],
+        skills: ["SMM-стратегия", "Контент-план", "Копирайтинг", "Canva / Figma", "Instagram & Telegram", "Аналитика"],
+        outcomes: ["Построение полной SMM-стратегии для бренда", "Трудоустройство SMM-менеджером", "Поиск собственных клиентов"],
+        curriculum: [
+          { title: "Стратегия", lessons: ["Анализ аудитории", "Позиционирование", "Контент-план"] },
+          { title: "Контент", lessons: ["Копирайтинг", "Визуал", "Reels и Stories"] },
+          { title: "Рост", lessons: ["Аналитика", "Коллаборации", "Практика с реальным брендом"] },
+        ],
+      },
+      en: {
+        title: "SMM",
+        roleLabel: "SMM Manager",
+        tagline: "Turn your audience into a community.",
+        description:
+          "Running a brand on social media: strategy, content plan, visuals, copywriting, analytics and growth. Hands-on practice with real brands.",
+        durationLabel: "3 months",
+        schedule: "3 days a week · 90 minutes",
+        whoFor: ["Anyone who wants to break into marketing", "Entrepreneurs who want to run their own social media", "Anyone who wants to become a freelance SMM specialist"],
+        skills: ["SMM strategy", "Content planning", "Copywriting", "Canva / Figma", "Instagram & Telegram", "Analytics"],
+        outcomes: ["Build a complete SMM strategy for a brand", "Land a job as an SMM manager", "Find your own clients"],
+        curriculum: [
+          { title: "Strategy", lessons: ["Audience analysis", "Positioning", "Content plan"] },
+          { title: "Content", lessons: ["Copywriting", "Visuals", "Reels and Stories"] },
+          { title: "Growth", lessons: ["Analytics", "Collaborations", "Practice with a real brand"] },
+        ],
+      },
+    },
   },
   {
     slug: "target",
@@ -263,5 +576,41 @@ export const courses: CourseSeed[] = [
     ],
     order: 8,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Таргет",
+        roleLabel: "Targetologist",
+        tagline: "Пусть каждый сум работает на результат.",
+        description:
+          "Таргетированная реклама в Instagram, Facebook и Telegram: аудитория, креатив, бюджет, тесты и оптимизация. Практические занятия с реальным бюджетом.",
+        durationLabel: "2 месяца",
+        schedule: "3 дня в неделю · 90 минут",
+        whoFor: ["Тем, кто хочет зарабатывать на рекламе", "SMM-специалистам", "Предпринимателям"],
+        skills: ["Meta Ads Manager", "Сегментация аудитории", "Креатив и текст", "A/B-тестирование", "Аналитика", "Telegram Ads"],
+        outcomes: ["Самостоятельное ведение рекламных кампаний", "Работа с клиентами в роли таргетолога", "Расчёт ROI и оптимизация"],
+        curriculum: [
+          { title: "Основы", lessons: ["Рекламный кабинет", "Аудитория", "Бюджет"] },
+          { title: "Кампания", lessons: ["Креатив", "Тестирование", "Оптимизация"] },
+          { title: "Практика", lessons: ["Реальный проект", "Отчётность", "Работа с клиентом"] },
+        ],
+      },
+      en: {
+        title: "Targeted Ads",
+        roleLabel: "Targetologist",
+        tagline: "Make every som count.",
+        description:
+          "Targeted advertising on Instagram, Facebook and Telegram: audiences, creatives, budgets, testing and optimization. Hands-on sessions with a real budget.",
+        durationLabel: "2 months",
+        schedule: "3 days a week · 90 minutes",
+        whoFor: ["Anyone who wants to earn with advertising", "SMM specialists", "Entrepreneurs"],
+        skills: ["Meta Ads Manager", "Audience segmentation", "Creatives and copy", "A/B testing", "Analytics", "Telegram Ads"],
+        outcomes: ["Run ad campaigns independently", "Work with clients as a targeting specialist", "Calculate ROI and optimize"],
+        curriculum: [
+          { title: "Fundamentals", lessons: ["Ads account", "Audience", "Budget"] },
+          { title: "Campaign", lessons: ["Creative", "Testing", "Optimization"] },
+          { title: "Practice", lessons: ["Real project", "Reporting", "Working with a client"] },
+        ],
+      },
+    },
   },
 ];

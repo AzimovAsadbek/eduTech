@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Quote } from "lucide-react";
 import type { Prisma } from "@prisma/client";
+import { getTranslations } from "next-intl/server";
 import { Counter } from "@/components/motion/counter";
 import { Reveal } from "@/components/motion/reveal";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
@@ -17,26 +18,25 @@ interface Props {
   results: Result[];
 }
 
-const KIND: Record<string, string> = { PROJECT: "Loyiha", CAREER: "Karyera", GROWTH: "Oʻsish", CERTIFICATE: "Sertifikat" };
-
 /**
  * PROOF: numbers first, then real stories. Story rails only render when the CMS has published entries —
  * no fabricated testimonials.
  */
-export function Proof({ stats, testimonials, results }: Props) {
+export async function Proof({ stats, testimonials, results }: Props) {
+  const [t, tc] = await Promise.all([getTranslations("proof"), getTranslations("common")]);
   const hasStories = testimonials.length > 0 || results.length > 0;
   return (
     <section className="section-y" aria-labelledby="proof-title" data-nav="/natijalar">
       <div className="container-x">
-        <SectionHeading eyebrow="Natijalar" title={<span id="proof-title">Bizning natijalarimiz gapiradi.</span>} lead="Raqamlar — boshlanish. Haqiqiy dalil — oʻquvchilarimizning ishlari va ish joylari." align="split" />
+        <SectionHeading eyebrow={tc("nav.results")} title={<span id="proof-title">{t("title")}</span>} lead={t("lead")} align="split" />
 
-        <Reveal stagger={0.1} className="mt-14 grid gap-px overflow-hidden rounded-(--radius-xl) border border-(--line) bg-(--line) sm:grid-cols-3">
+        <Reveal stagger={0.1} className="mt-14 grid gap-3 sm:grid-cols-3">
           {[
-            { v: stats.students, l: "oʻquvchi", d: "biz bilan yangi kasb boshladi" },
-            { v: stats.courses, l: "yoʻnalish", d: "IT, AI, media va marketing" },
-            { v: stats.projects, l: "real loyiha", d: "portfolio va mijozlar uchun" },
+            { v: stats.students, l: tc("stats.students"), d: t("statsDesc.students") },
+            { v: stats.courses, l: tc("stats.courses"), d: t("statsDesc.courses") },
+            { v: stats.projects, l: tc("stats.projects"), d: t("statsDesc.projects") },
           ].map((s) => (
-            <div key={s.l} className="bg-paper p-8 sm:p-10">
+            <div key={s.l} className="glass rounded-(--radius-xl) p-8 sm:p-10">
               <p className="font-display text-5xl font-bold tracking-[-0.04em] sm:text-6xl">
                 <Counter value={s.v} />
               </p>
@@ -48,7 +48,7 @@ export function Proof({ stats, testimonials, results }: Props) {
 
         {hasStories ? (
           <div className="mt-16">
-            <Rail ariaLabel="Oʻquvchilar hikoyalari">
+            <Rail ariaLabel={t("railLabel")}>
               {testimonials.map((t) => (
                 <article key={t.id} className="flex w-[min(85vw,22rem)] shrink-0 snap-start flex-col rounded-(--radius-lg) border border-(--line) bg-paper p-6">
                   <Quote className="text-orange" size={22} aria-hidden />
@@ -66,7 +66,7 @@ export function Proof({ stats, testimonials, results }: Props) {
                 <article key={r.id} className="relative w-[min(85vw,22rem)] shrink-0 snap-start overflow-hidden rounded-(--radius-lg) bg-ink text-white">
                   <PlaceholderImage src={r.image ?? r.afterImage} alt={r.title} className="aspect-[4/3]" sizes="352px" />
                   <div className="p-6">
-                    <p className="t-eyebrow text-orange">{KIND[r.kind]}</p>
+                    <p className="t-eyebrow text-orange">{tc(`resultKind.${r.kind}`)}</p>
                     <h3 className="t-h4 mt-2">{r.title}</h3>
                     {r.metricLabel ? <p className="font-display mt-3 text-3xl font-bold">{r.metricLabel}</p> : null}
                     <p className="mt-2 text-sm text-white/60">{[r.studentName, r.course?.title].filter(Boolean).join(" · ")}</p>
@@ -75,7 +75,7 @@ export function Proof({ stats, testimonials, results }: Props) {
               ))}
             </Rail>
             <Link href={routes.results} className="mt-8 inline-flex items-center gap-1 font-semibold text-orange hover:underline">
-              Barcha natijalar <ArrowUpRight size={16} />
+              {tc("actions.allResults")} <ArrowUpRight size={16} />
             </Link>
           </div>
         ) : null}

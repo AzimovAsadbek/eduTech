@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { categories, courses } from "./seed-data/courses";
 import { services } from "./seed-data/services";
@@ -8,6 +8,11 @@ import { faqs } from "./seed-data/faq";
 
 const db = new PrismaClient();
 const DEMO = process.env.SEED_DEMO === "1";
+
+const SETTINGS_TRANSLATIONS = {
+  ru: { tagline: "Академия современных профессий", workingHours: "Пн–Сб 09:00–19:00" },
+  en: { tagline: "Academy of modern professions", workingHours: "Mon–Sat 09:00–19:00" },
+};
 
 async function main() {
   // ── Super admin ───────────────────────────────────────────────
@@ -37,32 +42,57 @@ async function main() {
         workingHours: "Du–Sh 09:00–19:00",
         stats: { students: "500+", courses: "9+", projects: "100+" },
         telegramNotifications: true,
+        translations: SETTINGS_TRANSLATIONS,
       },
     },
   });
+  {
+    // Existing installs: merge newly added default keys (e.g. translations) without overwriting edited values.
+    const existing = await db.siteSetting.findUnique({ where: { key: "site" } });
+    const current = (existing?.value ?? {}) as Record<string, unknown>;
+    if (existing && !current.translations) {
+      await db.siteSetting.update({ where: { key: "site" }, data: { value: { ...current, translations: SETTINGS_TRANSLATIONS } } });
+    }
+  }
   const branchCount = await db.branch.count();
   if (branchCount === 0) {
-    await db.branch.create({ data: { name: "Namangan, asosiy filial", address: "Manzil admin paneldan kiritiladi", workingHours: "Du–Sh 09:00–19:00", order: 0 } });
+    await db.branch.create({
+      data: {
+        name: "Namangan, asosiy filial",
+        address: "Manzil admin paneldan kiritiladi",
+        workingHours: "Du–Sh 09:00–19:00",
+        order: 0,
+        translations: {
+          ru: { name: "Наманган, главный филиал", address: "Адрес указывается в админ-панели", workingHours: "Пн–Сб 09:00–19:00" },
+          en: { name: "Namangan, main branch", address: "Address is set in the admin panel", workingHours: "Mon–Sat 09:00–19:00" },
+        },
+      },
+    });
   }
   console.log("✔ settings & branch");
 
   // ── Courses ───────────────────────────────────────────────────
-  for (const c of categories) await db.courseCategory.upsert({ where: { slug: c.slug }, update: { name: c.name, order: c.order }, create: c });
+  for (const c of categories) {
+    await db.courseCategory.upsert({ where: { slug: c.slug }, update: { name: c.name, order: c.order, translations: c.translations }, create: c });
+  }
   const cats = await db.courseCategory.findMany();
   for (const { category, ...course } of courses) {
     const categoryId = cats.find((c) => c.slug === category)?.id ?? null;
-    await db.course.upsert({ where: { slug: course.slug }, update: {}, create: { ...course, categoryId } });
+    await db.course.upsert({ where: { slug: course.slug }, update: { translations: course.translations }, create: { ...course, categoryId } });
   }
   console.log(`✔ ${courses.length} courses`);
 
   // ── Services ──────────────────────────────────────────────────
-  for (const s of services) await db.service.upsert({ where: { slug: s.slug }, update: {}, create: s });
+  for (const s of services) await db.service.upsert({ where: { slug: s.slug }, update: { translations: s.translations }, create: s });
   console.log(`✔ ${services.length} services`);
 
   // ── FAQ ───────────────────────────────────────────────────────
   if ((await db.faq.count()) === 0) {
     for (const f of faqs) await db.faq.create({ data: f });
     console.log(`✔ ${faqs.length} faqs`);
+  } else {
+    // Refresh translations on already-seeded FAQs (matched by question).
+    for (const f of faqs) await db.faq.updateMany({ where: { question: f.question, translations: { equals: Prisma.DbNull } }, data: { translations: f.translations } });
   }
 
   // ── Demo placeholders (SEED_DEMO=1) — clearly labelled, never real people ──
@@ -75,7 +105,17 @@ async function seedDemo() {
   const teacher = await db.teacher.upsert({
     where: { slug: "namuna-mentor" },
     update: {},
-    create: { slug: "namuna-mentor", name: "Namuna Mentor", title: "Senior Engineer (namuna)", bio: "Bu namunaviy yozuv. Admin paneldan real oʻqituvchi maʼlumotlarini kiriting.", status: "PUBLISHED" },
+    create: {
+      slug: "namuna-mentor",
+      name: "Namuna Mentor",
+      title: "Senior Engineer (namuna)",
+      bio: "Bu namunaviy yozuv. Admin paneldan real oʻqituvchi maʼlumotlarini kiriting.",
+      status: "PUBLISHED",
+      translations: {
+        ru: { name: "Демо-ментор", title: "Senior Engineer (демо)", bio: "Это демонстрационная запись. Внесите данные реального преподавателя в админ-панели." },
+        en: { name: "Sample Mentor", title: "Senior Engineer (sample)", bio: "This is a placeholder entry. Add real teacher details in the admin panel." },
+      },
+    },
   });
   if (course) await db.courseTeacher.upsert({ where: { courseId_teacherId: { courseId: course.id, teacherId: teacher.id } }, update: {}, create: { courseId: course.id, teacherId: teacher.id } });
   if ((await db.testimonial.count()) === 0) {
@@ -88,15 +128,63 @@ async function seedDemo() {
         resultLabel: "Namuna natija",
         status: "PUBLISHED",
         order: i,
+        translations: {
+          ru: {
+            name: `Демо-студент ${i}`,
+            role: "Выпускник курса «Программирование» (демо)",
+            quote: "Это демонстрационный отзыв. Реальные отзывы студентов добавляются в админ-панели.",
+            resultLabel: "Демо-результат",
+          },
+          en: {
+            name: `Sample Student ${i}`,
+            role: "Programming course graduate (sample)",
+            quote: "This is a placeholder testimonial. Real student reviews are added in the admin panel.",
+            resultLabel: "Sample result",
+          },
+        },
       })),
     });
   }
   if ((await db.result.count()) === 0) {
     await db.result.createMany({
       data: [
-        { kind: "CAREER", title: "Namuna: ishga joylashdi", studentName: "Namuna oʻquvchi", courseId: course?.id, metricLabel: "Junior Developer", status: "PUBLISHED", order: 0 },
-        { kind: "PROJECT", title: "Namuna: diplom loyihasi", studentName: "Namuna oʻquvchi", courseId: course?.id, metricLabel: "Web ilova", status: "PUBLISHED", order: 1 },
-        { kind: "GROWTH", title: "Namuna: Instagram oʻsishi", metricLabel: "+10 000 obunachi", status: "PUBLISHED", order: 2 },
+        {
+          kind: "CAREER",
+          title: "Namuna: ishga joylashdi",
+          studentName: "Namuna oʻquvchi",
+          courseId: course?.id,
+          metricLabel: "Junior Developer",
+          status: "PUBLISHED",
+          order: 0,
+          translations: {
+            ru: { title: "Демо: трудоустройство", studentName: "Демо-студент", metricLabel: "Junior Developer" },
+            en: { title: "Sample: got hired", studentName: "Sample Student", metricLabel: "Junior Developer" },
+          },
+        },
+        {
+          kind: "PROJECT",
+          title: "Namuna: diplom loyihasi",
+          studentName: "Namuna oʻquvchi",
+          courseId: course?.id,
+          metricLabel: "Web ilova",
+          status: "PUBLISHED",
+          order: 1,
+          translations: {
+            ru: { title: "Демо: дипломный проект", studentName: "Демо-студент", metricLabel: "Веб-приложение" },
+            en: { title: "Sample: capstone project", studentName: "Sample Student", metricLabel: "Web app" },
+          },
+        },
+        {
+          kind: "GROWTH",
+          title: "Namuna: Instagram oʻsishi",
+          metricLabel: "+10 000 obunachi",
+          status: "PUBLISHED",
+          order: 2,
+          translations: {
+            ru: { title: "Демо: рост в Instagram", metricLabel: "+10 000 подписчиков" },
+            en: { title: "Sample: Instagram growth", metricLabel: "+10,000 followers" },
+          },
+        },
       ],
     });
   }
@@ -117,6 +205,26 @@ async function seedDemo() {
         status: "PUBLISHED",
         featured: i === 1,
         order: i,
+        translations: {
+          ru: {
+            title: `Демо-проект ${i}`,
+            client: "Демо-клиент",
+            description: "Это демонстрационный проект. Реальные кейсы добавляются в админ-панели.",
+            challenge: "Демо-задача.",
+            solution: "Демо-решение.",
+            results: "Демо-результат.",
+            tags: ["демо"],
+          },
+          en: {
+            title: `Sample Project ${i}`,
+            client: "Sample Client",
+            description: "This is a placeholder project. Real case studies are added in the admin panel.",
+            challenge: "Sample challenge.",
+            solution: "Sample solution.",
+            results: "Sample result.",
+            tags: ["sample"],
+          },
+        },
       })),
     });
   }

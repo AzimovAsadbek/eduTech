@@ -1,1 +1,209 @@
-{}
+{
+  "footer": {
+    "tagline": "{tagline}. IT + AI + Digital + Creative — {city}dagi zamonaviy kasblar akademiyasi va media studiya.",
+    "site": "Sayt",
+    "directions": "Yoʻnalishlar",
+    "contact": "Kontakt",
+    "rights": "© {year} {brand}. Barcha huquqlar himoyalangan."
+  },
+  "hero": {
+    "headline": "Kelajak kasblarini bugundan oʻrganing.",
+    "accent": ["kasblarini"],
+    "lead": "Amaliy bilim, zamonaviy texnologiyalar va real loyihalar orqali yangi kasbni egallang.",
+    "photoAlt": "EduTech oʻquvchilari amaliy dars jarayonida",
+    "tiles": {
+      "codeFile": "app.tsx",
+      "code": "const kasb = await\n  edutech.learn(\"dev\")\n// → Junior Developer",
+      "ai": "AI model · training",
+      "reels": "Reels",
+      "reelsTitle": "Mobilografiya",
+      "robot": "Robot · sensor",
+      "robotValue": "Arduino · toʻsiq 12 sm"
+    }
+  },
+  "journey": {
+    "eyebrow": "Taʼlim modeli",
+    "title": "Bilimdan koʻnikmaga.",
+    "titleAccent": "Koʻnikmadan kasbga.",
+    "lead": "Toʻrt bosqich. Har biri oldingisidan oʻsib chiqadi — nazariyadan real kasbgacha.",
+    "steps": [
+      { "n": "01", "key": "Learn", "title": "Oʻrganish", "text": "Mentor bilan jonli darslar. Nazariya faqat amaliyot uchun kerak boʻlgan darajada.", "detail": "Haftasiga 2–3 dars · kichik guruhlar" },
+      { "n": "02", "key": "Practice", "title": "Mashq qilish", "text": "Har bir dars — vazifa. Har bir hafta — kichik loyiha. Xato qilish mumkin, toʻxtash mumkin emas.", "detail": "Kod-review · feedback · retake" },
+      { "n": "03", "key": "Build", "title": "Yaratish", "text": "Real mijoz yoki real muammo uchun mahsulot yaratasiz. Bu portfolio, sertifikat emas.", "detail": "Diplom loyihasi · jamoaviy ish" },
+      { "n": "04", "key": "Grow", "title": "Oʻsish", "text": "Ishga joylashish, freelance yoki oʻz loyihangiz. Biz bitiruvdan keyin ham yonma-yon qolamiz.", "detail": "Karyera yordami · community" }
+    ]
+  },
+  "courseIndex": {
+    "title": "Qaysi kasbni tanlaysiz?",
+    "lead": "Har bir kurs bitta savolga javob beradi: tugatganingizdan keyin nima qila olasiz?",
+    "filterLabel": "Kurs yoʻnalishlari",
+    "all": "Barchasi",
+    "empty": "Bu yoʻnalishda hozircha kurs yoʻq.",
+    "coverAlt": "{title} kursi"
+  },
+  "manifesto": {
+    "eyebrow": "Nega EduTech",
+    "title": "Biz kurs sotmaymiz. Biz kasb beramiz.",
+    "accent": ["kasb"],
+    "lead": "Bizning yondashuvimizni oltita tamoyil belgilaydi. Ular reklama shiori emas — har kuni darsda tekshiriladigan qoidalar.",
+    "statements": [
+      { "title": "Amaliy taʼlim", "text": "Dars — bu maʼruza emas. Har bir mavzu shu kuni qoʻlda sinab koʻriladi." },
+      { "title": "Zamonaviy texnologiyalar", "text": "AI, robototexnika, mobil prodakshn — bugun bozorda kerak boʻlgan vositalar." },
+      { "title": "Tajribali mentorlar", "text": "Oʻqituvchilarimiz oʻz sohasida ishlaydi va shu tajribani darsga olib keladi." },
+      { "title": "Real loyihalar", "text": "Bitiruvda sertifikat emas — portfolio bilan chiqasiz." },
+      { "title": "Kasbga yoʻnaltirilgan", "text": "Kurs dasturi ish beruvchi talabidan boshlab tuziladi, teskarisi emas." },
+      { "title": "Kreativ muhit", "text": "Studiya, kamera, jamoa — oʻrganish oʻzi loyiha kabi kechadi." }
+    ],
+    "photoAlt": "EduTech muhiti — real foto joyi",
+    "photoLabels": ["Dars jarayoni", "Studiya", "Jamoa", "Tadbir"]
+  },
+  "proof": {
+    "title": "Bizning natijalarimiz gapiradi.",
+    "lead": "Raqamlar — boshlanish. Haqiqiy dalil — oʻquvchilarimizning ishlari va ish joylari.",
+    "statsDesc": {
+      "students": "biz bilan yangi kasb boshladi",
+      "courses": "IT, AI, media va marketing",
+      "projects": "portfolio va mijozlar uchun"
+    },
+    "railLabel": "Oʻquvchilar hikoyalari"
+  },
+  "worldShift": {
+    "ariaLabel": "Taʼlimdan mediaga oʻtish",
+    "eyebrow": "Ikki dunyo — bitta jamoa",
+    "edu": "EDU",
+    "media": "MEDIA",
+    "lead": "Taʼlim — bu boshlanish. Media — bu brendingizning ovozi. Bizneslar uchun kontent, marketing va prodakshn."
+  },
+  "mediaHero": {
+    "eyebrow": "EduTech Media · bizneslar uchun",
+    "title": "Brendingizni kontent orqali koʻrsating.",
+    "accent": ["kontent"],
+    "lead": "Biznesingiz uchun kreativ kontent, SMM va raqamli marketing xizmatlarini bir joyda."
+  },
+  "serviceExplorer": {
+    "eyebrow": "Xizmatlar",
+    "title": "Nima kerak boʻlsa — bir jamoada.",
+    "lead": "Reelsdan tortib toʻliq prodakshngacha. Xizmatni tanlang, nima kiritilishini koʻring.",
+    "panelEyebrow": "Service",
+    "explore": "Explore"
+  },
+  "portfolio": {
+    "eyebrow": "Portfolio",
+    "title": "Biz yaratgan kontentlar.",
+    "lead": "Har bir loyiha — mijoz muammosi, bizning strategiya va oʻlchanadigan natija."
+  },
+  "conversion": {
+    "eyebrow": "Boshlaymizmi?",
+    "title": "Bir qadam —",
+    "titleAccent": "bir ariza.",
+    "lead": "Kurs tanlashda yordam kerakmi yoki brendingiz uchun kontent? Yozing — bir ish kuni ichida javob beramiz.",
+    "address": "Manzil",
+    "phone": "Telefon",
+    "hours": "Ish vaqti",
+    "tabsLabel": "Ariza turi",
+    "tabMedia": "Media xizmat",
+    "submitEducation": "Ariza yuborish",
+    "submitMedia": "Soʻrov yuborish"
+  },
+  "faqSection": {
+    "eyebrow": "FAQ",
+    "title": "Koʻp beriladigan savollar",
+    "lead": "Javob topolmadingizmi? Bir xabar yozing — jamoamiz ish kuni davomida javob beradi."
+  },
+  "leadForm": {
+    "errors": {
+      "name": "Ismingizni kiriting",
+      "phone": "Telefon raqamni kiriting",
+      "phoneFormat": "Faqat raqamlar",
+      "generic": "Xatolik yuz berdi",
+      "network": "Tarmoq xatosi. Qayta urinib koʻring."
+    },
+    "success": {
+      "title": "Arizangiz qabul qilindi",
+      "text": "Rahmat! Tez orada siz bilan bogʻlanamiz."
+    },
+    "fields": {
+      "name": "Ismingiz",
+      "namePlaceholder": "Ism Familiya",
+      "phone": "Telefon",
+      "phonePlaceholder": "+998 90 123 45 67",
+      "course": "Qiziqqan kurs",
+      "coursePlaceholder": "Kursni tanlang",
+      "branch": "Filial",
+      "company": "Kompaniya / brend",
+      "companyPlaceholder": "Kompaniya nomi",
+      "service": "Xizmat",
+      "servicePlaceholder": "Xizmatni tanlang",
+      "budget": "Taxminiy byudjet",
+      "interest": "Qiziqish",
+      "selectPlaceholder": "Tanlang",
+      "message": "Xabar",
+      "messagePlaceholderMedia": "Loyiha haqida qisqacha…",
+      "messagePlaceholder": "Savolingiz yoki izoh…"
+    },
+    "budgets": ["1 mln soʻmgacha", "1–3 mln soʻm", "3–10 mln soʻm", "10 mln soʻmdan yuqori", "Aniq emas"],
+    "interests": ["Kurslar", "Media xizmatlar", "Hamkorlik", "Boshqa"],
+    "privacy": "Maʼlumotlaringiz faqat bogʻlanish uchun ishlatiladi.",
+    "submitting": "Yuborilmoqda…"
+  },
+  "applyDialog": {
+    "title": "Bepul konsultatsiya oling",
+    "lead": "Maʼlumotlaringizni qoldiring — bir ish kuni ichida bogʻlanamiz va sizga mos kursni tanlashga yordam beramiz."
+  },
+  "courseHero": {
+    "duration": "Davomiylik",
+    "format": "Format",
+    "level": "Daraja",
+    "price": "Narx",
+    "priceOnRequest": "Konsultatsiyada aniqlanadi",
+    "fallbackCategory": "Kurs",
+    "coverAlt": "{title} kursi",
+    "coverLabel": "Kurs foto"
+  },
+  "courseBody": {
+    "sectionsNav": "Kurs boʻlimlari",
+    "anchors": {
+      "whoFor": "Kimlar uchun",
+      "curriculum": "Dastur",
+      "skills": "Koʻnikmalar",
+      "projects": "Loyihalar",
+      "outcomes": "Natija",
+      "mentor": "Mentor",
+      "faq": "FAQ"
+    },
+    "whoFor": { "eyebrow": "Kimlar uchun", "title": "Bu kurs siz uchun, agar…" },
+    "curriculum": { "eyebrow": "Oʻquv dasturi", "title": "{count} ta modul" },
+    "skills": { "eyebrow": "Koʻnikmalar", "title": "Nimalarni oʻrganasiz" },
+    "projects": { "eyebrow": "Amaliyot", "title": "Kurs davomida yaratadigan loyihalaringiz", "item": "Loyiha {n}" },
+    "outcomes": { "eyebrow": "Natija", "title": "Kursdan keyin nima qila olasiz" },
+    "mentor": { "eyebrow": "Mentor", "title": "{count, plural, one {Mentor} other {Mentorlar}}" },
+    "testimonials": { "eyebrow": "Bitiruvchilar", "title": "Ular nima deydi" },
+    "faq": { "eyebrow": "FAQ", "title": "Savollar" },
+    "otherCourses": "Boshqa kurslar"
+  },
+  "courseApply": {
+    "priceOnRequest": "narx konsultatsiyada",
+    "submit": "Ariza yuborish"
+  },
+  "mediaInquiry": {
+    "eyebrow": "Buyurtma",
+    "title": "Loyihangizni",
+    "titleAccent": "muhokama qilamiz.",
+    "lead": "Qisqacha yozing: nima kerak, qaysi muddatda. 24 soat ichida taklif va taxminiy byudjet bilan javob beramiz.",
+    "telegram": "Telegram orqali yozish",
+    "submit": "Soʻrov yuborish"
+  },
+  "videoEmbed": {
+    "play": "{title} — videoni ijro etish"
+  },
+  "beforeAfter": {
+    "before": "BEFORE",
+    "after": "AFTER",
+    "beforeAlt": "{alt} — before",
+    "afterAlt": "{alt} — after",
+    "label": "Before / After taqqoslash"
+  },
+  "cursor": {
+    "view": "Koʻrish"
+  }
+}

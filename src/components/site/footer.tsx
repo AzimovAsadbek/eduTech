@@ -1,17 +1,20 @@
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { nav, siteConfig } from "@/config/site";
+import { routing } from "@/i18n/routing";
+import { nav, routes, siteConfig } from "@/config/site";
 import type { SiteSettings } from "@/server/modules/settings/service";
 import { Logo } from "./logo";
 import { ContactLink } from "./contact-link";
 
-const mediaLinks = [
-  { href: "/media", label: "Media xizmatlar" },
-  { href: "/media/portfolio", label: "Portfolio" },
-  { href: "/kurslar", label: "Barcha kurslar" },
-];
-
-export function Footer({ settings }: { settings: SiteSettings }) {
+export async function Footer({ settings }: { settings: SiteSettings }) {
+  const [t, tc, locale] = await Promise.all([getTranslations("footer"), getTranslations("common"), getLocale()]);
   const year = new Date().getFullYear();
+  const homeHref = locale === routing.defaultLocale ? routes.home : `/${locale}`;
+  const mediaLinks = [
+    { href: routes.media, label: tc("actions.mediaServices") },
+    { href: routes.portfolio, label: tc("nav.portfolio") },
+    { href: routes.courses, label: tc("actions.allCourses") },
+  ];
   const socials = [
     settings.telegram ? { kind: "telegram" as const, href: settings.telegram, label: "Telegram" } : null,
     settings.instagram ? { kind: "instagram" as const, href: settings.instagram, label: "Instagram" } : null,
@@ -23,10 +26,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
       <div className="container-x relative pt-14 pb-8">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo tone="dark" height={40} tagline />
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60">
-              {settings.tagline}. IT + AI + Digital + Creative — {settings.city}dagi zamonaviy kasblar akademiyasi va media studiya.
-            </p>
+            <Logo tone="dark" height={40} tagline href={homeHref} label={tc("a11y.home")} />
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60">{t("tagline", { tagline: settings.tagline, city: settings.city })}</p>
             {socials.length || settings.youtube ? (
               <div className="mt-5 flex flex-wrap gap-2">
                 {socials.map((s) => (
@@ -45,19 +46,19 @@ export function Footer({ settings }: { settings: SiteSettings }) {
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7">
             <div>
-              <p className="t-eyebrow mb-3 text-white/45">Sayt</p>
+              <p className="t-eyebrow mb-3 text-white/45">{t("site")}</p>
               <ul className="space-y-2 text-sm">
                 {nav.map((item) => (
                   <li key={item.href}>
                     <Link href={item.href} className="text-white/80 transition-colors hover:text-orange">
-                      {item.label}
+                      {tc(`nav.${item.key}`)}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="t-eyebrow mb-3 text-white/45">Yoʻnalishlar</p>
+              <p className="t-eyebrow mb-3 text-white/45">{t("directions")}</p>
               <ul className="space-y-2 text-sm">
                 {mediaLinks.map((item) => (
                   <li key={item.href}>
@@ -69,7 +70,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               </ul>
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <p className="t-eyebrow mb-3 text-white/45">Kontakt</p>
+              <p className="t-eyebrow mb-3 text-white/45">{t("contact")}</p>
               <ul className="space-y-2 text-sm text-white/80">
                 <li>
                   {settings.city}
@@ -96,9 +97,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {siteConfig.name}. Barcha huquqlar himoyalangan.
-          </p>
+          <p>{t("rights", { year, brand: siteConfig.name })}</p>
           <p className="font-display text-sm font-semibold tracking-tight text-white/60">
             Edu<span className="text-orange">Tech</span> · {settings.city}
           </p>

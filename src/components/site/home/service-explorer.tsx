@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import type { Service } from "@prisma/client";
 import { gsap, prefersReducedMotion } from "@/components/motion/gsap";
@@ -15,6 +16,8 @@ import { cn, pad2 } from "@/lib/utils";
  * On mobile it collapses into an accordion so nothing is hidden behind hover.
  */
 export function ServiceExplorer({ services }: { services: Service[] }) {
+  const t = useTranslations("serviceExplorer");
+  const tc = useTranslations("common.actions");
   const [activeId, setActiveId] = useState(services[0]?.id ?? "");
   const panel = useRef<HTMLDivElement>(null);
   const active = services.find((s) => s.id === activeId) ?? services[0];
@@ -29,11 +32,11 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
   return (
     <section data-world="media" data-nav="/media" className="section-y bg-(--surface) text-white" aria-labelledby="services-title">
       <div className="container-x">
-        <SectionHeading eyebrow="Xizmatlar" title={<span id="services-title">Nima kerak boʻlsa — bir jamoada.</span>} lead="Reelsdan tortib toʻliq prodakshngacha. Xizmatni tanlang, nima kiritilishini koʻring." align="split" />
+        <SectionHeading eyebrow={t("eyebrow")} title={<span id="services-title">{t("title")}</span>} lead={t("lead")} align="split" />
 
         {/* Desktop split panel */}
         <div className="mt-14 hidden gap-8 lg:grid lg:grid-cols-12">
-          <ul className="lg:col-span-5" role="tablist" aria-label="Media xizmatlar" aria-orientation="vertical">
+          <ul className="lg:col-span-5" role="tablist" aria-label={tc("mediaServices")} aria-orientation="vertical">
             {services.map((s, i) => {
               const isActive = s.id === activeId;
               return (
@@ -62,7 +65,7 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
 
           <div id="service-panel" role="tabpanel" ref={panel} className="glass relative overflow-hidden rounded-(--radius-xl) p-10 lg:col-span-7">
             <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-orange/30 blur-3xl" />
-            <p data-anim className="t-eyebrow text-orange">Service</p>
+            <p data-anim className="t-eyebrow text-orange">{t("panelEyebrow")}</p>
             <h3 data-anim className="t-h1 mt-3">
               {active.title}
             </h3>
@@ -88,10 +91,10 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
             ) : null}
             <div data-anim className="mt-10 flex flex-wrap gap-3">
               <Link href={routes.service(active.slug)} className="inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 font-semibold text-ink transition-colors hover:bg-orange hover:text-white">
-                Explore <ArrowUpRight size={16} />
+                {t("explore")} <ArrowUpRight size={16} />
               </Link>
               <a href="#media-inquiry" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/25 px-5 font-semibold text-white transition-colors hover:border-white">
-                Buyurtma berish
+                {tc("order")}
               </a>
             </div>
           </div>
@@ -120,7 +123,7 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
                     ))}
                   </ul>
                   <Link href={routes.service(s.slug)} className="mt-5 inline-flex items-center gap-1 font-semibold text-orange" tabIndex={isOpen ? 0 : -1}>
-                    Batafsil <ArrowUpRight size={16} />
+                    {tc("more")} <ArrowUpRight size={16} />
                   </Link>
                   </div>
                   </div>

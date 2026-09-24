@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Play } from "lucide-react";
 import type { Prisma } from "@prisma/client";
+import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/reveal";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -10,22 +11,23 @@ import { cn } from "@/lib/utils";
 export type ProjectCard = Prisma.MediaProjectGetPayload<{ include: { service: { select: { title: true; slug: true } } } }>;
 
 /** Editorial masonry of real projects. Renders nothing until the CMS has published work. */
-export function PortfolioPreview({ projects, heading = true, limit = 5 }: { projects: ProjectCard[]; heading?: boolean; limit?: number }) {
+export async function PortfolioPreview({ projects, heading = true, limit = 5 }: { projects: ProjectCard[]; heading?: boolean; limit?: number }) {
   const items = projects.slice(0, limit);
   if (!items.length) return null;
+  const [t, tc] = await Promise.all([getTranslations("portfolio"), getTranslations("common.actions")]);
   const spans = ["lg:col-span-7 lg:row-span-2", "lg:col-span-5", "lg:col-span-5", "lg:col-span-4", "lg:col-span-8"];
   return (
     <section data-world="media" data-nav="/media" className="section-y bg-(--surface) text-white" aria-labelledby="portfolio-title">
       <div className="container-x">
         {heading ? (
           <SectionHeading
-            eyebrow="Portfolio"
-            title={<span id="portfolio-title">Biz yaratgan kontentlar.</span>}
-            lead="Har bir loyiha — mijoz muammosi, bizning strategiya va oʻlchanadigan natija."
+            eyebrow={t("eyebrow")}
+            title={<span id="portfolio-title">{t("title")}</span>}
+            lead={t("lead")}
             align="split"
             aside={
               <Link href={routes.portfolio} className="mt-4 inline-flex items-center gap-1 font-semibold text-orange hover:underline">
-                Toʻliq portfolio <ArrowUpRight size={16} />
+                {tc("fullPortfolio")} <ArrowUpRight size={16} />
               </Link>
             }
           />

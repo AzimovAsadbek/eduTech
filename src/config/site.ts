@@ -7,13 +7,16 @@ export const siteConfig = {
   keywords: ["EduTech", "Namangan", "IT kurslar", "dasturlash kurslari", "AI kurs", "robototexnika", "SMM", "video prodakshn", "media studiya Namangan"],
 } as const;
 
+/** Primary navigation. Labels live in `messages/<locale>/common.json` under `common.nav.<key>`. */
 export const nav = [
-  { href: "/kurslar", label: "Kurslar" },
-  { href: "/natijalar", label: "Natijalar" },
-  { href: "/media", label: "Media" },
-  { href: "/biz-haqimizda", label: "Biz haqimizda" },
-  { href: "/kontakt", label: "Kontakt" },
+  { href: "/kurslar", key: "courses" },
+  { href: "/natijalar", key: "results" },
+  { href: "/media", key: "media" },
+  { href: "/biz-haqimizda", key: "about" },
+  { href: "/kontakt", key: "contact" },
 ] as const;
+
+export type NavKey = (typeof nav)[number]["key"];
 
 export const routes = {
   home: "/",

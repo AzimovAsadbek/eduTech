@@ -29,7 +29,18 @@ export function FieldRenderer({ field: f, value, onChange, errors, relations, on
   const error = errors[f.name] ?? (nested ? `${Number(nested[0].split(".")[1]) + 1}-element: ${nested[1]}` : undefined);
   switch (f.type) {
     case "text":
-      return <Input label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={(e) => onChange(e.target.value)} placeholder={f.placeholder} maxLength={f.maxLength} />;
+      return (
+        <Input
+          label={f.label}
+          hint={f.hint}
+          error={error}
+          required={f.required}
+          value={asString(value)}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={f.placeholder}
+          maxLength={f.maxLength}
+        />
+      );
     case "slug":
       return (
         <Input
@@ -47,13 +58,59 @@ export function FieldRenderer({ field: f, value, onChange, errors, relations, on
         />
       );
     case "textarea":
-      return <Textarea label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={(e) => onChange(e.target.value)} rows={f.rows ?? 4} maxLength={f.maxLength} />;
+      return (
+        <Textarea
+          label={f.label}
+          hint={f.hint}
+          error={error}
+          required={f.required}
+          value={asString(value)}
+          onChange={(e) => onChange(e.target.value)}
+          rows={f.rows ?? 4}
+          maxLength={f.maxLength}
+        />
+      );
     case "number":
-      return <Input type="number" inputMode="numeric" label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={(e) => onChange(e.target.value)} min={f.min} max={f.max} />;
+      return (
+        <Input
+          type="number"
+          inputMode="numeric"
+          label={f.label}
+          hint={f.hint}
+          error={error}
+          required={f.required}
+          value={asString(value)}
+          onChange={(e) => onChange(e.target.value)}
+          min={f.min}
+          max={f.max}
+        />
+      );
     case "select":
-      return <Select label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={(e) => onChange(e.target.value)} options={f.options} placeholder={f.nullable ? "—" : undefined} />;
+      return (
+        <Select
+          label={f.label}
+          hint={f.hint}
+          error={error}
+          required={f.required}
+          value={asString(value)}
+          onChange={(e) => onChange(e.target.value)}
+          options={f.options}
+          placeholder={f.nullable ? "—" : undefined}
+        />
+      );
     case "relation":
-      return <Select label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={(e) => onChange(e.target.value)} options={relations[f.resource] ?? []} placeholder="— tanlanmagan —" />;
+      return (
+        <Select
+          label={f.label}
+          hint={f.hint}
+          error={error}
+          required={f.required}
+          value={asString(value)}
+          onChange={(e) => onChange(e.target.value)}
+          options={relations[f.resource] ?? []}
+          placeholder="— tanlanmagan —"
+        />
+      );
     case "multiselect":
       return <MultiSelectField label={f.label} hint={f.hint} error={error} resource={f.resource} value={asStringArray(value)} onChange={onChange} />;
     case "boolean":
@@ -63,12 +120,40 @@ export function FieldRenderer({ field: f, value, onChange, errors, relations, on
     case "image":
       return <ImageField label={f.label} hint={f.hint} error={error} required={f.required} value={asString(value)} onChange={onChange} />;
     case "string-list":
-      return <StringListField label={f.label} hint={f.hint} error={error} required={f.required} value={asStringArray(value)} onChange={onChange} placeholder={f.placeholder} />;
+      return (
+        <StringListField
+          label={f.label}
+          hint={f.hint}
+          error={error}
+          required={f.required}
+          value={asStringArray(value)}
+          onChange={onChange}
+          placeholder={f.placeholder}
+        />
+      );
     case "json-list":
-      return <JsonListField name={f.name} label={f.label} hint={f.hint} shape={f.shape} value={Array.isArray(value) ? (value as Record<string, unknown>[]) : []} onChange={onChange} errors={errors} />;
+      return (
+        <JsonListField
+          name={f.name}
+          label={f.label}
+          hint={f.hint}
+          shape={f.shape}
+          value={Array.isArray(value) ? (value as Record<string, unknown>[]) : []}
+          onChange={onChange}
+          errors={errors}
+        />
+      );
     case "socials": {
       const v = value && typeof value === "object" ? (value as { telegram?: string; instagram?: string; linkedin?: string }) : {};
-      return <SocialsField name={f.name} label={f.label} value={{ telegram: v.telegram ?? "", instagram: v.instagram ?? "", linkedin: v.linkedin ?? "" }} onChange={onChange} errors={errors} />;
+      return (
+        <SocialsField
+          name={f.name}
+          label={f.label}
+          value={{ telegram: v.telegram ?? "", instagram: v.instagram ?? "", linkedin: v.linkedin ?? "" }}
+          onChange={onChange}
+          errors={errors}
+        />
+      );
     }
   }
 }

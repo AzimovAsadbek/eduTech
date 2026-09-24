@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 
@@ -9,6 +10,7 @@ import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
  * Mobile runs the same scrub without pinning (no scroll hijack, still scroll-driven).
  */
 export function WorldShift() {
+  const t = useTranslations("worldShift");
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -68,21 +70,21 @@ export function WorldShift() {
   );
 
   return (
-    <section ref={root} className="relative flex min-h-[60vh] items-center overflow-hidden bg-paper lg:min-h-screen" aria-label="Taʼlimdan mediaga oʻtish">
+    <section ref={root} className="relative flex min-h-[60vh] items-center overflow-hidden bg-paper lg:min-h-screen" aria-label={t("ariaLabel")}>
       <div data-curtain className="absolute inset-0 hidden origin-top scale-y-0 bg-ink lg:block" aria-hidden />
       <div className="orange-glow absolute inset-0 opacity-60" aria-hidden />
       <div className="container-x relative py-24 text-center">
-        <p className="t-eyebrow mb-8 text-(--fg-muted) mix-blend-difference">Ikki dunyo — bitta jamoa</p>
+        <p className="t-eyebrow mb-8 text-(--fg-muted) mix-blend-difference">{t("eyebrow")}</p>
         <div className="relative mx-auto h-[1.1em] overflow-hidden font-display text-[clamp(4rem,16vw,14rem)] leading-none font-bold tracking-[-0.06em]">
           <span data-edu className="absolute inset-x-0 text-ink">
-            EDU
+            {t("edu")}
           </span>
           <span data-media className="absolute inset-x-0 text-white opacity-0">
-            MEDIA
+            {t("media")}
           </span>
         </div>
         <p data-tag className="t-lead mx-auto mt-8 max-w-xl text-white/70 opacity-0">
-          Taʼlim — bu boshlanish. Media — bu brendingizning ovozi. Bizneslar uchun kontent, marketing va prodakshn.
+          {t("lead")}
         </p>
       </div>
     </section>

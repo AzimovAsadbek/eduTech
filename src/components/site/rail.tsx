@@ -1,11 +1,13 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 
 /** Horizontal, scroll-snapped rail with keyboard-accessible arrows. Native scrolling — no hijack. */
 export function Rail({ children, ariaLabel, className }: { children: React.ReactNode; ariaLabel: string; className?: string }) {
+  const t = useTranslations("common.actions");
   const ref = useRef<HTMLDivElement>(null);
   const by = (dir: 1 | -1) => ref.current?.scrollBy({ left: dir * Math.min(420, ref.current.clientWidth * 0.8), behavior: "smooth" });
   return (
@@ -14,10 +16,10 @@ export function Rail({ children, ariaLabel, className }: { children: React.React
         {children}
       </div>
       <div className="mt-6 flex gap-2">
-        <button type="button" onClick={() => by(-1)} aria-label="Oldingi" className="grid size-11 place-items-center rounded-full border border-(--line) transition-colors hover:bg-orange hover:text-white hover:border-orange">
+        <button type="button" onClick={() => by(-1)} aria-label={t("prev")} className="grid size-11 place-items-center rounded-full border border-(--line) transition-colors hover:bg-orange hover:text-white hover:border-orange">
           <ArrowLeft size={18} />
         </button>
-        <button type="button" onClick={() => by(1)} aria-label="Keyingi" className="grid size-11 place-items-center rounded-full border border-(--line) transition-colors hover:bg-orange hover:text-white hover:border-orange">
+        <button type="button" onClick={() => by(1)} aria-label={t("next")} className="grid size-11 place-items-center rounded-full border border-(--line) transition-colors hover:bg-orange hover:text-white hover:border-orange">
           <ArrowRight size={18} />
         </button>
       </div>

@@ -91,7 +91,7 @@ export const getPublishedProjects = unstable_cache(
   () =>
     db.mediaProject.findMany({
       where: PUBLISHED,
-      include: { service: { select: { title: true, slug: true } } },
+      include: { service: { select: { title: true, slug: true, translations: true } } },
       orderBy: [{ featured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
     }),
   ["public-projects"],
@@ -108,19 +108,19 @@ export const getProjectBySlug = async (slug: string, opts?: { preview?: boolean 
       )();
 
 export const getPublishedTeachers = unstable_cache(
-  () => db.teacher.findMany({ where: PUBLISHED, orderBy: { order: "asc" }, include: { courses: { include: { course: { select: { title: true, slug: true } } } } } }),
+  () => db.teacher.findMany({ where: PUBLISHED, orderBy: { order: "asc" }, include: { courses: { include: { course: { select: { title: true, slug: true, translations: true } } } } } }),
   ["public-teachers"],
   { tags: [CacheTags.teachers, CacheTags.courses] },
 );
 
 export const getPublishedResults = unstable_cache(
-  () => db.result.findMany({ where: PUBLISHED, orderBy: [{ featured: "desc" }, { order: "asc" }], include: { course: { select: { title: true, slug: true } } } }),
+  () => db.result.findMany({ where: PUBLISHED, orderBy: [{ featured: "desc" }, { order: "asc" }], include: { course: { select: { title: true, slug: true, translations: true } } } }),
   ["public-results"],
   { tags: [CacheTags.results] },
 );
 
 export const getPublishedTestimonials = unstable_cache(
-  () => db.testimonial.findMany({ where: PUBLISHED, orderBy: { order: "asc" }, include: { course: { select: { title: true, slug: true } } } }),
+  () => db.testimonial.findMany({ where: PUBLISHED, orderBy: { order: "asc" }, include: { course: { select: { title: true, slug: true, translations: true } } } }),
   ["public-testimonials"],
   { tags: [CacheTags.testimonials] },
 );

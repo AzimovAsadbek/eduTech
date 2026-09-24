@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Check } from "lucide-react";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
@@ -15,26 +16,26 @@ export interface LeadFormOption {
   label: string;
 }
 
-const phone = z
-  .string()
-  .trim()
-  .min(7, "Telefon raqamni kiriting")
-  .regex(/^[+\d\s()-]+$/, "Faqat raqamlar");
-
-const anySchema = z.object({
-  name: z.string().trim().min(2, "Ismingizni kiriting"),
-  phone,
-  courseSlug: z.string().optional(),
-  branchId: z.string().optional(),
-  company: z.string().trim().max(150).optional(),
-  serviceSlug: z.string().optional(),
-  budget: z.string().optional(),
-  interest: z.string().optional(),
-  message: z.string().trim().max(1500).optional(),
-  // Hidden input + valueAsNumber yields NaN until a field was focused; treat that as "unknown" instead of failing silently.
-  startedAt: z.number().optional().catch(undefined),
-});
-type Values = z.infer<typeof anySchema>;
+function buildSchema(msg: { name: string; phone: string; phoneFormat: string }) {
+  return z.object({
+    name: z.string().trim().min(2, msg.name),
+    phone: z
+      .string()
+      .trim()
+      .min(7, msg.phone)
+      .regex(/^[+\d\s()-]+$/, msg.phoneFormat),
+    courseSlug: z.string().optional(),
+    branchId: z.string().optional(),
+    company: z.string().trim().max(150).optional(),
+    serviceSlug: z.string().optional(),
+    budget: z.string().optional(),
+    interest: z.string().optional(),
+    message: z.string().trim().max(1500).optional(),
+    // Hidden input + valueAsNumber yields NaN until a field was focused; treat that as "unknown" instead of failing silently.
+    startedAt: z.number().optional().catch(undefined),
+  });
+}
+type Values = z.infer<ReturnType<typeof buildSchema>>;
 
 interface Props {
   type: "EDUCATION" | "MEDIA" | "GENERAL";
@@ -50,15 +51,18 @@ interface Props {
   submitLabel?: string;
 }
 
-const BUDGETS = ["1 mln soʻmgacha", "1–3 mln soʻm", "3–10 mln soʻm", "10 mln soʻmdan yuqori", "Aniq emas"];
-const INTERESTS = ["Kurslar", "Media xizmatlar", "Hamkorlik", "Boshqa"];
-
 /** One form component for all three lead types. Posts JSON to the public API. */
 export function LeadForm({ type, courses = [], services = [], branches = [], defaultCourseSlug, defaultServiceSlug, source, onDone, className, dark, submitLabel }: Props) {
+  const t = useTranslations("leadForm");
+  const tc = useTranslations("common.actions");
   const [state, setState] = useState<{ status: "idle" | "submitting" | "success" | "error"; message?: string }>({ status: "idle" });
 
+  const schema = useMemo(() => buildSchema({ name: t("errors.name"), phone: t("errors.phone"), phoneFormat: t("errors.phoneFormat") }), [t]);
+  const budgets = (t.raw("budgets") as string[]).map((b) => ({ value: b, label: b }));
+  const interests = (t.raw("interests") as string[]).map((b) => ({ value: b, label: b }));
+
   const form = useForm<Values>({
-    resolver: zodResolver(anySchema),
+    resolver: zodResolver(schema),
     defaultValues: { courseSlug: defaultCourseSlug ?? "", serviceSlug: defaultServiceSlug ?? "", branchId: branches[0]?.value ?? "" },
   });
   const { register, handleSubmit, formState, setValue, getValues } = form;
@@ -73,13 +77,13 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       const json = await res.json();
       if (!res.ok || !json.ok) {
         const details = json?.error?.details as { path: string; message: string }[] | undefined;
-        setState({ status: "error", message: details?.[0] ? `${details[0].message}` : (json?.error?.message ?? "Xatolik yuz berdi") });
+        setState({ status: "error", message: details?.[0] ? `${details[0].message}` : (json?.error?.message ?? t("errors.generic")) });
         return;
       }
       track(type === "MEDIA" ? "media_inquiry_submit" : "application_submit", { type, source: String(payload.source ?? "") });
       setState({ status: "success" });
     } catch {
-      setState({ status: "error", message: "Tarmoq xatosi. Qayta urinib koʻring." });
+      setState({ status: "error", message: t("errors.network") });
     }
   });
 
@@ -89,11 +93,11 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
         <span className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-orange text-white">
           <Check size={26} />
         </span>
-        <h3 className="t-h3 mb-2">Arizangiz qabul qilindi</h3>
-        <p className="text-(--fg-muted)">Rahmat! Tez orada siz bilan bogʻlanamiz.</p>
+        <h3 className="t-h3 mb-2">{t("success.title")}</h3>
+        <p className="text-(--fg-muted)">{t("success.text")}</p>
         {onDone ? (
           <Button variant={dark ? "inverse" : "secondary"} className="mt-6" onClick={onDone}>
-            Yopish
+            {tc("close")}
           </Button>
         ) : null}
       </div>
@@ -118,30 +122,30 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input label="Ismingiz" placeholder="Ism Familiya" autoComplete="name" required error={err("name")} {...register("name")} />
-        <Input label="Telefon" placeholder="+998 90 123 45 67" type="tel" inputMode="tel" autoComplete="tel" required error={err("phone")} {...register("phone")} />
+        <Input label={t("fields.name")} placeholder={t("fields.namePlaceholder")} autoComplete="name" required error={err("name")} {...register("name")} />
+        <Input label={t("fields.phone")} placeholder={t("fields.phonePlaceholder")} type="tel" inputMode="tel" autoComplete="tel" required error={err("phone")} {...register("phone")} />
       </div>
 
       {type === "EDUCATION" ? (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Select label="Qiziqqan kurs" options={courses} placeholder="Kursni tanlang" error={err("courseSlug")} {...register("courseSlug")} />
-          {branches.length > 1 ? <Select label="Filial" options={branches} error={err("branchId")} {...register("branchId")} /> : null}
+          <Select label={t("fields.course")} options={courses} placeholder={t("fields.coursePlaceholder")} error={err("courseSlug")} {...register("courseSlug")} />
+          {branches.length > 1 ? <Select label={t("fields.branch")} options={branches} error={err("branchId")} {...register("branchId")} /> : null}
         </div>
       ) : null}
 
       {type === "MEDIA" ? (
         <>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Kompaniya / brend" placeholder="Kompaniya nomi" autoComplete="organization" error={err("company")} {...register("company")} />
-            <Select label="Xizmat" options={services} placeholder="Xizmatni tanlang" error={err("serviceSlug")} {...register("serviceSlug")} />
+            <Input label={t("fields.company")} placeholder={t("fields.companyPlaceholder")} autoComplete="organization" error={err("company")} {...register("company")} />
+            <Select label={t("fields.service")} options={services} placeholder={t("fields.servicePlaceholder")} error={err("serviceSlug")} {...register("serviceSlug")} />
           </div>
-          <Select label="Taxminiy byudjet" options={BUDGETS.map((b) => ({ value: b, label: b }))} placeholder="Tanlang" error={err("budget")} {...register("budget")} />
+          <Select label={t("fields.budget")} options={budgets} placeholder={t("fields.selectPlaceholder")} error={err("budget")} {...register("budget")} />
         </>
       ) : null}
 
-      {type === "GENERAL" ? <Select label="Qiziqish" options={INTERESTS.map((b) => ({ value: b, label: b }))} placeholder="Tanlang" error={err("interest")} {...register("interest")} /> : null}
+      {type === "GENERAL" ? <Select label={t("fields.interest")} options={interests} placeholder={t("fields.selectPlaceholder")} error={err("interest")} {...register("interest")} /> : null}
 
-      <Textarea label="Xabar" placeholder={type === "MEDIA" ? "Loyiha haqida qisqacha…" : "Savolingiz yoki izoh…"} error={err("message")} {...register("message")} />
+      <Textarea label={t("fields.message")} placeholder={type === "MEDIA" ? t("fields.messagePlaceholderMedia") : t("fields.messagePlaceholder")} error={err("message")} {...register("message")} />
 
       {state.status === "error" ? (
         <p role="alert" className="rounded-(--radius-md) bg-danger/10 px-4 py-3 text-sm text-danger">
@@ -150,9 +154,9 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       ) : null}
 
       <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="t-meta text-(--fg-muted)">Maʼlumotlaringiz faqat bogʻlanish uchun ishlatiladi.</p>
+        <p className="t-meta text-(--fg-muted)">{t("privacy")}</p>
         <Button type="submit" size="lg" disabled={state.status === "submitting"} icon={<ArrowRight size={18} />} className="sm:min-w-52">
-          {state.status === "submitting" ? "Yuborilmoqda…" : (submitLabel ?? "Yuborish")}
+          {state.status === "submitting" ? t("submitting") : (submitLabel ?? tc("send"))}
         </Button>
       </div>
     </form>

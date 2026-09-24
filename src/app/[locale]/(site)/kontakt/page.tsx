@@ -1,27 +1,38 @@
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Clock, MapPin, Phone, Send } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ContactLink } from "@/components/site/contact-link";
 import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from "@/components/site/json-ld";
 import { LeadForm } from "@/components/site/lead-form";
 import { PageHeader } from "@/components/site/page-header";
+import { localizeAll } from "@/i18n/localize";
+import { localizeSettings } from "@/i18n/localize-settings";
+import { resolveLocale, type LocaleParams } from "@/i18n/params";
 import { getActiveBranches } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata = pageMetadata({
-  title: "Kontakt — Namangan",
-  description: "EduTech bilan bogʻlaning: Namangan, telefon, Telegram, Instagram, ish vaqti va manzil xaritada. Kurs yoki media xizmat boʻyicha bepul konsultatsiya.",
-  path: "/kontakt",
-});
+type Props = { params: LocaleParams };
 
-export default async function ContactPage() {
-  const [settings, branches] = await Promise.all([getSiteSettings(), getActiveBranches()]);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: "pages.contact" });
+  return pageMetadata({ title: t("seo.title"), description: t("seo.description"), path: "/kontakt", locale });
+}
+
+export default async function ContactPage({ params }: Props) {
+  const locale = await resolveLocale(params);
+  setRequestLocale(locale);
+  const [t, tc, tl, rawSettings, rawBranches] = await Promise.all([getTranslations("pages.contact"), getTranslations("common"), getTranslations("pages.jsonLd"), getSiteSettings(), getActiveBranches()]);
+  const settings = localizeSettings(rawSettings, locale);
+  const branches = localizeAll(rawBranches, locale);
   const mapUrl = settings.mapEmbedUrl || branches.find((b) => b.mapUrl)?.mapUrl || "";
   return (
     <>
-      <JsonLd data={webPageJsonLd("ContactPage", "Kontakt — EduTech Namangan", "/kontakt")} />
-      <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Kontakt", path: "/kontakt" }])} />
-      <PageHeader eyebrow="Kontakt" title="Keling, gaplashamiz." accent={["gaplashamiz."]} lead="Kurs, media xizmat yoki hamkorlik — bir xabar yetarli. Ish kunlari bir soat ichida javob beramiz." />
+      <JsonLd data={webPageJsonLd("ContactPage", tl("contact"), "/kontakt", locale)} />
+      <JsonLd data={breadcrumbJsonLd([{ name: tc("nav.home"), path: "/" }, { name: tc("nav.contact"), path: "/kontakt" }], locale)} />
+      <PageHeader eyebrow={t("eyebrow")} title={t("title")} accent={t.raw("accent") as string[]} lead={t("lead")} />
 
       <section className="container-x grid gap-12 pb-24 lg:grid-cols-12">
         <Reveal className="space-y-8 lg:col-span-5">
@@ -64,19 +75,19 @@ export default async function ContactPage() {
           </div>
           {mapUrl ? (
             <div className="overflow-hidden rounded-(--radius-xl) border border-(--line)">
-              <iframe src={mapUrl} title="EduTech xaritada" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[4/3] w-full" allowFullScreen />
+              <iframe src={mapUrl} title={t("mapTitle")} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[4/3] w-full" allowFullScreen />
             </div>
           ) : (
-            <div className="placeholder-surface grain flex aspect-[4/3] items-center justify-center rounded-(--radius-xl)" role="img" aria-label="Xarita joyi">
-              <span className="t-meta rounded-full bg-black/10 px-3 py-1.5">Xarita: admin → Sozlamalar</span>
+            <div className="placeholder-surface grain flex aspect-[4/3] items-center justify-center rounded-(--radius-xl)" role="img" aria-label={t("mapPlaceholder")}>
+              <span className="t-meta rounded-full bg-black/10 px-3 py-1.5">{t("mapHint")}</span>
             </div>
           )}
         </Reveal>
 
         <Reveal className="glass rounded-(--radius-xl) p-6 sm:p-8 lg:col-span-7" delay={0.15}>
-          <p className="t-eyebrow mb-2 text-orange">Xabar yuborish</p>
-          <h2 className="t-h3 mb-6">Sizga qanday yordam bera olamiz?</h2>
-          <LeadForm type="GENERAL" source="contact" submitLabel="Yuborish" />
+          <p className="t-eyebrow mb-2 text-orange">{t("form.eyebrow")}</p>
+          <h2 className="t-h3 mb-6">{t("form.title")}</h2>
+          <LeadForm type="GENERAL" source="contact" submitLabel={tc("actions.send")} />
         </Reveal>
       </section>
     </>

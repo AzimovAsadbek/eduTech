@@ -1,16 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { cn } from "@/lib/utils";
 
-const steps = [
-  { n: "01", key: "Learn", title: "Oʻrganish", text: "Mentor bilan jonli darslar. Nazariya faqat amaliyot uchun kerak boʻlgan darajada.", detail: "Haftasiga 2–3 dars · kichik guruhlar" },
-  { n: "02", key: "Practice", title: "Mashq qilish", text: "Har bir dars — vazifa. Har bir hafta — kichik loyiha. Xato qilish mumkin, toʻxtash mumkin emas.", detail: "Kod-review · feedback · retake" },
-  { n: "03", key: "Build", title: "Yaratish", text: "Real mijoz yoki real muammo uchun mahsulot yaratasiz. Bu portfolio, sertifikat emas.", detail: "Diplom loyihasi · jamoaviy ish" },
-  { n: "04", key: "Grow", title: "Oʻsish", text: "Ishga joylashish, freelance yoki oʻz loyihangiz. Biz bitiruvdan keyin ham yonma-yon qolamiz.", detail: "Karyera yordami · community" },
-];
+type Step = { n: string; key: string; title: string; text: string; detail: string };
 
 /**
  * DISCOVERY: the education model as a scroll-driven journey.
@@ -19,6 +15,8 @@ const steps = [
  * Mobile: no pinning — a vertical timeline whose rail fills with scroll and whose steps light up in turn.
  */
 export function Journey() {
+  const t = useTranslations("journey");
+  const steps = t.raw("steps") as Step[];
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -88,11 +86,11 @@ export function Journey() {
       <div data-pin className="container-x hidden lg:block">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-5">
-            <Eyebrow className="mb-4">Taʼlim modeli</Eyebrow>
+            <Eyebrow className="mb-4">{t("eyebrow")}</Eyebrow>
             <h2 id="journey-title" className="t-h2">
-              Bilimdan koʻnikmaga. <span className="text-orange">Koʻnikmadan kasbga.</span>
+              {t("title")} <span className="text-orange">{t("titleAccent")}</span>
             </h2>
-            <p className="t-lead mt-4 max-w-sm">Toʻrt bosqich. Har biri oldingisidan oʻsib chiqadi — nazariyadan real kasbgacha.</p>
+            <p className="t-lead mt-4 max-w-sm">{t("lead")}</p>
 
             <div className="relative mt-12">
               <div className="absolute top-2 bottom-2 left-[1.35rem] w-px bg-(--line)" aria-hidden />
@@ -119,7 +117,7 @@ export function Journey() {
                 </p>
                 <h3 className="t-h1 mt-4">{s.title}</h3>
                 <p className="t-lead mt-6 max-w-xl">{s.text}</p>
-                <p className="t-meta mt-8 inline-flex w-fit rounded-full bg-orange-soft px-3 py-2 text-ink">{s.detail}</p>
+                <p className="t-meta glass mt-8 inline-flex w-fit rounded-full px-3 py-2 text-ink [--glass-bg:color-mix(in_srgb,var(--color-orange-soft)_70%,white)] [--glass-border:rgba(255,107,26,.18)]">{s.detail}</p>
               </article>
             ))}
           </div>
@@ -128,11 +126,11 @@ export function Journey() {
 
       {/* Mobile / tablet: scroll-lit timeline */}
       <div className="container-x lg:hidden">
-        <Eyebrow className="mb-4">Taʼlim modeli</Eyebrow>
+        <Eyebrow className="mb-4">{t("eyebrow")}</Eyebrow>
         <h2 className="t-h2">
-          Bilimdan koʻnikmaga. <span className="text-orange">Koʻnikmadan kasbga.</span>
+          {t("title")} <span className="text-orange">{t("titleAccent")}</span>
         </h2>
-        <p className="t-lead mt-4">Toʻrt bosqich. Har biri oldingisidan oʻsib chiqadi — nazariyadan real kasbgacha.</p>
+        <p className="t-lead mt-4">{t("lead")}</p>
         <ol className="relative mt-10">
           <div className="absolute top-3 bottom-3 left-[1.35rem] w-px bg-(--line)" aria-hidden />
           <div data-mobile-rail className="absolute top-3 bottom-3 left-[1.35rem] w-px origin-top bg-orange" aria-hidden />
@@ -145,7 +143,7 @@ export function Journey() {
                 <p className="t-eyebrow text-orange">{s.key}</p>
                 <h3 className="t-h3 mt-1.5">{s.title}</h3>
                 <p className="mt-2 text-(--fg-muted)">{s.text}</p>
-                <p className="t-meta mt-3 inline-flex rounded-full bg-orange-soft px-3 py-1.5 text-ink">{s.detail}</p>
+                <p className="t-meta glass mt-3 inline-flex rounded-full px-3 py-1.5 text-ink [--glass-bg:color-mix(in_srgb,var(--color-orange-soft)_70%,white)] [--glass-border:rgba(255,107,26,.18)]">{s.detail}</p>
               </div>
             </li>
           ))}

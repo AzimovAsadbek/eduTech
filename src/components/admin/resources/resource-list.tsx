@@ -3,7 +3,7 @@
 import { ArrowDown, ArrowUp, Copy, ExternalLink, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import type { ContentStatus, Role } from "@prisma/client";
 import { adminApi, errorMessage } from "@/lib/admin-api";
 import { cn } from "@/lib/utils";
@@ -14,14 +14,26 @@ import { Card } from "@/components/admin/ui/card";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { EmptyState } from "@/components/admin/ui/empty-state";
 import { controlBase } from "@/components/admin/ui/field";
+import { ProgressBadge } from "@/components/admin/ui/language-switch";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { Pagination } from "@/components/admin/ui/pagination";
 import { ContentStatusBadge } from "@/components/admin/ui/status-badge";
 import { Table, TBody, Td, Th, THead, Tr } from "@/components/admin/ui/table";
 import { useToast } from "@/components/admin/ui/toast";
-import { getPath, RESOURCES, type ColumnDef, type ResourceKey } from "./config";
+import { getPath, RESOURCES, TRANSLATION_LOCALES, type ColumnDef, type ResourceKey, type ResourceUi } from "./config";
+import { translationProgress } from "./translations";
 
 type Row = Record<string, unknown> & { id: string };
+
+const TRANSLATIONS_COLUMN: ColumnDef = { key: "translations", label: "Tarjima", kind: "translations", width: "w-36", hideBelow: "md" };
+
+/** Adds the RU · EN completeness column right before the status column (or at the end when there is none). */
+function columnsWithTranslations(ui: ResourceUi): ColumnDef[] {
+  if (!ui.translatable.length) return ui.columns;
+  const at = ui.columns.findIndex((c) => c.kind === "status");
+  const i = at === -1 ? ui.columns.length : at;
+  return [...ui.columns.slice(0, i), TRANSLATIONS_COLUMN, ...ui.columns.slice(i)];
+}
 
 const STATUS_CHIPS: { value: ContentStatus | ""; label: string }[] = [
   { value: "", label: "Barchasi" },
@@ -30,15 +42,23 @@ const STATUS_CHIPS: { value: ContentStatus | ""; label: string }[] = [
   { value: "ARCHIVED", label: CONTENT_STATUS_LABELS.ARCHIVED },
 ];
 
-function Cell({ col, row }: { col: ColumnDef; row: Row }) {
+function Cell({ col, row, ui }: { col: ColumnDef; row: Row; ui: ResourceUi }) {
   const v = getPath(row, col.key);
   switch (col.kind) {
+    case "translations":
+      return (
+        <span className="inline-flex items-center gap-1">
+          {TRANSLATION_LOCALES.map((l) => (
+            <ProgressBadge key={l} locale={l} progress={translationProgress(ui, v, l)} />
+          ))}
+        </span>
+      );
     case "image":
       return typeof v === "string" && v ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={v} alt="" className="size-9 rounded-[8px] border border-(--line) bg-paper-3 object-cover" loading="lazy" />
+        <img src={v} alt="" className="bg-paper-3 size-9 rounded-[8px] border border-(--line) object-cover" loading="lazy" />
       ) : (
-        <span aria-hidden className="block size-9 rounded-[8px] bg-paper-3" />
+        <span aria-hidden className="bg-paper-3 block size-9 rounded-[8px]" />
       );
     case "status":
       return typeof v === "string" ? <ContentStatusBadge status={v as ContentStatus} /> : null;
@@ -56,16 +76,31 @@ function Cell({ col, row }: { col: ColumnDef; row: Row }) {
       const sub = col.sub ? getPath(row, col.sub) : undefined;
       return (
         <span className="block min-w-0">
-          <span className="block truncate font-semibold text-ink">{v === null || v === undefined || v === "" ? "—" : String(v)}</span>
-          {typeof sub === "string" && sub ? <span className="block truncate text-xs text-muted">{sub}</span> : null}
+          <span className="text-ink block truncate font-semibold">{v === null || v === undefined || v === "" ? "—" : String(v)}</span>
+          {typeof sub === "string" && sub ? <span className="text-muted block truncate text-xs">{sub}</span> : null}
         </span>
       );
     }
   }
 }
 
-export function ResourceList({ resource, items, total, page, pageSize, role }: { resource: ResourceKey; items: Row[]; total: number; page: number; pageSize: number; role: Role }) {
+export function ResourceList({
+  resource,
+  items,
+  total,
+  page,
+  pageSize,
+  role,
+}: {
+  resource: ResourceKey;
+  items: Row[];
+  total: number;
+  page: number;
+  pageSize: number;
+  role: Role;
+}) {
   const ui = RESOURCES[resource];
+  const columns = useMemo(() => columnsWithTranslations(ui), [ui]);
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -162,8 +197,15 @@ export function ResourceList({ resource, items, total, page, pageSize, role }: {
             <label htmlFor={`${resource}-q`} className="sr-only">
               Qidirish
             </label>
-            <Search size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted" aria-hidden />
-            <input id={`${resource}-q`} type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Qidirish…" className={cn(controlBase, "h-9 pl-9 text-[13px]")} />
+            <Search size={15} className="text-muted pointer-events-none absolute top-1/2 left-3 -translate-y-1/2" aria-hidden />
+            <input
+              id={`${resource}-q`}
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Qidirish…"
+              className={cn(controlBase, "h-9 pl-9 text-[13px]")}
+            />
           </form>
           {ui.hasStatus ? (
             <div role="radiogroup" aria-label="Holat boʻyicha filtr" className="flex flex-wrap gap-1">
@@ -176,7 +218,10 @@ export function ResourceList({ resource, items, total, page, pageSize, role }: {
                     role="radio"
                     aria-checked={active}
                     onClick={() => setParam({ status: c.value })}
-                    className={cn("h-8 rounded-full border px-3 text-xs font-semibold transition-colors", active ? "border-ink bg-ink text-white" : "border-(--line) text-muted hover:border-ink hover:text-ink")}
+                    className={cn(
+                      "h-8 rounded-full border px-3 text-xs font-semibold transition-colors",
+                      active ? "border-ink bg-ink text-white" : "text-muted hover:border-ink hover:text-ink border-(--line)",
+                    )}
                   >
                     {c.label}
                   </button>
@@ -208,7 +253,7 @@ export function ResourceList({ resource, items, total, page, pageSize, role }: {
             <THead>
               <tr>
                 {sortable ? <Th className="w-16">Tartib</Th> : null}
-                {ui.columns.map((c) => (
+                {columns.map((c) => (
                   <Th key={c.key} className={cn(c.width, c.hideBelow === "md" && "hidden md:table-cell", c.hideBelow === "lg" && "hidden lg:table-cell")}>
                     {c.label}
                   </Th>
@@ -229,20 +274,34 @@ export function ResourceList({ resource, items, total, page, pageSize, role }: {
                           <Button variant="ghost" size="xs" iconOnly icon={<ArrowUp />} disabled={i === 0 || reordering} onClick={() => move(i, -1)}>
                             Yuqoriga
                           </Button>
-                          <Button variant="ghost" size="xs" iconOnly icon={<ArrowDown />} disabled={i === rows.length - 1 || reordering} onClick={() => move(i, 1)}>
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            iconOnly
+                            icon={<ArrowDown />}
+                            disabled={i === rows.length - 1 || reordering}
+                            onClick={() => move(i, 1)}
+                          >
                             Pastga
                           </Button>
                         </span>
                       </Td>
                     ) : null}
-                    {ui.columns.map((c, ci) => (
-                      <Td key={c.key} className={cn(c.hideBelow === "md" && "hidden md:table-cell", c.hideBelow === "lg" && "hidden lg:table-cell", ci === 0 && c.kind === "image" && "pr-0")}>
-                        {ci === (ui.columns[0]?.kind === "image" ? 1 : 0) && !c.kind ? (
-                          <Link href={`/admin/${resource}/${row.id}`} className="block min-w-0 hover:text-orange">
-                            <Cell col={c} row={row} />
+                    {columns.map((c, ci) => (
+                      <Td
+                        key={c.key}
+                        className={cn(
+                          c.hideBelow === "md" && "hidden md:table-cell",
+                          c.hideBelow === "lg" && "hidden lg:table-cell",
+                          ci === 0 && c.kind === "image" && "pr-0",
+                        )}
+                      >
+                        {ci === (columns[0]?.kind === "image" ? 1 : 0) && !c.kind ? (
+                          <Link href={`/admin/${resource}/${row.id}`} className="hover:text-orange block min-w-0">
+                            <Cell col={c} row={row} ui={ui} />
                           </Link>
                         ) : (
-                          <Cell col={c} row={row} />
+                          <Cell col={c} row={row} ui={ui} />
                         )}
                       </Td>
                     ))}
@@ -260,7 +319,14 @@ export function ResourceList({ resource, items, total, page, pageSize, role }: {
                           Tahrirlash
                         </Button>
                         {canDelete ? (
-                          <Button variant="ghost" size="xs" iconOnly icon={<Trash2 />} className="text-muted hover:text-danger" onClick={() => setToDelete(row)}>
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            iconOnly
+                            icon={<Trash2 />}
+                            className="text-muted hover:text-danger"
+                            onClick={() => setToDelete(row)}
+                          >
                             Oʻchirish
                           </Button>
                         ) : null}

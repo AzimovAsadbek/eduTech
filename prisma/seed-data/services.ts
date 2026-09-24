@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 
+/** `translations` holds ru/en copies of the text fields; shapes mirror the Uzbek originals. */
 export const services: Prisma.ServiceCreateInput[] = [
   {
     slug: "reels-production",
@@ -17,6 +18,34 @@ export const services: Prisma.ServiceCreateInput[] = [
     featured: true,
     order: 0,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Reels-продакшн",
+        tagline: "Вертикально, быстро, с фокусом на конверсию.",
+        description: "Полное производство Reels для Instagram и TikTok — от сценария до монтажа. Тренды, хуки и голос бренда — в одном формате.",
+        attributes: ["Creative", "Fast", "Vertical", "Conversion"],
+        deliverables: ["Сценарий и хук", "Съёмка", "Монтаж и субтитры", "8–16 Reels в месяц"],
+        process: [
+          { step: "01", title: "Бриф", description: "Определяем цель, аудиторию и голос бренда." },
+          { step: "02", title: "Сценарий", description: "Готовим сценарии с хуком, структурой и CTA." },
+          { step: "03", title: "Съёмка", description: "Профессиональная съёмка в студии или на локации." },
+          { step: "04", title: "Монтаж", description: "Динамичный монтаж, субтитры, цвет и звук." },
+        ],
+      },
+      en: {
+        title: "Reels Production",
+        tagline: "Vertical, fast, built to convert.",
+        description: "End-to-end Reels production for Instagram and TikTok, from script to edit. Trends, hooks and brand voice — all in one format.",
+        attributes: ["Creative", "Fast", "Vertical", "Conversion"],
+        deliverables: ["Script and hook", "Filming", "Editing and subtitles", "8–16 Reels per month"],
+        process: [
+          { step: "01", title: "Brief", description: "We define the goal, audience and brand voice." },
+          { step: "02", title: "Script", description: "We write scripts with a hook, structure and CTA." },
+          { step: "03", title: "Filming", description: "Professional shoot in the studio or on location." },
+          { step: "04", title: "Editing", description: "Dynamic editing, subtitles, color and sound." },
+        ],
+      },
+    },
   },
   {
     slug: "youtube-production",
@@ -33,6 +62,32 @@ export const services: Prisma.ServiceCreateInput[] = [
     featured: true,
     order: 1,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "YouTube-продакшн",
+        tagline: "Длинный формат — сильный бренд.",
+        description: "Стратегия YouTube-канала, планирование контента, съёмка, монтаж и SEO. Стабильная аудитория для вашего бренда.",
+        attributes: ["Long-form", "Strategy", "Storytelling", "SEO"],
+        deliverables: ["Стратегия канала", "Сценарий", "Съёмка и монтаж", "Thumbnail и SEO"],
+        process: [
+          { step: "01", title: "Стратегия", description: "Позиционирование канала и ключевые контентные направления." },
+          { step: "02", title: "Производство", description: "Сценарий, съёмка, монтаж." },
+          { step: "03", title: "Публикация", description: "Thumbnail, заголовок, SEO и аналитика." },
+        ],
+      },
+      en: {
+        title: "YouTube Production",
+        tagline: "Long-form content, strong brand.",
+        description: "YouTube channel strategy, content planning, filming, editing and SEO. A steady audience for your brand.",
+        attributes: ["Long-form", "Strategy", "Storytelling", "SEO"],
+        deliverables: ["Channel strategy", "Script", "Filming and editing", "Thumbnails and SEO"],
+        process: [
+          { step: "01", title: "Strategy", description: "Channel positioning and content pillars." },
+          { step: "02", title: "Production", description: "Script, filming, editing." },
+          { step: "03", title: "Publishing", description: "Thumbnail, title, SEO and analytics." },
+        ],
+      },
+    },
   },
   {
     slug: "smm",
@@ -43,6 +98,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Oylik kontent-reja", "Postlar va Stories dizayni", "Copywriting", "Oylik hisobot"],
     order: 2,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "SMM",
+        tagline: "Живой бренд в социальных сетях.",
+        description: "Стратегия, контент-план, визуал и тексты, community management и ежемесячная аналитика — ваш бренд ведётся в социальных сетях системно.",
+        attributes: ["Strategy", "Content", "Community", "Analytics"],
+        deliverables: ["Ежемесячный контент-план", "Дизайн постов и Stories", "Копирайтинг", "Ежемесячный отчёт"],
+      },
+      en: {
+        title: "SMM",
+        tagline: "A brand that lives on social media.",
+        description: "Strategy, content plan, visuals and copy, community management and monthly analytics — your brand on social media, run systematically.",
+        attributes: ["Strategy", "Content", "Community", "Analytics"],
+        deliverables: ["Monthly content plan", "Post and Stories design", "Copywriting", "Monthly report"],
+      },
+    },
   },
   {
     slug: "target",
@@ -53,6 +124,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Auditoriya tahlili", "Kreativlar", "Kampaniya boshqaruvi", "Haftalik hisobot"],
     order: 3,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Таргет",
+        tagline: "Нужному человеку — в нужное время.",
+        description: "Таргетированные рекламные кампании в Meta и Telegram: аудитория, креатив, тесты и оптимизация. Бюджет работает на результат.",
+        attributes: ["Performance", "Data", "Testing", "ROI"],
+        deliverables: ["Анализ аудитории", "Креативы", "Управление кампаниями", "Еженедельный отчёт"],
+      },
+      en: {
+        title: "Targeted Ads",
+        tagline: "The right person, at the right time.",
+        description: "Targeted ad campaigns on Meta and Telegram: audience, creative, testing and optimization. Your budget works for results.",
+        attributes: ["Performance", "Data", "Testing", "ROI"],
+        deliverables: ["Audience analysis", "Creatives", "Campaign management", "Weekly report"],
+      },
+    },
   },
   {
     slug: "permission-marketing",
@@ -63,6 +150,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Kanal strategiyasi", "Avtomatlashtirilgan zanjirlar", "Chatbot", "Segmentatsiya"],
     order: 4,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Permission-маркетинг",
+        tagline: "С разрешения — с доверием.",
+        description: "Система долгосрочной коммуникации с аудиторией через Telegram-каналы, email и чат-боты. Каждое сообщение — ценность.",
+        attributes: ["Retention", "Automation", "Trust", "CRM"],
+        deliverables: ["Стратегия каналов", "Автоматизированные цепочки", "Чат-бот", "Сегментация"],
+      },
+      en: {
+        title: "Permission Marketing",
+        tagline: "With permission — with trust.",
+        description: "A long-term communication system with your audience through Telegram channels, email and chatbots. Every message delivers value.",
+        attributes: ["Retention", "Automation", "Trust", "CRM"],
+        deliverables: ["Channel strategy", "Automated sequences", "Chatbot", "Segmentation"],
+      },
+    },
   },
   {
     slug: "video-production",
@@ -74,6 +177,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     featured: true,
     order: 5,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Видеопродакшн",
+        tagline: "Кинематографическое качество.",
+        description: "Рекламные ролики, имиджевые видео, мероприятия и продуктовые видео — профессиональный продакшн от идеи до финального рендера.",
+        attributes: ["Cinematic", "Full-cycle", "Brand", "Quality"],
+        deliverables: ["Идея и сценарий", "Pre-production", "Съёмка", "Post-production"],
+      },
+      en: {
+        title: "Video Production",
+        tagline: "Cinematic quality.",
+        description: "Commercials, brand films, events and product videos — professional production from idea to final render.",
+        attributes: ["Cinematic", "Full-cycle", "Brand", "Quality"],
+        deliverables: ["Idea and script", "Pre-production", "Filming", "Post-production"],
+      },
+    },
   },
   {
     slug: "content-creation",
@@ -84,6 +203,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Foto sessiya", "Video kontent", "Matnlar", "Dizayn shablonlari"],
     order: 6,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Создание контента",
+        tagline: "Контент — голос бренда.",
+        description: "Фото, видео, тексты и дизайн — контент-пакеты для вашего бренда, адаптированные под все платформы.",
+        attributes: ["Multi-format", "Consistent", "Visual", "Voice"],
+        deliverables: ["Фотосессия", "Видеоконтент", "Тексты", "Дизайн-шаблоны"],
+      },
+      en: {
+        title: "Content Creation",
+        tagline: "Content is your brand's voice.",
+        description: "Photo, video, copy and design — content packages for your brand, tailored to every platform.",
+        attributes: ["Multi-format", "Consistent", "Visual", "Voice"],
+        deliverables: ["Photo shoot", "Video content", "Copy", "Design templates"],
+      },
+    },
   },
   {
     slug: "personal-branding",
@@ -94,6 +229,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Pozitsiyalash", "Vizual uslub", "Kontent strategiya", "Media yuritish"],
     order: 7,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Личный бренд",
+        tagline: "Вы — это бренд.",
+        description: "Стратегия личного бренда, визуальная идентичность и система контента для предпринимателей и экспертов.",
+        attributes: ["Positioning", "Identity", "Authority", "Story"],
+        deliverables: ["Позиционирование", "Визуальный стиль", "Контент-стратегия", "Ведение медиа"],
+      },
+      en: {
+        title: "Personal Branding",
+        tagline: "You are the brand.",
+        description: "Personal brand strategy, visual identity and a content system for entrepreneurs and professionals.",
+        attributes: ["Positioning", "Identity", "Authority", "Story"],
+        deliverables: ["Positioning", "Visual style", "Content strategy", "Media management"],
+      },
+    },
   },
   {
     slug: "creative-ads",
@@ -104,6 +255,22 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Kreativ konsepsiya", "Statik kreativlar", "Video kreativlar", "A/B variantlar"],
     order: 8,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Рекламные креативы",
+        tagline: "Реклама, которая цепляет.",
+        description: "Креативные концепции для рекламы, статичные и видеокреативы — идеи, которые работают на продажи.",
+        attributes: ["Idea", "Scroll-stopping", "Testing", "Performance"],
+        deliverables: ["Креативная концепция", "Статичные креативы", "Видеокреативы", "A/B-варианты"],
+      },
+      en: {
+        title: "Creative Ads",
+        tagline: "Ads that grab attention.",
+        description: "Creative concepts for advertising, static and video creatives — ideas that drive sales.",
+        attributes: ["Idea", "Scroll-stopping", "Testing", "Performance"],
+        deliverables: ["Creative concept", "Static creatives", "Video creatives", "A/B variants"],
+      },
+    },
   },
   {
     slug: "instagram-management",
@@ -114,5 +281,21 @@ export const services: Prisma.ServiceCreateInput[] = [
     deliverables: ["Profil dizayni", "Kunlik Stories", "Postlar va Reels", "Community management"],
     order: 9,
     status: "PUBLISHED",
+    translations: {
+      ru: {
+        title: "Ведение Instagram",
+        tagline: "Instagram — полностью на нас.",
+        description: "От дизайна профиля до ежедневного контента, Stories, Reels и общения с аудиторией — мы полностью ведём ваш Instagram-аккаунт.",
+        attributes: ["Full-service", "Daily", "Growth", "Engagement"],
+        deliverables: ["Дизайн профиля", "Ежедневные Stories", "Посты и Reels", "Community management"],
+      },
+      en: {
+        title: "Instagram Management",
+        tagline: "Instagram — fully handled by us.",
+        description: "From profile design to daily content, Stories, Reels and audience engagement — we run your Instagram account end to end.",
+        attributes: ["Full-service", "Daily", "Growth", "Engagement"],
+        deliverables: ["Profile design", "Daily Stories", "Posts and Reels", "Community management"],
+      },
+    },
   },
 ];

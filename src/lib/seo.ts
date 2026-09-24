@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { absoluteUrl, siteConfig } from "@/config/site";
+import { locales, ogLocales, routing, type Locale } from "@/i18n/routing";
 
 interface PageSeo {
   title: string;
   description: string;
+  /** Locale-free path, e.g. "/kurslar/dasturlash". */
   path: string;
+  locale: Locale;
   image?: string | null;
   imageAlt?: string;
   type?: "website" | "article";
@@ -24,27 +27,35 @@ export function clamp(text: string, max: number): string {
   return `${cut.slice(0, cut.lastIndexOf(" ") > max * 0.6 ? cut.lastIndexOf(" ") : cut.length)}…`;
 }
 
+/** Public URL for a path in a locale: Uzbek at the root, others prefixed. */
+export function localePath(path: string, locale: Locale): string {
+  const clean = path === "/" ? "" : path;
+  return locale === routing.defaultLocale ? clean || "/" : `/${locale}${clean}`;
+}
+
 /**
  * Builds complete, consistent metadata for a public page: title/description within
- * search-snippet limits, canonical URL, full OpenGraph and Twitter cards (page image or the
- * branded default) and robots directives. Nested objects are not deep-merged by Next.js,
- * so every field is set explicitly here.
+ * search-snippet limits, locale-aware canonical + hreflang alternates, full OpenGraph and
+ * Twitter cards (page image or the branded default) and robots directives.
  */
 export function pageMetadata(seo: PageSeo): Metadata {
   const title = clamp(seo.title, MAX_TITLE);
   const description = clamp(seo.description, MAX_DESC);
-  const url = absoluteUrl(seo.path);
+  const canonical = localePath(seo.path, seo.locale);
+  const url = absoluteUrl(canonical);
   const image = seo.image ? absoluteUrl(seo.image) : absoluteUrl(DEFAULT_OG);
   const imageAlt = seo.imageAlt ?? `${title} — ${siteConfig.name}`;
   const fullTitle = `${title} — ${siteConfig.name}`;
+  const languages = Object.fromEntries(locales.map((l) => [l, absoluteUrl(localePath(seo.path, l))]));
   return {
     title,
     description,
     keywords: seo.keywords ? [...siteConfig.keywords, ...seo.keywords] : undefined,
-    alternates: { canonical: seo.path },
+    alternates: { canonical, languages: { ...languages, "x-default": absoluteUrl(localePath(seo.path, routing.defaultLocale)) } },
     openGraph: {
       type: seo.type ?? "website",
-      locale: siteConfig.locale,
+      locale: ogLocales[seo.locale],
+      alternateLocale: locales.filter((l) => l !== seo.locale).map((l) => ogLocales[l]),
       siteName: siteConfig.name,
       url,
       title: fullTitle,

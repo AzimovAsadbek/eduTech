@@ -260,6 +260,14 @@ Dev uchun faqat DB: `docker compose -f docker-compose.dev.yml up -d`.
 * **Secrets**: faqat server; `.env*` gitignore'da; Docker image'da placeholder.
 * Admin va admin API `Cache-Control: no-store`, `X-Robots-Tag: noindex`.
 
+## 15a. Koʻp tillilik (uz · ru · en)
+
+* Routing: `next-intl` — oʻzbekcha asosiy (`/kurslar`), ruscha va inglizcha prefiks bilan (`/ru/kurslar`, `/en/kurslar`). Admin va API tildan mustaqil.
+* Statik matnlar: `messages/<til>/{common,components,pages}.json` — uchala tilda bir xil kalitlar. Yangi matn qoʻshilganda uchala faylga ham yozing.
+* Kontent (DB): har bir kontent jadvalida `translations` JSON ustuni (`{ ru: {...}, en: {...} }`). Admin panelda har bir yozuv formasida **Oʻzbek | Русский | English** tugmalari orqali tarjima kiritiladi; boʻsh qoldirilgan maydon oʻzbekcha asl qiymatga tushadi (`src/i18n/localize.ts`).
+* SEO: har sahifada `hreflang` (uz/ru/en + x-default), til boʻyicha canonical, sitemap barcha tillarni oʻz ichiga oladi, `<html lang>` va OpenGraph `locale` toʻgʻri.
+* Til almashtirgich header va mobil menyuda — foydalanuvchi oʻsha sahifada qoladi.
+
 ## 16. SEO & Analytics
 
 * Har sahifa `metadata` (title template, description, canonical, OpenGraph, generated OG image).

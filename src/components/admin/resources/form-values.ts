@@ -1,9 +1,17 @@
 import type { FieldDef, JsonShape, ResourceUi } from "./config";
+import { toTranslationsPayload, toTranslationValues } from "./translations";
 
 export type FormValues = Record<string, unknown>;
 
 /** Zod issue → Uzbek copy. Custom schema messages are kept; only Zod's English defaults are translated. */
-export function localizeIssue(issue: { code: string; message: string; minimum?: number | bigint; maximum?: number | bigint; origin?: string; expected?: string }): string {
+export function localizeIssue(issue: {
+  code: string;
+  message: string;
+  minimum?: number | bigint;
+  maximum?: number | bigint;
+  origin?: string;
+  expected?: string;
+}): string {
   const isDefault = /^(Too small|Too big|Invalid|Unrecognized|Expected|Input|Required)/.test(issue.message);
   if (!isDefault) return issue.message;
   const n = (v: number | bigint | undefined) => (v === undefined ? "" : String(v));
@@ -28,7 +36,10 @@ export function localizeIssue(issue: { code: string; message: string; minimum?: 
 }
 export type FieldErrors = Record<string, string>;
 
-export const JSON_SHAPES: Record<JsonShape, { itemLabel: string; fields: { key: string; label: string; kind: "text" | "textarea" | "string-list"; placeholder?: string }[] }> = {
+export const JSON_SHAPES: Record<
+  JsonShape,
+  { itemLabel: string; fields: { key: string; label: string; kind: "text" | "textarea" | "string-list"; placeholder?: string }[] }
+> = {
   curriculum: {
     itemLabel: "Modul",
     fields: [
@@ -95,7 +106,11 @@ export function toFormValues(ui: ResourceUi, item: Record<string, unknown> | nul
         break;
       case "multiselect": {
         const rel = item?.teachers;
-        out[f.name] = Array.isArray(rel) ? rel.map((r) => (r as { teacher?: { id?: string }; teacherId?: string }).teacher?.id ?? (r as { teacherId?: string }).teacherId).filter((x): x is string => typeof x === "string") : [];
+        out[f.name] = Array.isArray(rel)
+          ? rel
+              .map((r) => (r as { teacher?: { id?: string }; teacherId?: string }).teacher?.id ?? (r as { teacherId?: string }).teacherId)
+              .filter((x): x is string => typeof x === "string")
+          : [];
         break;
       }
       case "boolean":
@@ -105,7 +120,9 @@ export function toFormValues(ui: ResourceUi, item: Record<string, unknown> | nul
         out[f.name] = Array.isArray(v) ? v.map(str) : [];
         break;
       case "json-list":
-        out[f.name] = Array.isArray(v) ? v.map((row) => ({ ...emptyJsonItem(f.shape), ...(row && typeof row === "object" ? (row as Record<string, unknown>) : {}) })) : [];
+        out[f.name] = Array.isArray(v)
+          ? v.map((row) => ({ ...emptyJsonItem(f.shape), ...(row && typeof row === "object" ? (row as Record<string, unknown>) : {}) }))
+          : [];
         break;
       case "socials": {
         const o = v && typeof v === "object" ? (v as Record<string, unknown>) : {};
@@ -117,6 +134,7 @@ export function toFormValues(ui: ResourceUi, item: Record<string, unknown> | nul
   if (ui.hasStatus) out.status = typeof item?.status === "string" ? item.status : "DRAFT";
   out.order = typeof item?.order === "number" ? String(item.order) : "0";
   if (ui.panelToggle) out[ui.panelToggle.name] = item ? Boolean(item[ui.panelToggle.name]) : ui.panelToggle.name === "isActive";
+  out.translations = toTranslationValues(ui, item?.translations);
   return out;
 }
 
@@ -151,7 +169,12 @@ export function toPayload(ui: ResourceUi, values: FormValues): Record<string, un
         out[f.name] = Boolean(v);
         break;
       case "string-list":
-        out[f.name] = Array.isArray(v) ? v.map(str).map((s) => s.trim()).filter(Boolean) : [];
+        out[f.name] = Array.isArray(v)
+          ? v
+              .map(str)
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [];
         break;
       case "json-list": {
         const rows = Array.isArray(v) ? (v as Record<string, unknown>[]) : [];
@@ -160,11 +183,24 @@ export function toPayload(ui: ResourceUi, values: FormValues): Record<string, un
           const o: Record<string, unknown> = {};
           for (const sf of shape.fields) {
             const val = row[sf.key];
-            if (sf.kind === "string-list") o[sf.key] = Array.isArray(val) ? val.map(str).map((s) => s.trim()).filter(Boolean) : [];
+            if (sf.kind === "string-list")
+              o[sf.key] = Array.isArray(val)
+                ? val
+                    .map(str)
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                : [];
             else {
               const s = str(val).trim();
               // optional sub-fields are omitted when blank so `.optional()` passes
-              if (s || (f.shape === "curriculum" && sf.key === "title") || (f.shape === "process") || (f.shape === "videos" && sf.key === "url") || (f.shape === "projects" && sf.key === "title")) o[sf.key] = s;
+              if (
+                s ||
+                (f.shape === "curriculum" && sf.key === "title") ||
+                f.shape === "process" ||
+                (f.shape === "videos" && sf.key === "url") ||
+                (f.shape === "projects" && sf.key === "title")
+              )
+                o[sf.key] = s;
             }
           }
           return o;
@@ -187,5 +223,7 @@ export function toPayload(ui: ResourceUi, values: FormValues): Record<string, un
   if (ui.hasStatus) out.status = values.status;
   out.order = str(values.order).trim() === "" ? 0 : Number(values.order);
   if (ui.panelToggle) out[ui.panelToggle.name] = Boolean(values[ui.panelToggle.name]);
+  // Always sent as a whole object: PATCH forwards only present keys, so a partial object would drop the other locale.
+  out.translations = toTranslationsPayload(ui, values.translations);
   return out;
 }

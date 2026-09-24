@@ -1,1 +1,170 @@
-{}
+{
+  "pages": {
+    "preview": "Preview rejimi · {status}",
+    "jsonLd": {
+      "courseList": "EduTech kurslari",
+      "serviceList": "EduTech Media xizmatlari",
+      "about": "Biz haqimizda — EduTech",
+      "contact": "Kontakt — EduTech Namangan"
+    },
+    "home": {
+      "seo": {
+        "title": "Zamonaviy kasblar akademiyasi va media studiya",
+        "description": "EduTech Namangan: dasturlash, AI, robototexnika, SMM, mobilografiya va videografiya kurslari. Bizneslar uchun Reels, YouTube, SMM va video prodakshn."
+      }
+    },
+    "courses": {
+      "seo": {
+        "title": "Kurslar — IT, AI, media va marketing",
+        "description": "Namangandagi EduTech kurslari: dasturlash, robototexnika, sunʼiy intellekt, IT-Kids, notiqlik, mobilografiya, videografiya, SMM va target. Amaliy taʼlim, real loyihalar.",
+        "keywords": ["dasturlash kursi Namangan", "IT kurslari Namangan", "SMM kursi", "robototexnika kursi"]
+      },
+      "eyebrow": "{count} ta yoʻnalish · {city}",
+      "title": "Kasb tanlang. Qolganini biz oʻrgatamiz.",
+      "accent": ["Kasb"],
+      "lead": "Har bir kurs ish beruvchi talabidan boshlab tuzilgan. Davomiylik, format va natija — hammasi ochiq."
+    },
+    "course": {
+      "seoTitle": "{title} kursi — {role}",
+      "imageAlt": "{title} kursi — EduTech, Namangan",
+      "keywords": { "course": "{title} kursi", "city": "{title} Namangan" }
+    },
+    "media": {
+      "seo": {
+        "title": "Media xizmatlar — Reels, YouTube, SMM, Target",
+        "description": "EduTech Media: Namangandagi bizneslar uchun Reels va YouTube prodakshn, SMM, target reklama, video ishlab chiqarish, personal branding va Instagram boshqaruvi.",
+        "keywords": ["SMM xizmati Namangan", "video prodakshn Namangan", "Reels ishlab chiqarish", "target reklama Namangan"]
+      },
+      "process": {
+        "eyebrow": "Jarayon",
+        "title": "Gʻoyadan natijagacha — toʻrt qadam.",
+        "lead": "Har bir loyiha bir xil intizom bilan boshqariladi: aniq brif, oʻlchanadigan maqsad, hisobot.",
+        "steps": [
+          { "title": "Brif va tahlil", "description": "Maqsad, auditoriya, raqobatchilar. Nimani va kim uchun yaratayotganimizni aniqlaymiz." },
+          { "title": "Strategiya", "description": "Kontent ustunlari, formatlar, kanal va nashr ritmi — bitta hujjatda." },
+          { "title": "Prodakshn", "description": "Ssenariy, sʼyomka, montaj. Studiya yoki lokatsiya — jamoa bilan." },
+          { "title": "Nashr va oʻsish", "description": "Nashr, target, tahlil, optimizatsiya. Har oy hisobot va keyingi qadam." }
+        ]
+      },
+      "faqTitle": "Media xizmatlar haqida savollar"
+    },
+    "portfolio": {
+      "seo": {
+        "title": "Portfolio — biz yaratgan kontentlar",
+        "description": "EduTech Media portfoliosi: Reels, YouTube, reklama roliklari, SMM kampaniyalari va brend loyihalari. Real mijozlar, real natijalar."
+      },
+      "eyebrow": "{count} ta loyiha",
+      "title": "Biz yaratgan kontentlar.",
+      "accent": ["kontentlar"],
+      "lead": "Har bir ish — mijoz, muammo, strategiya va natija. Faqat real loyihalar.",
+      "empty": {
+        "title": "Portfolio tez orada",
+        "text": "Loyihalar admin paneldan nashr qilinishi bilan shu yerda paydo boʻladi."
+      }
+    },
+    "project": {
+      "imageAlt": "{title} — {client} loyihasi",
+      "blocks": {
+        "challenge": { "title": "Muammo", "sub": "Challenge" },
+        "solution": { "title": "Strategiya va ijro", "sub": "Strategy & Execution" },
+        "result": { "title": "Natija", "sub": "Result" }
+      },
+      "meta": { "client": "Client", "service": "Service", "tags": "Tags" },
+      "beforeAfter": "Before / After",
+      "media": "Media",
+      "next": "Keyingi loyiha",
+      "cover": "Cover"
+    },
+    "service": {
+      "seoTitle": "{title} — Media xizmati, Namangan",
+      "imageAlt": "{title} — EduTech Media",
+      "keyword": "{title} Namangan",
+      "eyebrow": "EduTech Media · xizmat",
+      "coverLabel": "Xizmat foto / video",
+      "deliverables": { "eyebrow": "Nima kiradi", "title": "Siz oladigan natija" },
+      "process": { "eyebrow": "Jarayon", "title": "Qanday ishlaymiz" },
+      "others": "Boshqa xizmatlar"
+    },
+    "results": {
+      "seo": {
+        "title": "Natijalar — oʻquvchilarimiz hikoyalari",
+        "description": "EduTech bitiruvchilarining natijalari: ishga joylashish, real loyihalar, sertifikatlar va oʻsish hikoyalari. 500+ oʻquvchi, 9+ yoʻnalish, 100+ loyiha."
+      },
+      "eyebrow": "Natijalar",
+      "title": "Bizning natijalarimiz gapiradi.",
+      "accent": ["gapiradi"],
+      "lead": "Raqamlar, loyihalar, ish joylari va bitiruvchilarning oʻz soʻzlari. Faqat real hikoyalar.",
+      "statProjects": "loyiha",
+      "empty": {
+        "title": "Hikoyalar tez orada",
+        "text": "Oʻquvchilar natijalari va fikrlari admin paneldan nashr qilinishi bilan shu yerda koʻrinadi."
+      },
+      "projects": { "eyebrow": "Loyihalar va karyera", "title": "Bitiruvchilar nima yaratdi" },
+      "view": "Koʻrish →",
+      "video": { "eyebrow": "Video fikrlar", "title": "Oʻz ovozi bilan", "videoTitle": "{name} — fikr" },
+      "stories": { "eyebrow": "Fikrlar", "title": "Bitiruvchilar soʻzi" },
+      "gallery": { "eyebrow": "Galereya", "title": "Dars, studiya, tadbir" }
+    },
+    "about": {
+      "seo": {
+        "title": "Biz haqimizda — zamonaviy kasblar akademiyasi",
+        "description": "EduTech — Namangandagi IT, AI, digital va kreativ yoʻnalishlar boʻyicha taʼlim markazi va media studiya. Falsafamiz, jamoamiz va muhitimiz."
+      },
+      "eyebrow": "EduTech · {city}",
+      "title": "Zamonaviy kasblar akademiyasi.",
+      "accent": ["kasblar"],
+      "lead": "IT + AI + Digital + Creative. Biz toʻrt yoʻnalishni bitta muhitda birlashtirdik — chunki zamonaviy kasb chegaralarda emas, kesishmalarda tugʻiladi.",
+      "pillars": [
+        { "key": "IT", "title": "Dasturlash va muhandislik", "description": "Web, mobil, backend — bozor talab qiladigan stack bilan." },
+        { "key": "AI", "title": "Sunʼiy intellekt", "description": "Maʼlumotlar, modellar va AI vositalari bilan ishlash." },
+        { "key": "Digital", "title": "Marketing va oʻsish", "description": "SMM, target, permission marketing — natijaga ishlaydigan raqamli marketing." },
+        { "key": "Creative", "title": "Media va prodakshn", "description": "Kamera, montaj, kontent — gʻoyadan ekrangacha." }
+      ],
+      "philosophy": {
+        "eyebrow": "Falsafa",
+        "title": "Oʻrganish — bu loyiha. Bitiruv — bu boshlanish.",
+        "accent": ["loyiha", "boshlanish"],
+        "p1": "Biz taʼlimni maʼruza deb emas, ish jarayoni deb qaraymiz. Har bir oʻquvchi birinchi haftadan boshlab real vazifa ustida ishlaydi, mentor esa ustoz emas — jamoadagi tajribali hamkasb.",
+        "p2": "EduTech ikki dunyodan iborat: taʼlim va media. Media studiyamiz bizneslar uchun kontent yaratadi — va aynan shu studiya oʻquvchilarimiz uchun amaliyot maydoni. Nazariya darsda, tajriba esa real mijoz loyihasida.",
+        "p3": "Missiyamiz oddiy: {city} yoshlariga bugun bozorda kerak boʻlgan kasbni berish — va shu shaharda ishlaydigan bizneslarga zamonaviy kontent orqali oʻsish imkonini yaratish."
+      },
+      "team": {
+        "eyebrow": "Jamoa",
+        "title": "Mentorlar va jamoa",
+        "lead": "Oʻz sohasida ishlaydigan mutaxassislar — darsga real tajriba olib kelishadi."
+      },
+      "environment": {
+        "eyebrow": "Muhit",
+        "title": "Studiya. Sinf. Jamoa.",
+        "lead": "Oʻquv xonalari, prodakshn studiyasi va jamoa maydoni — bir binoda. Oʻrganish va yaratish yonma-yon.",
+        "alt": "EduTech muhiti",
+        "labels": ["Sinf xonasi", "Studiya", "Jamoa maydoni"]
+      }
+    },
+    "contact": {
+      "seo": {
+        "title": "Kontakt — Namangan",
+        "description": "EduTech bilan bogʻlaning: Namangan, telefon, Telegram, Instagram, ish vaqti va manzil xaritada. Kurs yoki media xizmat boʻyicha bepul konsultatsiya."
+      },
+      "eyebrow": "Kontakt",
+      "title": "Keling, gaplashamiz.",
+      "accent": ["gaplashamiz"],
+      "lead": "Kurs, media xizmat yoki hamkorlik — bir xabar yetarli. Ish kunlari bir soat ichida javob beramiz.",
+      "mapTitle": "EduTech xaritada",
+      "mapPlaceholder": "Xarita joyi",
+      "mapHint": "Xarita: admin → Sozlamalar",
+      "form": { "eyebrow": "Xabar yuborish", "title": "Sizga qanday yordam bera olamiz?" }
+    },
+    "notFound": {
+      "seoTitle": "Sahifa topilmadi",
+      "title": "Bu sahifa <accent>hali</accent> yaratilmagan.",
+      "lead": "Havola eskirgan yoki notoʻgʻri boʻlishi mumkin. Kurslar yoki media xizmatlarga qayting."
+    },
+    "error": {
+      "title": "Nimadir xato ketdi.",
+      "lead": "Biz allaqachon xabardormiz. Sahifani qayta yuklab koʻring yoki biroz kutib turing.",
+      "code": "Kod: {digest}",
+      "retry": "Qayta urinish"
+    }
+  }
+}

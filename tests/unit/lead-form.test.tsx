@@ -1,7 +1,29 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NextIntlClientProvider } from "next-intl";
+import type { ReactElement } from "react";
 import { LeadForm } from "@/components/site/lead-form";
+import common from "../../messages/uz/common.json";
+import components from "../../messages/uz/components.json";
+
+// next-intl's navigation helpers pull in `next/navigation`, which has no runtime under Vitest.
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({ href, children, ...rest }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  ),
+  usePathname: () => "/",
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+}));
+
+const renderIntl = (ui: ReactElement) =>
+  render(
+    <NextIntlClientProvider locale="uz" messages={{ ...common, ...components }}>
+      {ui}
+    </NextIntlClientProvider>,
+  );
 
 const courses = [
   { value: "dasturlash", label: "Dasturlash" },
@@ -41,7 +63,7 @@ describe("<LeadForm />", () => {
   });
 
   it("renders EDUCATION fields: name, phone, course select, branch select (when >1) and honeypot", () => {
-    render(<LeadForm type="EDUCATION" courses={courses} branches={branches} submitLabel="Ariza yuborish" />);
+    renderIntl(<LeadForm type="EDUCATION" courses={courses} branches={branches} submitLabel="Ariza yuborish" />);
     expect(screen.getByLabelText(/Ismingiz/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Telefon/)).toBeInTheDocument();
     expect(screen.getByLabelText("Qiziqqan kurs")).toBeInTheDocument();
@@ -56,13 +78,13 @@ describe("<LeadForm />", () => {
   });
 
   it("hides the branch select when only one branch exists and preselects the default course", () => {
-    render(<LeadForm type="EDUCATION" courses={courses} branches={[branches[0]]} defaultCourseSlug="smm" />);
+    renderIntl(<LeadForm type="EDUCATION" courses={courses} branches={[branches[0]]} defaultCourseSlug="smm" />);
     expect(screen.queryByLabelText("Filial")).not.toBeInTheDocument();
     expect((screen.getByLabelText("Qiziqqan kurs") as HTMLSelectElement).value).toBe("smm");
   });
 
   it("renders MEDIA fields: company, service, budget", () => {
-    render(<LeadForm type="MEDIA" services={services} submitLabel="Soʻrov yuborish" />);
+    renderIntl(<LeadForm type="MEDIA" services={services} submitLabel="Soʻrov yuborish" />);
     expect(screen.getByLabelText("Kompaniya / brend")).toBeInTheDocument();
     expect(screen.getByLabelText("Xizmat")).toBeInTheDocument();
     expect(screen.getByLabelText("Taxminiy byudjet")).toBeInTheDocument();
@@ -71,7 +93,7 @@ describe("<LeadForm />", () => {
   });
 
   it("renders GENERAL fields: interest select and default 'Yuborish' label", () => {
-    render(<LeadForm type="GENERAL" />);
+    renderIntl(<LeadForm type="GENERAL" />);
     expect(screen.getByLabelText("Qiziqish")).toBeInTheDocument();
     expect(screen.queryByLabelText("Xizmat")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^Yuborish/ })).toBeInTheDocument();
@@ -79,7 +101,7 @@ describe("<LeadForm />", () => {
 
   it("shows validation errors on empty submit and does not call fetch", async () => {
     const fetchSpy = mockFetch({ ok: true });
-    render(<LeadForm type="GENERAL" />);
+    renderIntl(<LeadForm type="GENERAL" />);
     await user.click(screen.getByRole("button", { name: /Yuborish/ }));
     const alerts = await screen.findAllByRole("alert");
     const texts = alerts.map((a) => a.textContent);
@@ -91,7 +113,7 @@ describe("<LeadForm />", () => {
 
   it("rejects a non-numeric phone client-side", async () => {
     const fetchSpy = mockFetch({ ok: true });
-    render(<LeadForm type="GENERAL" />);
+    renderIntl(<LeadForm type="GENERAL" />);
     await user.type(screen.getByLabelText(/Ismingiz/), "Ali Valiyev");
     await user.type(screen.getByLabelText(/Telefon/), "abcdefgh");
     await user.click(screen.getByRole("button", { name: /Yuborish/ }));
@@ -101,7 +123,7 @@ describe("<LeadForm />", () => {
 
   it("posts JSON to /api/v1/public/leads and shows the success state", async () => {
     const fetchSpy = mockFetch({ ok: true, data: { id: "x" } });
-    render(<LeadForm type="EDUCATION" courses={courses} branches={branches} defaultCourseSlug="dasturlash" source="course:dasturlash" submitLabel="Ariza yuborish" />);
+    renderIntl(<LeadForm type="EDUCATION" courses={courses} branches={branches} defaultCourseSlug="dasturlash" source="course:dasturlash" submitLabel="Ariza yuborish" />);
     await user.type(screen.getByLabelText(/Ismingiz/), "E2E Test");
     await user.type(screen.getByLabelText(/Telefon/), "+998901234567");
     await user.click(screen.getByRole("button", { name: /Ariza yuborish/ }));
@@ -123,7 +145,7 @@ describe("<LeadForm />", () => {
 
   it("still submits when no field ever received focus (hidden startedAt is NaN)", async () => {
     const fetchSpy = mockFetch({ ok: true, data: { id: "x" } });
-    render(<LeadForm type="GENERAL" />);
+    renderIntl(<LeadForm type="GENERAL" />);
     fireEvent.change(screen.getByLabelText(/Ismingiz/), { target: { value: "Ali Valiyev" } });
     fireEvent.change(screen.getByLabelText(/Telefon/), { target: { value: "1234567" } });
     fireEvent.click(screen.getByRole("button", { name: /Yuborish/ }));
@@ -134,7 +156,7 @@ describe("<LeadForm />", () => {
 
   it("surfaces the first server validation detail as an error message", async () => {
     mockFetch({ ok: false, error: { code: "validation_error", message: "Maʼlumotlar notoʻgʻri", details: [{ path: "phone", message: "Telefon raqam notoʻgʻri" }] } }, { ok: false, status: 422 });
-    render(<LeadForm type="GENERAL" />);
+    renderIntl(<LeadForm type="GENERAL" />);
     await user.type(screen.getByLabelText(/Ismingiz/), "Ali Valiyev");
     await user.type(screen.getByLabelText(/Telefon/), "1234567");
     await user.click(screen.getByRole("button", { name: /Yuborish/ }));
@@ -144,7 +166,7 @@ describe("<LeadForm />", () => {
 
   it("shows a network error message when fetch rejects", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => { throw new TypeError("Failed to fetch"); }));
-    render(<LeadForm type="GENERAL" />);
+    renderIntl(<LeadForm type="GENERAL" />);
     await user.type(screen.getByLabelText(/Ismingiz/), "Ali Valiyev");
     await user.type(screen.getByLabelText(/Telefon/), "1234567");
     await user.click(screen.getByRole("button", { name: /Yuborish/ }));

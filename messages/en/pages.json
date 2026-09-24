@@ -1,1 +1,170 @@
-{}
+{
+  "pages": {
+    "preview": "Preview mode · {status}",
+    "jsonLd": {
+      "courseList": "EduTech courses",
+      "serviceList": "EduTech Media services",
+      "about": "About us — EduTech",
+      "contact": "Contact — EduTech Namangan"
+    },
+    "home": {
+      "seo": {
+        "title": "Academy of modern professions and media studio",
+        "description": "EduTech Namangan: programming, AI, robotics, SMM, mobile photography and videography courses. Reels, YouTube, SMM and video production for businesses."
+      }
+    },
+    "courses": {
+      "seo": {
+        "title": "Courses — IT, AI, media and marketing",
+        "description": "EduTech courses in Namangan: programming, robotics, artificial intelligence, IT-Kids, public speaking, mobile photography, videography, SMM and targeted ads. Hands-on training, real projects.",
+        "keywords": ["programming course Namangan", "IT courses Namangan", "SMM course", "robotics course"]
+      },
+      "eyebrow": "{count, plural, one {# programme} other {# programmes}} · {city}",
+      "title": "Pick a profession. We’ll teach you the rest.",
+      "accent": ["profession"],
+      "lead": "Every course starts from what employers actually ask for. Duration, format and outcome — all out in the open."
+    },
+    "course": {
+      "seoTitle": "{title} course — {role}",
+      "imageAlt": "{title} course — EduTech, Namangan",
+      "keywords": { "course": "{title} course", "city": "{title} Namangan" }
+    },
+    "media": {
+      "seo": {
+        "title": "Media services — Reels, YouTube, SMM, targeted ads",
+        "description": "EduTech Media: Reels and YouTube production, SMM, targeted advertising, video production, personal branding and Instagram management for businesses in Namangan.",
+        "keywords": ["SMM services Namangan", "video production Namangan", "Reels production", "targeted advertising Namangan"]
+      },
+      "process": {
+        "eyebrow": "Process",
+        "title": "From idea to result — four steps.",
+        "lead": "Every project runs with the same discipline: a clear brief, a measurable goal, a report.",
+        "steps": [
+          { "title": "Brief and analysis", "description": "Goal, audience, competitors. We define what we’re creating and for whom." },
+          { "title": "Strategy", "description": "Content pillars, formats, channels and publishing rhythm — in a single document." },
+          { "title": "Production", "description": "Script, shoot, edit. Studio or on location — together with the team." },
+          { "title": "Publishing and growth", "description": "Publishing, targeted ads, analytics, optimisation. A report and the next step every month." }
+        ]
+      },
+      "faqTitle": "Questions about media services"
+    },
+    "portfolio": {
+      "seo": {
+        "title": "Portfolio — the content we’ve created",
+        "description": "EduTech Media portfolio: Reels, YouTube, ad videos, SMM campaigns and brand projects. Real clients, real results."
+      },
+      "eyebrow": "{count, plural, one {# project} other {# projects}}",
+      "title": "The content we’ve created.",
+      "accent": ["created"],
+      "lead": "Every piece of work — a client, a problem, a strategy and a result. Only real projects.",
+      "empty": {
+        "title": "Portfolio coming soon",
+        "text": "Projects will show up here as soon as they are published from the admin panel."
+      }
+    },
+    "project": {
+      "imageAlt": "{title} — a project for {client}",
+      "blocks": {
+        "challenge": { "title": "Challenge", "sub": "Challenge" },
+        "solution": { "title": "Strategy & Execution", "sub": "Strategy & Execution" },
+        "result": { "title": "Result", "sub": "Result" }
+      },
+      "meta": { "client": "Client", "service": "Service", "tags": "Tags" },
+      "beforeAfter": "Before / After",
+      "media": "Media",
+      "next": "Next project",
+      "cover": "Cover"
+    },
+    "service": {
+      "seoTitle": "{title} — media service, Namangan",
+      "imageAlt": "{title} — EduTech Media",
+      "keyword": "{title} Namangan",
+      "eyebrow": "EduTech Media · service",
+      "coverLabel": "Service photo / video",
+      "deliverables": { "eyebrow": "What’s included", "title": "What you get" },
+      "process": { "eyebrow": "Process", "title": "How we work" },
+      "others": "Other services"
+    },
+    "results": {
+      "seo": {
+        "title": "Results — our students’ stories",
+        "description": "EduTech graduates’ results: job placements, real projects, certificates and growth stories. 500+ students, 9+ programmes, 100+ projects."
+      },
+      "eyebrow": "Results",
+      "title": "Our results speak for themselves.",
+      "accent": ["speak"],
+      "lead": "Numbers, projects, jobs and graduates in their own words. Only real stories.",
+      "statProjects": "projects",
+      "empty": {
+        "title": "Stories coming soon",
+        "text": "Student results and testimonials will appear here as soon as they are published from the admin panel."
+      },
+      "projects": { "eyebrow": "Projects and careers", "title": "What our graduates built" },
+      "view": "View →",
+      "video": { "eyebrow": "Video testimonials", "title": "In their own voice", "videoTitle": "{name} — testimonial" },
+      "stories": { "eyebrow": "Testimonials", "title": "Graduates’ words" },
+      "gallery": { "eyebrow": "Gallery", "title": "Classes, studio, events" }
+    },
+    "about": {
+      "seo": {
+        "title": "About us — academy of modern professions",
+        "description": "EduTech is an education centre and media studio in Namangan for IT, AI, digital and creative careers. Our philosophy, team and environment."
+      },
+      "eyebrow": "EduTech · {city}",
+      "title": "The academy of modern professions.",
+      "accent": ["professions"],
+      "lead": "IT + AI + Digital + Creative. We brought four fields together under one roof — because modern professions are born at the intersections, not inside the boundaries.",
+      "pillars": [
+        { "key": "IT", "title": "Programming and engineering", "description": "Web, mobile, backend — on the stack the market demands." },
+        { "key": "AI", "title": "Artificial intelligence", "description": "Working with data, models and AI tools." },
+        { "key": "Digital", "title": "Marketing and growth", "description": "SMM, targeted ads, permission marketing — digital marketing that delivers results." },
+        { "key": "Creative", "title": "Media and production", "description": "Camera, editing, content — from idea to screen." }
+      ],
+      "philosophy": {
+        "eyebrow": "Philosophy",
+        "title": "Learning is a project. Graduation is a beginning.",
+        "accent": ["project", "beginning"],
+        "p1": "We treat education as a working process, not a lecture. From the very first week every student works on a real task, and the mentor isn’t a teacher — they’re an experienced colleague on the team.",
+        "p2": "EduTech is made of two worlds: education and media. Our media studio creates content for businesses — and that same studio is the practice ground for our students. Theory in class, experience on a real client project.",
+        "p3": "Our mission is simple: give the young people of {city} a profession the market needs today — and give the businesses of this city a way to grow through modern content."
+      },
+      "team": {
+        "eyebrow": "Team",
+        "title": "Mentors and team",
+        "lead": "Practising professionals who bring real-world experience into the classroom."
+      },
+      "environment": {
+        "eyebrow": "Environment",
+        "title": "Studio. Classroom. Team.",
+        "lead": "Classrooms, a production studio and a team space — all in one building. Learning and creating side by side.",
+        "alt": "EduTech environment",
+        "labels": ["Classroom", "Studio", "Team space"]
+      }
+    },
+    "contact": {
+      "seo": {
+        "title": "Contact — Namangan",
+        "description": "Get in touch with EduTech: Namangan, phone, Telegram, Instagram, working hours and address on the map. Free consultation on courses and media services."
+      },
+      "eyebrow": "Contact",
+      "title": "Let’s talk.",
+      "accent": ["talk"],
+      "lead": "A course, a media service or a partnership — one message is enough. On working days we reply within the hour.",
+      "mapTitle": "EduTech on the map",
+      "mapPlaceholder": "Map placeholder",
+      "mapHint": "Map: admin → Settings",
+      "form": { "eyebrow": "Send a message", "title": "How can we help you?" }
+    },
+    "notFound": {
+      "seoTitle": "Page not found",
+      "title": "This page <accent>hasn’t</accent> been created yet.",
+      "lead": "The link may be outdated or incorrect. Head back to the courses or media services."
+    },
+    "error": {
+      "title": "Something went wrong.",
+      "lead": "We’re already on it. Try reloading the page or check back in a moment.",
+      "code": "Code: {digest}",
+      "retry": "Try again"
+    }
+  }
+}
