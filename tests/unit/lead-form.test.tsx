@@ -66,8 +66,8 @@ describe("<LeadForm />", () => {
     renderIntl(<LeadForm type="EDUCATION" courses={courses} branches={branches} submitLabel="Ariza yuborish" />);
     expect(screen.getByLabelText(/Ismingiz/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Telefon/)).toBeInTheDocument();
-    expect(screen.getByLabelText("Qiziqqan kurs")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filial")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: /Qiziqqan kurs/ })).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: /Filial/ })).toBeInTheDocument();
     expect(screen.getByLabelText("Xabar")).toBeInTheDocument();
     expect(screen.queryByLabelText("Kompaniya / brend")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Qiziqish")).not.toBeInTheDocument();
@@ -80,21 +80,21 @@ describe("<LeadForm />", () => {
   it("hides the branch select when only one branch exists and preselects the default course", () => {
     renderIntl(<LeadForm type="EDUCATION" courses={courses} branches={[branches[0]]} defaultCourseSlug="smm" />);
     expect(screen.queryByLabelText("Filial")).not.toBeInTheDocument();
-    expect((screen.getByLabelText("Qiziqqan kurs") as HTMLSelectElement).value).toBe("smm");
+    expect((document.querySelector('input[name="courseSlug"]') as HTMLInputElement).value).toBe("smm");
   });
 
   it("renders MEDIA fields: company, service, budget", () => {
     renderIntl(<LeadForm type="MEDIA" services={services} submitLabel="Soʻrov yuborish" />);
     expect(screen.getByLabelText("Kompaniya / brend")).toBeInTheDocument();
-    expect(screen.getByLabelText("Xizmat")).toBeInTheDocument();
-    expect(screen.getByLabelText("Taxminiy byudjet")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: /Xizmat/ })).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: /Taxminiy byudjet/ })).toBeInTheDocument();
     expect(screen.queryByLabelText("Qiziqqan kurs")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Soʻrov yuborish/ })).toBeInTheDocument();
   });
 
   it("renders GENERAL fields: interest select and default 'Yuborish' label", () => {
     renderIntl(<LeadForm type="GENERAL" />);
-    expect(screen.getByLabelText("Qiziqish")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: /Qiziqish/ })).toBeInTheDocument();
     expect(screen.queryByLabelText("Xizmat")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^Yuborish/ })).toBeInTheDocument();
   });

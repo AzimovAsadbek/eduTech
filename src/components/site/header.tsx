@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { LanguageSwitcher } from "./language-switcher";
-import { useApplyDialog } from "./apply-dialog";
+import { readServiceContext, useApplyDialog } from "./apply-dialog";
 
 type Stage = "top" | "glass" | "compact";
 
@@ -83,10 +83,13 @@ export function Header() {
     };
   }, [open]);
 
+  const isMediaPage = pathname === "/media" || pathname.startsWith("/media/");
   const onApply = useCallback(() => {
     setOpen(false);
-    openApply();
-  }, [openApply]);
+    if (isMediaPage) openApply({ type: "MEDIA", serviceSlug: readServiceContext() });
+    else openApply();
+  }, [openApply, isMediaPage]);
+  const ctaLabel = isMediaPage ? t("actions.order") : t("actions.apply");
 
   const inverted = dark || open;
   // The brand lockup uses a plain <a>, so the locale prefix is applied by hand.
@@ -139,7 +142,7 @@ export function Header() {
           <div className="flex items-center gap-2">
             <LanguageSwitcher inverted={inverted} className="hidden lg:inline-flex" />
             <Button size={stage === "compact" ? "sm" : "md"} onClick={onApply} className="hidden sm:inline-flex" magnetic icon={<ArrowUpRight size={16} />}>
-              {t("actions.apply")}
+              {ctaLabel}
             </Button>
             <button
               type="button"
@@ -189,7 +192,7 @@ export function Header() {
               <LanguageSwitcher inverted size="md" />
             </div>
             <Button size="lg" onClick={onApply} icon={<ArrowUpRight size={18} />}>
-              {t("actions.apply")}
+              {ctaLabel}
             </Button>
             <Button size="lg" variant="outline-inverse" href={routes.media}>
               {t("actions.mediaServices")}

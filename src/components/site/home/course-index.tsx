@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { ArrowUpRight, Check, Clock, MapPin, Signal, Users } from "lucide-react";
+import { ArrowUpRight, Clock, MapPin, Signal, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState } from "react";
 import { gsap, isDesktop, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
@@ -153,65 +153,35 @@ export function CourseIndex({ courses: allCourses, categories, compact, heading 
           </ol>
         </div>
 
-        {/* Desktop: card grid — every course is a block */}
+        {/* Desktop: the same minimal block as a grid */}
         <ol ref={grid} className={cn("mt-10 hidden gap-5 lg:grid", limit && limit <= 4 ? "lg:grid-cols-2 xl:grid-cols-4" : "lg:grid-cols-3")}>
           {visible.map((c, i) => (
-            <li key={c.id} data-card className="group">
-              <Link href={routes.course(c.slug)} className="flex h-full flex-col overflow-hidden rounded-(--radius-xl) border border-(--line) bg-paper transition-[transform,box-shadow,border-color] duration-500 ease-[var(--ease-out)] hover:-translate-y-1 hover:border-orange/40 hover:shadow-[0_28px_56px_-28px_rgba(255,107,26,.45)]">
-                <div className="relative h-40 overflow-hidden">
+            <li key={c.id} data-card>
+              <Link href={routes.course(c.slug)} className="group relative block overflow-hidden rounded-(--radius-xl) bg-ink text-white shadow-md transition-[transform,box-shadow] duration-500 ease-[var(--ease-out)] hover:-translate-y-1.5 hover:shadow-[0_32px_64px_-28px_rgba(255,107,26,.55)]">
+                <div className="relative aspect-[4/4.6]">
                   {cover(c, "absolute inset-0 transition-transform duration-700 ease-[var(--ease-out)] group-hover:scale-[1.04]")}
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" aria-hidden />
-                  <span className="font-display absolute -top-3 right-4 text-[6rem] leading-none font-bold text-white/15 select-none" aria-hidden>
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" aria-hidden />
+                  <span className="font-display absolute top-3 right-4 text-[5.5rem] leading-none font-bold text-white/15 select-none transition-transform duration-700 group-hover:-translate-y-1" aria-hidden>
                     {pad2(i + 1)}
                   </span>
-                  <div className="absolute inset-x-5 bottom-4 text-white">
-                    <p className="t-eyebrow text-white/75">{c.roleLabel}</p>
-                    <h3 className="font-display mt-1 text-2xl leading-none font-semibold tracking-tight">{c.title}</h3>
+                  <div className="absolute inset-x-5 bottom-5">
+                    <p className="t-eyebrow text-white/70">{c.roleLabel}</p>
+                    <h3 className="font-display mt-1.5 text-[1.75rem] leading-none font-semibold tracking-tight">{c.title}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm text-white/75">{c.tagline}</p>
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {meta(c).map((m) => (
+                        <span key={m.label} className="t-meta inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">
+                          <m.icon size={11} /> {m.value}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-
-                <div className="flex flex-1 flex-col p-5">
-                  <p className="font-medium text-ink">{c.tagline}</p>
-
-                  <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 border-t border-(--line) pt-4">
-                    {meta(c).map((m) => (
-                      <div key={m.label} className="flex items-center gap-2">
-                        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-orange-soft text-orange">
-                          <m.icon size={13} />
-                        </span>
-                        <span className="min-w-0">
-                          <dt className="t-meta text-[10px] text-(--fg-muted)">{m.label}</dt>
-                          <dd className="truncate text-sm font-semibold">{m.value}</dd>
-                        </span>
-                      </div>
-                    ))}
-                  </dl>
-
-                  {c.outcomes.length ? (
-                    <div className="mt-4 border-t border-(--line) pt-4">
-                      <p className="t-meta text-(--fg-muted)">{t("card.outcomes")}</p>
-                      <ul className="mt-2 space-y-1.5">
-                        {c.outcomes.slice(0, compact ? 2 : 3).map((o) => (
-                          <li key={o} className="flex items-start gap-2 text-sm">
-                            <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-orange text-white">
-                              <Check size={10} />
-                            </span>
-                            <span className="line-clamp-2">{o}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-
-                  <div className="mt-auto flex items-center justify-between border-t border-(--line) pt-4">
-                    <span>
-                      <span className="t-meta block text-[10px] text-(--fg-muted)">{t("card.price")}</span>
-                      <span className="text-sm font-semibold">{c.priceLabel ?? t("card.priceOnRequest")}</span>
-                    </span>
-                    <span className="inline-flex h-10 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-semibold text-white transition-colors duration-300 group-hover:bg-orange">
-                      {tc("actions.more")} <ArrowUpRight size={16} />
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between px-5 py-4">
+                  <span className="text-sm font-semibold">{c.priceLabel ?? t("card.priceOnRequest")}</span>
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-orange transition-transform duration-300 group-hover:translate-x-0.5">
+                    {tc("actions.more")} <ArrowUpRight size={16} />
+                  </span>
                 </div>
               </Link>
             </li>

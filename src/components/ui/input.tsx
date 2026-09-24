@@ -4,7 +4,9 @@ import { forwardRef, useId, type InputHTMLAttributes, type SelectHTMLAttributes,
 import { cn } from "@/lib/utils";
 
 const fieldBase =
-  "w-full rounded-(--radius-md) border border-(--line) bg-(--surface) px-4 text-base text-(--fg) placeholder:text-(--fg-muted)/70 transition-[border-color,box-shadow] duration-200 focus:border-orange focus:outline-none focus:ring-4 focus:ring-orange/15 disabled:opacity-60 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/15";
+  "w-full rounded-(--radius-md) border border-(--line) bg-(--surface) px-4 text-base text-(--fg) placeholder:text-(--fg-muted)/70 transition-[border-color,box-shadow,background-color] duration-200 focus:border-orange focus:outline-none focus:ring-4 focus:ring-orange/15 disabled:opacity-60 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger/15 " +
+  // Dark (media) world: clearly visible fields on near-black surfaces
+  "media-world:border-white/15 media-world:bg-white/[0.06] media-world:text-white media-world:placeholder:text-white/40 media-world:focus:bg-white/[0.09]";
 
 interface FieldWrapProps {
   id: string;
@@ -19,7 +21,7 @@ interface FieldWrapProps {
 function FieldWrap({ id, label, hint, error, required, children, className }: FieldWrapProps) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label htmlFor={id} className="t-caption block text-(--fg)">
+      <label htmlFor={id} className="t-caption block text-(--fg) media-world:text-white/85">
         {label}
         {required ? <span className="ml-0.5 text-orange" aria-hidden>*</span> : null}
       </label>

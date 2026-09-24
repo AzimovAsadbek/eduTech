@@ -9,7 +9,7 @@ import { localizeAll } from "@/i18n/localize";
 import { localizeCourses } from "@/i18n/localize-content";
 import { localizeSettings } from "@/i18n/localize-settings";
 import { resolveLocale, type LocaleParams } from "@/i18n/params";
-import { getActiveBranches, getPublishedCourses } from "@/server/modules/content/public";
+import { getActiveBranches, getPublishedCourses, getPublishedServices } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 
 // Rendered per request so the per-request CSP nonce (see proxy.ts) is applied to Next's own scripts.
@@ -19,12 +19,13 @@ export const dynamic = "force-dynamic";
 export default async function SiteLayout({ children, params }: { children: React.ReactNode; params: LocaleParams }) {
   const locale = await resolveLocale(params);
   setRequestLocale(locale);
-  const [t, rawSettings, rawCourses, rawBranches] = await Promise.all([getTranslations("common"), getSiteSettings(), getPublishedCourses(), getActiveBranches()]);
+  const [t, rawSettings, rawCourses, rawBranches, rawServices] = await Promise.all([getTranslations("common"), getSiteSettings(), getPublishedCourses(), getActiveBranches(), getPublishedServices()]);
+  const services = localizeAll(rawServices, locale);
   const settings = localizeSettings(rawSettings, locale);
   const courses = localizeCourses(rawCourses, locale);
   const branches = localizeAll(rawBranches, locale);
   return (
-    <ApplyDialogProvider courses={courses.map((c) => ({ value: c.slug, label: c.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))}>
+    <ApplyDialogProvider courses={courses.map((c) => ({ value: c.slug, label: c.title }))} services={services.map((s) => ({ value: s.slug, label: s.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))}>
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-orange focus:px-4 focus:py-2 focus:text-white">
         {t("a11y.skipToContent")}
       </a>

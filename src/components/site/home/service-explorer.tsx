@@ -100,37 +100,31 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
           </div>
         </div>
 
-        {/* Mobile accordion */}
-        <Reveal stagger={0.04} as="ul" className="mt-10 divide-y divide-white/10 border-y border-white/10 lg:hidden">
-          {services.map((s, i) => {
-            const isOpen = s.id === activeId;
-            return (
-              <li key={s.id}>
-                <button type="button" aria-expanded={isOpen} onClick={() => setActiveId(isOpen ? "" : s.id)} className="flex w-full items-center gap-4 py-4 text-left transition-colors active:bg-white/5">
-                  <span className="t-meta w-8 text-white/50">{pad2(i + 1)}</span>
-                  <span className="t-h4 flex-1">{s.title}</span>
-                  <ArrowUpRight size={18} className={cn("transition-transform duration-300", isOpen ? "rotate-90 text-orange" : "text-white/50")} />
-                </button>
-                <div className={cn("grid transition-[grid-template-rows] duration-400 ease-[var(--ease-out)]", isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]")} aria-hidden={!isOpen}>
-                  <div className="overflow-hidden">
-                  <div className={cn("pb-6 pl-12 transition-[opacity,transform] duration-400 ease-[var(--ease-out)]", isOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0")}>
-                  <p className="text-white/70">{s.tagline}</p>
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {s.attributes.map((a) => (
-                      <li key={a} className="t-meta rounded-full border border-white/15 px-3 py-1.5 text-white/80">
+        {/* Mobile / tablet: scannable service cards */}
+        <Reveal stagger={0.05} as="ul" className="mt-10 grid gap-3 sm:grid-cols-2 lg:hidden">
+          {services.map((s, i) => (
+            <li key={s.id}>
+              <Link href={routes.service(s.slug)} className="glass group flex h-full flex-col rounded-(--radius-xl) p-5 transition-transform duration-300 active:scale-[0.98] [--glass-bg:rgba(255,255,255,.05)]">
+                <div className="flex items-center justify-between">
+                  <span className="t-meta text-white/45">{pad2(i + 1)}</span>
+                  <span className="grid size-9 place-items-center rounded-full bg-orange text-white">
+                    <ArrowUpRight size={16} />
+                  </span>
+                </div>
+                <h3 className="t-h4 mt-5 text-white">{s.title}</h3>
+                <p className="mt-1.5 flex-1 text-sm leading-relaxed text-white/65">{s.tagline}</p>
+                {s.attributes.length ? (
+                  <ul className="mt-4 flex flex-wrap gap-1.5">
+                    {s.attributes.slice(0, 3).map((a) => (
+                      <li key={a} className="t-meta rounded-full border border-white/15 px-2.5 py-1 text-white/75">
                         {a}
                       </li>
                     ))}
                   </ul>
-                  <Link href={routes.service(s.slug)} className="mt-5 inline-flex items-center gap-1 font-semibold text-orange" tabIndex={isOpen ? 0 : -1}>
-                    {tc("more")} <ArrowUpRight size={16} />
-                  </Link>
-                  </div>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
+                ) : null}
+              </Link>
+            </li>
+          ))}
         </Reveal>
       </div>
     </section>

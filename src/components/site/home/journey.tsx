@@ -39,11 +39,13 @@ export function Journey() {
         const cards = el.querySelectorAll<HTMLElement>("[data-d-card]");
         const nodes = el.querySelectorAll<HTMLElement>("[data-d-node]");
         const track = el.querySelector<HTMLElement>("[data-d-track]")!;
-        gsap.set(cards, { opacity: 0, y: 28 });
-        // Cards enter as a group once the block is in view…
-        const enter = gsap.to(cards, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.12, paused: true });
+        const glow = el.querySelector<HTMLElement>("[data-d-glow]")!;
+        gsap.set(cards, { opacity: 0, y: 36, rotateX: -8, transformPerspective: 900, transformOrigin: "50% 0%" });
+        // Cards enter one after another once the block is in view…
+        const enter = gsap.to(cards, { opacity: 1, y: 0, rotateX: 0, duration: 0.9, ease: "expo.out", stagger: 0.14, paused: true });
         ScrollTrigger.create({ trigger: el, start: "top 70%", once: true, onEnter: () => enter.play() });
         // …and the track fills while the section scrolls through, lighting each step in turn.
+        gsap.fromTo(glow, { left: "0%" }, { left: "100%", ease: "none", scrollTrigger: { trigger: el, start: "top 60%", end: "bottom 70%", scrub: 0.4 } });
         gsap.fromTo(track, { scaleX: 0 }, {
           scaleX: 1,
           ease: "none",
@@ -109,6 +111,7 @@ export function Journey() {
         <div className="mt-14 hidden lg:block">
           <div className="relative mx-[12.5%] h-px bg-(--line)">
             <div data-d-track className="absolute inset-0 origin-left scale-x-0 bg-orange" aria-hidden />
+            <span data-d-glow className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange shadow-[0_0_0_6px_rgba(255,107,26,.18),0_0_28px_rgba(255,107,26,.9)]" aria-hidden />
             {steps.map((s, i) => (
               <span
                 key={s.n}
@@ -126,7 +129,7 @@ export function Journey() {
                 <li
                   key={s.n}
                   data-d-card
-                  className="group flex flex-col rounded-(--radius-xl) border border-(--line) bg-paper p-6 transition-[border-color,box-shadow,transform] duration-500 data-[active]:-translate-y-1 data-[active]:border-orange/40 data-[active]:shadow-[0_24px_48px_-24px_rgba(255,107,26,.35)]"
+                  className="group relative flex flex-col overflow-hidden rounded-(--radius-xl) border border-(--line) bg-paper p-6 transition-[border-color,box-shadow,transform] duration-500 hover:-translate-y-1 data-[active]:-translate-y-1 data-[active]:border-orange/40 data-[active]:shadow-[0_24px_48px_-24px_rgba(255,107,26,.35)] before:absolute before:inset-x-0 before:top-0 before:h-1 before:origin-left before:scale-x-0 before:bg-orange before:transition-transform before:duration-500 before:ease-[var(--ease-out)] data-[active]:before:scale-x-100"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-display text-3xl font-bold text-muted-2 transition-colors duration-300 group-data-[active]:text-orange">{s.n}</span>
@@ -147,9 +150,9 @@ export function Journey() {
         {/* Mobile / tablet: timeline with a travelling marker */}
         <ol data-m-list className="relative mt-10 lg:hidden">
           <div className="absolute top-4 bottom-4 left-[1.35rem] w-px bg-(--line)" aria-hidden />
-          <div data-m-rail className="absolute top-4 bottom-4 left-[1.35rem] w-px origin-top bg-orange" aria-hidden />
+          <div data-m-rail className="absolute top-4 bottom-4 left-[1.35rem] w-0.5 origin-top rounded-full bg-[linear-gradient(180deg,#ffb27a,#ff6b1a)]" aria-hidden />
           <div className="absolute top-4 bottom-4 left-[1.35rem]" aria-hidden>
-            <span data-m-marker className="absolute left-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange shadow-[0_0_0_6px_rgba(255,107,26,.2),0_0_24px_rgba(255,107,26,.8)]" />
+            <span data-m-marker className="absolute left-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange shadow-[0_0_0_6px_rgba(255,107,26,.2),0_0_28px_rgba(255,107,26,.9)] animate-pulse-soft" />
           </div>
           {steps.map((s, i) => {
             const Icon = ICONS[i] ?? BookOpen;
@@ -158,7 +161,7 @@ export function Journey() {
                 <span data-m-num className="font-display relative z-10 grid size-11 place-items-center rounded-full border border-(--line) bg-paper text-base font-semibold transition-[background-color,color,border-color] duration-300 group-data-[active]:border-orange group-data-[active]:bg-orange group-data-[active]:text-white">
                   {s.n}
                 </span>
-                <div data-m-card className="glass rounded-(--radius-xl) p-5">
+                <div data-m-card className="glass rounded-(--radius-xl) p-5 transition-[box-shadow] duration-500 group-data-[active]:shadow-[0_20px_40px_-24px_rgba(255,107,26,.5)]">
                   <div className="flex items-center justify-between">
                     <p className="t-eyebrow text-orange">{s.key}</p>
                     <span className="grid size-9 place-items-center rounded-full bg-orange-soft text-orange">

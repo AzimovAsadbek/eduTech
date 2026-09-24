@@ -24,8 +24,9 @@ test.describe.serial("Media: service page → inquiry → admin API → Telegram
     await form.getByLabel("Kompaniya / brend").fill(COMPANY);
     await form.getByLabel("Ismingiz").fill(NAME);
     await form.getByLabel("Telefon").fill(PHONE);
-    await expect(form.getByLabel("Xizmat")).toHaveValue("reels-production");
-    await form.getByLabel("Taxminiy byudjet").selectOption(BUDGET);
+    await expect(form.locator('input[name="serviceSlug"]')).toHaveValue("reels-production");
+    await form.getByRole("combobox", { name: /Taxminiy byudjet/ }).click();
+    await page.getByRole("option", { name: BUDGET }).click();
     await submitLeadForm(page, form, "Soʻrov yuborish", section);
   });
 

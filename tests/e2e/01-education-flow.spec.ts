@@ -27,7 +27,7 @@ test.describe.serial("Education: course list → detail → application → admi
     await expect(form).toBeVisible();
     await form.getByLabel("Ismingiz").fill(NAME);
     await form.getByLabel("Telefon").fill(PHONE);
-    await expect(form.getByLabel("Qiziqqan kurs")).toHaveValue(courseSlug);
+    await expect(form.locator('input[name="courseSlug"]')).toHaveValue(courseSlug);
     await submitLeadForm(page, form, "Ariza yuborish", page.locator("#ariza"));
   });
 

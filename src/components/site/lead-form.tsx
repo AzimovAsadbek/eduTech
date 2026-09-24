@@ -4,12 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/input";
+import { Input, Textarea } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 export interface LeadFormOption {
   value: string;
@@ -65,7 +66,7 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
     resolver: zodResolver(schema),
     defaultValues: { courseSlug: defaultCourseSlug ?? "", serviceSlug: defaultServiceSlug ?? "", branchId: branches[0]?.value ?? "" },
   });
-  const { register, handleSubmit, formState, setValue, getValues } = form;
+  const { register, handleSubmit, formState, setValue, getValues, control } = form;
   const err = (k: keyof Values) => formState.errors[k]?.message as string | undefined;
 
   const onSubmit = handleSubmit(async (values) => {
@@ -128,8 +129,8 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
 
       {type === "EDUCATION" ? (
         <div className="grid gap-4 sm:grid-cols-2">
-          <Select label={t("fields.course")} options={courses} placeholder={t("fields.coursePlaceholder")} error={err("courseSlug")} {...register("courseSlug")} />
-          {branches.length > 1 ? <Select label={t("fields.branch")} options={branches} error={err("branchId")} {...register("branchId")} /> : null}
+          <Controller name="courseSlug" control={control} render={({ field: f }) => <Select label={t("fields.course")} options={courses} placeholder={t("fields.coursePlaceholder")} error={err("courseSlug")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} />
+          {branches.length > 1 ? <Controller name="branchId" control={control} render={({ field: f }) => <Select label={t("fields.branch")} options={branches} error={err("branchId")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} /> : null}
         </div>
       ) : null}
 
@@ -137,13 +138,13 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
         <>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input label={t("fields.company")} placeholder={t("fields.companyPlaceholder")} autoComplete="organization" error={err("company")} {...register("company")} />
-            <Select label={t("fields.service")} options={services} placeholder={t("fields.servicePlaceholder")} error={err("serviceSlug")} {...register("serviceSlug")} />
+            <Controller name="serviceSlug" control={control} render={({ field: f }) => <Select label={t("fields.service")} options={services} placeholder={t("fields.servicePlaceholder")} error={err("serviceSlug")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} />
           </div>
-          <Select label={t("fields.budget")} options={budgets} placeholder={t("fields.selectPlaceholder")} error={err("budget")} {...register("budget")} />
+          <Controller name="budget" control={control} render={({ field: f }) => <Select label={t("fields.budget")} options={budgets} placeholder={t("fields.selectPlaceholder")} error={err("budget")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} />
         </>
       ) : null}
 
-      {type === "GENERAL" ? <Select label={t("fields.interest")} options={interests} placeholder={t("fields.selectPlaceholder")} error={err("interest")} {...register("interest")} /> : null}
+      {type === "GENERAL" ? <Controller name="interest" control={control} render={({ field: f }) => <Select label={t("fields.interest")} options={interests} placeholder={t("fields.selectPlaceholder")} error={err("interest")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} /> : null}
 
       <Textarea label={t("fields.message")} placeholder={type === "MEDIA" ? t("fields.messagePlaceholderMedia") : t("fields.messagePlaceholder")} error={err("message")} {...register("message")} />
 

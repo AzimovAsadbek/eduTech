@@ -223,7 +223,11 @@
   },
   "applyDialog": {
     "title": "Get a free consultation",
-    "lead": "Leave your details — we'll get back to you within one business day and help you pick the right course."
+    "lead": "Leave your details — we'll get back to you within one business day and help you pick the right course.",
+    "media": {
+      "title": "Request this service",
+      "lead": "Tell us briefly about the project — we reply within 24 hours with a proposal and an estimated budget."
+    }
   },
   "courseHero": {
     "duration": "Duration",

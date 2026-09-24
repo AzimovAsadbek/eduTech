@@ -14,11 +14,12 @@ test.describe.serial("Contact: general form on /kontakt", () => {
   test("submits the general form", async ({ page }) => {
     const res = await page.goto("/kontakt");
     expect(res?.status()).toBe(200);
-    const form = page.locator("form").filter({ has: page.getByLabel("Qiziqish") });
+    const form = page.locator("form").filter({ has: page.getByRole("combobox", { name: /Qiziqish/ }) });
     await expect(form).toBeVisible();
     await form.getByLabel("Ismingiz").fill(NAME);
     await form.getByLabel("Telefon").fill(PHONE);
-    await form.getByLabel("Qiziqish").selectOption("Hamkorlik");
+    await form.getByRole("combobox", { name: /Qiziqish/ }).click();
+    await page.getByRole("option", { name: "Hamkorlik" }).click();
     await form.getByLabel("Xabar").fill("E2E xabar <b>test</b>");
     // The <form> is replaced by the success card, so assert the heading at page level.
     await submitLeadForm(page, form, /^Yuborish/, page);

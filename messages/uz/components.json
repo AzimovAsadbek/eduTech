@@ -223,7 +223,11 @@
   },
   "applyDialog": {
     "title": "Bepul konsultatsiya oling",
-    "lead": "Maʼlumotlaringizni qoldiring — bir ish kuni ichida bogʻlanamiz va sizga mos kursni tanlashga yordam beramiz."
+    "lead": "Maʼlumotlaringizni qoldiring — bir ish kuni ichida bogʻlanamiz va sizga mos kursni tanlashga yordam beramiz.",
+    "media": {
+      "title": "Xizmat boʻyicha soʻrov qoldiring",
+      "lead": "Loyihangiz haqida qisqacha yozing — 24 soat ichida taklif va taxminiy byudjet bilan javob beramiz."
+    }
   },
   "courseHero": {
     "duration": "Davomiylik",

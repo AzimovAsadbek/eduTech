@@ -32,9 +32,11 @@ test.describe("Accessibility smoke (390×844)", () => {
 
   test("form fields on /kontakt are labelled", async ({ page }) => {
     await page.goto("/kontakt");
-    const form = page.locator("form").filter({ has: page.getByLabel("Qiziqish") });
-    for (const label of ["Ismingiz", "Telefon", "Qiziqish", "Xabar"]) {
+    const form = page.locator("form").filter({ has: page.getByRole("combobox", { name: /Qiziqish/ }) });
+    for (const label of ["Ismingiz", "Telefon", "Xabar"]) {
       await expect(form.getByLabel(label)).toBeVisible();
     }
+    // The custom select exposes an accessible name through aria-labelledby.
+    await expect(form.getByRole("combobox", { name: /Qiziqish/ })).toBeVisible();
   });
 });
