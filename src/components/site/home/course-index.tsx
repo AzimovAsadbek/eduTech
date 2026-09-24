@@ -64,7 +64,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
   }, [active?.id]);
 
   return (
-    <section className="section-y relative" aria-labelledby="courses-title">
+    <section className="section-y relative" aria-labelledby="courses-title" data-nav="/kurslar">
       <div className="container-x">
         {heading ? (
           <SectionHeading

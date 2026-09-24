@@ -15,7 +15,7 @@ export function PortfolioPreview({ projects, heading = true, limit = 5 }: { proj
   if (!items.length) return null;
   const spans = ["lg:col-span-7 lg:row-span-2", "lg:col-span-5", "lg:col-span-5", "lg:col-span-4", "lg:col-span-8"];
   return (
-    <section data-world="media" className="section-y bg-(--surface) text-white" aria-labelledby="portfolio-title">
+    <section data-world="media" data-nav="/media" className="section-y bg-(--surface) text-white" aria-labelledby="portfolio-title">
       <div className="container-x">
         {heading ? (
           <SectionHeading

@@ -19,7 +19,7 @@ interface Props {
 export function Conversion({ courses, services, branches, settings, defaultTab = "EDUCATION" }: Props) {
   const [tab, setTab] = useState<"EDUCATION" | "MEDIA">(defaultTab);
   return (
-    <section id="ariza" className="section-y relative overflow-hidden bg-orange-soft" aria-labelledby="apply-title">
+    <section id="ariza" className="section-y relative overflow-hidden bg-orange-soft" aria-labelledby="apply-title" data-nav="/kontakt">
       <div id="media-inquiry" className="absolute -top-24" aria-hidden />
       <div aria-hidden className="pointer-events-none absolute -top-1/3 -right-1/4 size-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.35),transparent)] blur-3xl" />
       <div className="container-x relative grid gap-12 lg:grid-cols-12">

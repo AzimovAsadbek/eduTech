@@ -20,7 +20,7 @@ const statements = [
 export function Manifesto({ gallery }: { gallery: GalleryItem[] }) {
   const photos = gallery.slice(0, 4);
   return (
-    <section className="section-y bg-paper-2" aria-labelledby="why-title">
+    <section className="section-y bg-paper-2" aria-labelledby="why-title" data-nav="/biz-haqimizda">
       <div className="container-x">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">

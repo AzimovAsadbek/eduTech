@@ -27,7 +27,7 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
   if (!active) return null;
 
   return (
-    <section data-world="media" className="section-y bg-(--surface) text-white" aria-labelledby="services-title">
+    <section data-world="media" data-nav="/media" className="section-y bg-(--surface) text-white" aria-labelledby="services-title">
       <div className="container-x">
         <SectionHeading eyebrow="Xizmatlar" title={<span id="services-title">Nima kerak boʻlsa — bir jamoada.</span>} lead="Reelsdan tortib toʻliq prodakshngacha. Xizmatni tanlang, nima kiritilishini koʻring." align="split" />
 

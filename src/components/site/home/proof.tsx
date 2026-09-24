@@ -26,7 +26,7 @@ const KIND: Record<string, string> = { PROJECT: "Loyiha", CAREER: "Karyera", GRO
 export function Proof({ stats, testimonials, results }: Props) {
   const hasStories = testimonials.length > 0 || results.length > 0;
   return (
-    <section className="section-y" aria-labelledby="proof-title">
+    <section className="section-y" aria-labelledby="proof-title" data-nav="/natijalar">
       <div className="container-x">
         <SectionHeading eyebrow="Natijalar" title={<span id="proof-title">Bizning natijalarimiz gapiradi.</span>} lead="Raqamlar — boshlanish. Haqiqiy dalil — oʻquvchilarimizning ishlari va ish joylari." align="split" />
 
