@@ -87,7 +87,7 @@ export default async function AboutPage() {
         </section>
       ) : null}
 
-      <section className="section-y bg-ink text-white" data-world="media" aria-labelledby="env-title">
+      <section className="section-y bg-green-deep text-white" data-world="media" aria-labelledby="env-title">
         <div className="container-x">
           <SectionHeading eyebrow="Muhit" title={<span id="env-title">Studiya. Sinf. Jamoa.</span>} lead="Oʻquv xonalari, prodakshn studiyasi va jamoa maydoni — bir binoda. Oʻrganish va yaratish yonma-yon." align="split" />
           <Reveal stagger={0.08} className="mt-12 grid gap-4 md:grid-cols-3">

@@ -31,7 +31,7 @@ export async function buildLeadsWorkbook(leads: LeadListItem[]): Promise<Buffer>
 
   const header = ws.getRow(1);
   header.font = { bold: true, color: { argb: "FFFFFFFF" } };
-  header.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFF6B1A" } };
+  header.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFE7E03" } };
   header.alignment = { vertical: "middle" };
   header.height = 22;
 

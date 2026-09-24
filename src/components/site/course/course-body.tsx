@@ -119,7 +119,7 @@ export function CourseBody({ course, branches }: { course: CourseDetail; branche
           <Block id="natija" eyebrow="Natija" title="Kursdan keyin nima qila olasiz">
             <ol className="space-y-3">
               {course.outcomes.map((o, i) => (
-                <li key={o} className="flex items-center gap-4 rounded-(--radius-lg) bg-ink p-5 text-white">
+                <li key={o} className="flex items-center gap-4 rounded-(--radius-lg) bg-green p-5 text-white">
                   <span className="font-display text-2xl font-bold text-orange">{pad2(i + 1)}</span>
                   <span className="t-h4">{o}</span>
                 </li>

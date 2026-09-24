@@ -17,7 +17,7 @@ interface Props {
 export function PageHeader({ eyebrow, title, accent, lead, children, dark, className }: Props) {
   return (
     <section data-world={dark ? "media" : undefined} className={cn("relative overflow-hidden pt-36 pb-16 lg:pt-44 lg:pb-20", dark ? "bg-(--surface) text-white" : "", className)}>
-      <div aria-hidden className="pointer-events-none absolute -top-32 right-[-10%] h-[50vh] w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.18),transparent)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -top-32 right-[-10%] h-[50vh] w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.18),transparent)] blur-3xl" />
       <div className="container-x grid gap-8 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-8">
           <Eyebrow className={cn("mb-5", dark && "text-white/60")}>{eyebrow}</Eyebrow>

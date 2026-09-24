@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Accordion } from "@/components/ui/accordion";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { routes } from "@/config/site";
+import { JsonLd, faqJsonLd } from "./json-ld";
 
 interface Props {
   faqs: Faq[];
@@ -17,6 +18,7 @@ export function FaqSection({ faqs, title = "Koʻp beriladigan savollar", eyebrow
   if (!faqs.length) return null;
   return (
     <section className="section-y border-t border-(--line)" aria-labelledby="faq-title">
+      <JsonLd data={faqJsonLd(faqs)} />
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">

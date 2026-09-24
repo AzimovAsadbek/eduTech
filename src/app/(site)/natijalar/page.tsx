@@ -96,7 +96,7 @@ export default async function ResultsPage() {
       ) : null}
 
       {videoTestimonials.length ? (
-        <section className="section-y bg-ink text-white" data-world="media" aria-labelledby="video-title">
+        <section className="section-y bg-green-deep text-white" data-world="media" aria-labelledby="video-title">
           <div className="container-x">
             <SectionHeading eyebrow="Video fikrlar" title={<span id="video-title">Oʻz ovozi bilan</span>} />
             <div className="mt-12 grid gap-6 md:grid-cols-2">

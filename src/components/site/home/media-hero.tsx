@@ -9,7 +9,7 @@ import { routes } from "@/config/site";
 export function MediaHero({ standalone }: { standalone?: boolean }) {
   return (
     <section data-world="media" className={`relative overflow-hidden bg-(--surface) text-white ${standalone ? "pt-36 pb-20 lg:pt-44 lg:pb-28" : "section-y"}`} aria-labelledby="media-title">
-      <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-[60vh] w-[90vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.28),transparent)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-[60vh] w-[90vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.28),transparent)] blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute inset-0 grain" />
       <div className="container-x relative grid gap-10 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-8">

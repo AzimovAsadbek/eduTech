@@ -63,7 +63,7 @@ export function Proof({ stats, testimonials, results }: Props) {
                 </article>
               ))}
               {results.map((r) => (
-                <article key={r.id} className="relative w-[min(85vw,22rem)] shrink-0 snap-start overflow-hidden rounded-(--radius-lg) bg-ink text-white">
+                <article key={r.id} className="relative w-[min(85vw,22rem)] shrink-0 snap-start overflow-hidden rounded-(--radius-lg) bg-green text-white">
                   <PlaceholderImage src={r.image ?? r.afterImage} alt={r.title} className="aspect-[4/3]" sizes="352px" />
                   <div className="p-6">
                     <p className="t-eyebrow text-orange">{KIND[r.kind]}</p>

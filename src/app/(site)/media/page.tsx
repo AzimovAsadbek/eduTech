@@ -4,7 +4,7 @@ import { FaqSection } from "@/components/site/faq-section";
 import { MediaHero } from "@/components/site/home/media-hero";
 import { PortfolioPreview } from "@/components/site/home/portfolio-preview";
 import { ServiceExplorer } from "@/components/site/home/service-explorer";
-import { JsonLd, breadcrumbJsonLd } from "@/components/site/json-ld";
+import { JsonLd, breadcrumbJsonLd, serviceListJsonLd } from "@/components/site/json-ld";
 import { MediaInquiry } from "@/components/site/media/media-inquiry";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getPublishedFaqs, getPublishedProjects, getPublishedServices } from "@/server/modules/content/public";
@@ -28,6 +28,7 @@ export default async function MediaPage() {
   return (
     <div data-world="media" className="bg-(--surface) text-white">
       <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Media", path: "/media" }])} />
+      <JsonLd data={serviceListJsonLd(services)} />
       <MediaHero standalone />
       <ServiceExplorer services={services} />
 

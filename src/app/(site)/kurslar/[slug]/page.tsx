@@ -19,7 +19,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title,
     description,
     alternates: { canonical: `/kurslar/${course.slug}` },
-    openGraph: { title, description, type: "article", images: course.coverImage ? [{ url: course.coverImage }] : undefined },
+    openGraph: { title, description, type: "website", url: `/kurslar/${course.slug}`, images: course.coverImage ? [{ url: course.coverImage, alt: course.title }] : undefined },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

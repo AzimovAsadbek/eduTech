@@ -7,7 +7,7 @@ import type { SiteSettings } from "@/server/modules/settings/service";
 export function MediaInquiry({ services, settings, defaultServiceSlug }: { services: LeadFormOption[]; settings: SiteSettings; defaultServiceSlug?: string }) {
   return (
     <section id="media-inquiry" data-world="media" className="section-y relative scroll-mt-20 overflow-hidden bg-(--surface) text-white" aria-labelledby="inquiry-title">
-      <div aria-hidden className="pointer-events-none absolute -bottom-1/2 left-1/2 size-[80vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.3),transparent)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-1/2 left-1/2 size-[80vw] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.3),transparent)] blur-3xl" />
       <div className="container-x relative grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <Eyebrow className="mb-4 text-white/60">Buyurtma</Eyebrow>

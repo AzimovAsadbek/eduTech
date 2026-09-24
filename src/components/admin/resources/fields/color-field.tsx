@@ -14,10 +14,10 @@ export function ColorField({ label, value, onChange, error, hint }: { label: str
       <div className="flex items-center gap-2">
         <label className="relative grid size-10 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-[10px] border border-(--line-strong)" style={{ background: valid ? value : "transparent" }}>
           <span className="sr-only">Rang tanlash</span>
-          <input type="color" value={valid ? value : "#FF6B1A"} onChange={(e) => onChange(e.target.value.toUpperCase())} className="absolute inset-0 size-full cursor-pointer opacity-0" tabIndex={-1} />
-          {!valid ? <span aria-hidden className="size-4 rounded-full bg-[conic-gradient(from_0deg,#FF6B1A,#111,#FFF1E8,#FF6B1A)]" /> : null}
+          <input type="color" value={valid ? value : "#FE7E03"} onChange={(e) => onChange(e.target.value.toUpperCase())} className="absolute inset-0 size-full cursor-pointer opacity-0" tabIndex={-1} />
+          {!valid ? <span aria-hidden className="size-4 rounded-full bg-[conic-gradient(from_0deg,#FE7E03,#111,#FFF3E6,#FE7E03)]" /> : null}
         </label>
-        <input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder="#FF6B1A" spellCheck={false} aria-invalid={error ? true : undefined} className={cn(controlBase, "h-10 font-mono text-[13px] uppercase")} />
+        <input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder="#FE7E03" spellCheck={false} aria-invalid={error ? true : undefined} className={cn(controlBase, "h-10 font-mono text-[13px] uppercase")} />
         {value ? (
           <button type="button" onClick={() => onChange("")} className="t-meta shrink-0 text-muted hover:text-ink">
             tozalash

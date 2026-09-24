@@ -14,8 +14,8 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
     <main className="grid min-h-dvh bg-paper lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]">
       {/* Brand side */}
       <section className="relative isolate flex flex-col justify-between overflow-hidden bg-ink px-8 py-8 text-white sm:px-12 lg:px-16 lg:py-12">
-        <div aria-hidden className="pointer-events-none absolute -top-1/4 right-[-20%] -z-10 size-[80vw] max-w-[900px] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.38),transparent)] blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-1/3 left-[-20%] -z-10 size-[60vw] max-w-[700px] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.16),transparent)] blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -top-1/4 right-[-20%] -z-10 size-[80vw] max-w-[900px] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.38),transparent)] blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-1/3 left-[-20%] -z-10 size-[60vw] max-w-[700px] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.16),transparent)] blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 opacity-[0.045] [background-image:linear-gradient(rgba(255,255,255,.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.6)_1px,transparent_1px)] [background-size:48px_48px]" />
 
         <AdminBrand href="/" />

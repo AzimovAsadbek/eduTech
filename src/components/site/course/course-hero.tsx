@@ -16,7 +16,7 @@ export function CourseHero({ course }: { course: CourseDetail }) {
     { icon: Wallet, l: "Narx", v: course.priceLabel ?? "Konsultatsiyada aniqlanadi" },
   ];
   return (
-    <section className="relative overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16" style={{ ["--accent" as string]: course.accent ?? "#FF6B1A" }}>
+    <section className="relative overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16" style={{ ["--accent" as string]: course.accent ?? "#FE7E03" }}>
       <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-[60vh] w-[55vw] rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--accent)_25%,transparent),transparent)] blur-3xl" />
       <div className="container-x grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-7">

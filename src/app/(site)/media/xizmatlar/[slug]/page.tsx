@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title: s.seoTitle ?? `${s.title} — EduTech Media`,
     description: s.seoDescription ?? `${s.tagline} ${s.description.slice(0, 140)}`,
     alternates: { canonical: `/media/xizmatlar/${s.slug}` },
+    openGraph: { title: s.seoTitle ?? `${s.title} — EduTech Media`, description: s.seoDescription ?? s.tagline, url: `/media/xizmatlar/${s.slug}`, images: s.coverImage ? [{ url: s.coverImage, alt: s.title }] : undefined },
   };
 }
 
@@ -45,7 +46,7 @@ export default async function ServicePage({ params, searchParams }: { params: Pa
       <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Media", path: "/media" }, { name: service.title, path: `/media/xizmatlar/${service.slug}` }])} />
 
       <section className="relative overflow-hidden pt-36 pb-16 lg:pt-44">
-        <div aria-hidden className="pointer-events-none absolute -top-32 right-[-10%] h-[60vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.3),transparent)] blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -top-32 right-[-10%] h-[60vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.3),transparent)] blur-3xl" />
         <div className="container-x grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow className="mb-5 text-white/60">EduTech Media · xizmat</Eyebrow>

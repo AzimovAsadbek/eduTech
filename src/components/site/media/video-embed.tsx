@@ -17,7 +17,7 @@ export function VideoEmbed({ url, title, poster }: { url: string; title: string;
   const [playing, setPlaying] = useState(false);
   const embed = toEmbed(url);
   return (
-    <div className="relative aspect-video overflow-hidden rounded-(--radius-xl) bg-ink-2">
+    <div className="relative aspect-video overflow-hidden rounded-(--radius-xl) bg-green">
       {playing ? (
         embed.kind === "iframe" ? (
           <iframe src={embed.src} title={title} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="absolute inset-0 size-full" />

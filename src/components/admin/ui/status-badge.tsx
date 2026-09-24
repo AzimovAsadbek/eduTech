@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { CONTENT_STATUS_LABELS, LEAD_STATUS_LABELS, LEAD_TYPE_LABELS, ROLE_LABELS } from "@/components/admin/labels";
 
 export const LEAD_STATUS_COLORS: Record<LeadStatus, string> = {
-  NEW: "#FF6B1A",
+  NEW: "#FE7E03",
   CONTACTED: "#2563EB",
   IN_PROGRESS: "#D97706",
   CONVERTED: "#16A34A",

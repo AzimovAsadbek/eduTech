@@ -1,18 +1,24 @@
 # EduTech Design System
 
 Direction: **Premium EdTech × Creative Studio × Editorial × Subtle Glass**.
-Two worlds share one system: **EDU** (white, warm, orange energy) and **MEDIA** (near-black, cinematic, same orange).
+Two worlds share one system: **EDU** (white, warm, orange energy) and **MEDIA** (deep brand green, cinematic, same orange). Colours come straight from the official logo files: orange `#FE7E03`, charcoal `#3A3A39`, green `#00382C`.
+
+## Logo
+
+The lockup (E-mark + "DU TECH" + "ZAMONAVIY KASBLAR") is traced 1:1 from the brand PDFs into `src/components/brand/logo-data.ts` and rendered by `<Logo>` / `<LogoMark>` (`src/components/brand/logo.tsx`). On light surfaces the mark is fully orange and the wordmark charcoal; on dark surfaces the extruded "L" and wordmark turn white (`tone="dark"`). Minimum height: 24px without tagline, 40px with tagline. Static assets: `public/brand/logo-light.svg`, `public/brand/logo-dark.svg`, `public/icon.svg`, `public/apple-icon.svg`.
 
 ## Colour
 
 | Token | Value | Use |
 |---|---|---|
-| `--c-orange` | `#FF6B1A` | Primary action, accents, ambient glow |
-| `--c-orange-deep` | `#E5560A` | Hover / pressed |
-| `--c-orange-soft` | `#FFF1E8` | Tints, chips, section washes |
+| `--c-orange` | `#FE7E03` | Primary action, accents, ambient glow |
+| `--c-orange-deep` | `#E06C00` | Hover / pressed |
+| `--c-orange-soft` | `#FFF3E6` | Tints, chips, section washes |
 | `--c-ink` | `#111111` | Headings, primary text |
-| `--c-ink-2` | `#1A1A1A` | Media world surfaces |
-| `--c-ink-3` | `#2A2A2A` | Media world elevated surfaces |
+| `--c-charcoal` | `#3A3A39` | Logo wordmark, brand charcoal |
+| `--c-green-deep` | `#04231C` | Media world / footer surface (brand green, from the dark logo lockup) |
+| `--c-green` | `#00382C` | Media world elevated surfaces, dark accents |
+| `--c-green-soft` | `#0B4A3C` | Media world highest surfaces |
 | `--c-muted` | `#737373` | Secondary text |
 | `--c-line` | `rgba(17,17,17,.08)` | Hairlines |
 | `--c-paper` | `#FFFFFF` | Page background |
