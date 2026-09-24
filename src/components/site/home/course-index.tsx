@@ -157,11 +157,11 @@ export function CourseIndex({ courses: allCourses, categories, compact, heading 
         <ol ref={grid} className={cn("mt-10 hidden gap-5 lg:grid", limit && limit <= 4 ? "lg:grid-cols-2 xl:grid-cols-4" : "lg:grid-cols-3")}>
           {visible.map((c, i) => (
             <li key={c.id} data-card>
-              <Link href={routes.course(c.slug)} className="group relative block overflow-hidden rounded-(--radius-xl) bg-ink text-white shadow-md transition-[transform,box-shadow] duration-500 ease-[var(--ease-out)] hover:-translate-y-1.5 hover:shadow-[0_32px_64px_-28px_rgba(255,107,26,.55)]">
+              <Link href={routes.course(c.slug)} className="group relative block overflow-hidden rounded-(--radius-xl) bg-ink text-white shadow-md transition-[transform,box-shadow] duration-500 ease-[var(--ease-out)] hover:-translate-y-1 hover:shadow-lg">
                 <div className="relative aspect-[4/4.6]">
-                  {cover(c, "absolute inset-0 transition-transform duration-700 ease-[var(--ease-out)] group-hover:scale-[1.04]")}
+                  {cover(c, "absolute inset-0 transition-transform duration-700 ease-[var(--ease-out)] group-hover:scale-[1.03]")}
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" aria-hidden />
-                  <span className="font-display absolute top-3 right-4 text-[5.5rem] leading-none font-bold text-white/15 select-none transition-transform duration-700 group-hover:-translate-y-1" aria-hidden>
+                  <span className="font-display absolute top-3 right-4 text-[5.5rem] leading-none font-bold text-white/15 select-none" aria-hidden>
                     {pad2(i + 1)}
                   </span>
                   <div className="absolute inset-x-5 bottom-5">

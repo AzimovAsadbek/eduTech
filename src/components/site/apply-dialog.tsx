@@ -47,7 +47,13 @@ export function ApplyDialogProvider({ children, courses, services, branches }: P
   const open = useCallback((p?: ApplyPreset) => {
     setPreset({ type: "EDUCATION", ...p });
     setMounted(true);
-    requestAnimationFrame(() => ref.current?.showModal());
+    requestAnimationFrame(() => {
+      const d = ref.current;
+      if (!d) return;
+      d.showModal();
+      // Start in the first field instead of on the close button.
+      d.querySelector<HTMLInputElement>('input:not([type="hidden"])')?.focus({ preventScroll: true });
+    });
   }, []);
   const close = useCallback(() => ref.current?.close(), []);
 
@@ -79,20 +85,25 @@ export function ApplyDialogProvider({ children, courses, services, branches }: P
         data-world={isMedia ? "media" : undefined}
         className={[
           // Phones: bottom sheet. Desktop: centred card.
-          "fixed inset-x-0 bottom-0 m-0 mt-auto w-full max-h-[92dvh] overflow-y-auto rounded-t-[28px] border-0 p-0 shadow-lg",
+          "fixed inset-x-0 bottom-0 m-0 mt-auto w-full max-w-none max-h-[94dvh] overflow-y-auto overscroll-contain rounded-t-[32px] border-0 p-0 shadow-lg",
           "sm:inset-auto sm:m-auto sm:w-[min(100vw-2rem,40rem)] sm:max-h-[calc(100dvh-2rem)] sm:rounded-(--radius-xl)",
           "backdrop:bg-ink/55 backdrop:backdrop-blur-md open:animate-[sheet-in_.45s_var(--ease-out)] sm:open:animate-[dialog-in_.4s_var(--ease-out)]",
           isMedia ? "bg-[#141416] text-white" : "bg-paper text-ink",
         ].join(" ")}
       >
         {mounted ? (
-          <div className="relative p-6 pt-8 sm:p-8">
-            <span aria-hidden className="absolute top-2.5 left-1/2 h-1.5 w-10 -translate-x-1/2 rounded-full bg-current opacity-20 sm:hidden" />
-            <button type="button" onClick={close} aria-label={tc("close")} className="absolute top-4 right-4 grid size-10 place-items-center rounded-full border border-current/15 transition-colors hover:bg-current/10">
+          <div className="relative px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-8">
+            <span aria-hidden className="mx-auto mb-4 block h-1.5 w-10 rounded-full bg-current opacity-20 sm:hidden" />
+            <button
+              type="button"
+              onClick={close}
+              aria-label={tc("close")}
+              className={`absolute top-4 right-4 grid size-10 place-items-center rounded-full transition-colors sm:top-6 sm:right-6 ${isMedia ? "bg-white/10 text-white hover:bg-white/15" : "bg-ink/[0.06] text-ink hover:bg-ink/10"}`}
+            >
               <X size={18} />
             </button>
-            <p className="t-eyebrow mb-3 text-orange">{isMedia ? tc("order") : tc("apply")}</p>
-            <h2 id="apply-title" className="t-h3 mb-2 pr-10">
+            <p className="t-eyebrow mb-2 text-orange">{isMedia ? tc("order") : tc("apply")}</p>
+            <h2 id="apply-title" className="t-h3 mb-2 pr-12">
               {isMedia ? t("media.title") : t("title")}
             </h2>
             <p className={isMedia ? "mb-6 text-white/65" : "mb-6 text-(--fg-muted)"}>{isMedia ? t("media.lead") : t("lead")}</p>

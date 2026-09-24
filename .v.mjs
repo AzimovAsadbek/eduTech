@@ -1,0 +1,14 @@
+import { chromium, devices } from "@playwright/test"; import sharp from "sharp";
+const out = process.argv[2]; const b = await chromium.launch();
+const m = await (await b.newContext({ ...devices["iPhone 13"], deviceScaleFactor: 1 })).newPage(); const ms = [];
+const at = async (p, sel, off) => { await p.evaluate(({ sel, off }) => { const el = document.querySelector(sel); window.scrollTo({ top: el.getBoundingClientRect().top + scrollY + off, behavior: "instant" }); }, { sel, off }); await p.waitForTimeout(900); return p.screenshot(); };
+await m.goto("http://localhost:3000/media", { waitUntil: "networkidle" }); await m.waitForTimeout(800);
+ms.push(await at(m, "#services-title", 300));
+await m.evaluate(() => document.querySelector(".fixed.inset-x-3 button")?.click()); await m.waitForTimeout(900); ms.push(await m.screenshot());
+await m.keyboard.press("Escape"); await m.goto("http://localhost:3000/kurslar/dasturlash", { waitUntil: "networkidle" }); await m.waitForTimeout(800);
+ms.push(await at(m, "#natija", -80));
+await m.evaluate(() => window.scrollTo({ top: 700, behavior: "instant" })); await m.waitForTimeout(600); await m.evaluate(() => document.querySelector(".fixed.inset-x-3 button")?.click()); await m.waitForTimeout(900); ms.push(await m.screenshot());
+await sharp({ create: { width: 4 * 398, height: 852, channels: 3, background: "#333" } }).composite(ms.map((buf, i) => ({ input: buf, left: i * 398, top: 0 }))).jpeg({ quality: 80 }).toFile(`${out}/fix_mob.jpg`);
+const d = await (await b.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 0.55 })).newPage();
+await d.goto("http://localhost:3000/", { waitUntil: "networkidle" }); await at(d, "#courses-title", -80); await d.hover("ol li a >> nth=0"); await d.waitForTimeout(700); await d.screenshot({ path: `${out}/fix_desk.jpg` });
+await b.close(); console.log("ok");

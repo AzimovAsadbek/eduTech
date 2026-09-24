@@ -40,7 +40,7 @@ export const courses: CourseSeed[] = [
     skills: ["HTML & CSS", "JavaScript", "TypeScript", "React", "Node.js", "Git & GitHub", "REST API", "Ma'lumotlar bazasi"],
     outcomes: ["Junior Developer sifatida ishga kirish", "Oʻz web-loyihangizni ishga tushirish", "Freelance buyurtmalarni bajarish", "Portfolio: kamida 3 ta real loyiha"],
     curriculum: [
-      { title: "Web asoslari", lessons: ["Internet qanday ishlaydi", "HTML semantikasi", "CSS layout: Flexbox, Grid", "Responsive dizayn"] },
+      { title: "Web asoslari", lessons: ["HTML semantikasi", "CSS layout: Flexbox, Grid", "Responsive dizayn"] },
       { title: "JavaScript", lessons: ["Tillar asoslari", "DOM va hodisalar", "Asinxron kod", "API bilan ishlash"] },
       { title: "Frontend", lessons: ["React komponentlari", "State boshqaruvi", "Routing", "Real loyiha"] },
       { title: "Backend asoslari", lessons: ["Node.js", "REST API", "Ma'lumotlar bazasi", "Autentifikatsiya"] },
@@ -67,7 +67,7 @@ export const courses: CourseSeed[] = [
         skills: ["HTML & CSS", "JavaScript", "TypeScript", "React", "Node.js", "Git & GitHub", "REST API", "Базы данных"],
         outcomes: ["Трудоустройство на позицию Junior Developer", "Запуск собственного веб-проекта", "Выполнение заказов на фрилансе", "Портфолио: минимум 3 реальных проекта"],
         curriculum: [
-          { title: "Основы веба", lessons: ["Как работает интернет", "Семантика HTML", "CSS-раскладка: Flexbox, Grid", "Адаптивный дизайн"] },
+          { title: "Основы веба", lessons: ["Семантика HTML", "CSS-раскладка: Flexbox, Grid", "Адаптивный дизайн"] },
           { title: "JavaScript", lessons: ["Основы языка", "DOM и события", "Асинхронный код", "Работа с API"] },
           { title: "Фронтенд", lessons: ["Компоненты React", "Управление состоянием", "Роутинг", "Реальный проект"] },
           { title: "Основы бэкенда", lessons: ["Node.js", "REST API", "Базы данных", "Аутентификация"] },
@@ -91,7 +91,7 @@ export const courses: CourseSeed[] = [
         skills: ["HTML & CSS", "JavaScript", "TypeScript", "React", "Node.js", "Git & GitHub", "REST API", "Databases"],
         outcomes: ["Land a job as a Junior Developer", "Launch your own web project", "Take on freelance orders", "Portfolio: at least 3 real projects"],
         curriculum: [
-          { title: "Web Fundamentals", lessons: ["How the internet works", "HTML semantics", "CSS layout: Flexbox, Grid", "Responsive design"] },
+          { title: "Web Fundamentals", lessons: ["HTML semantics", "CSS layout: Flexbox, Grid", "Responsive design"] },
           { title: "JavaScript", lessons: ["Language fundamentals", "DOM and events", "Asynchronous code", "Working with APIs"] },
           { title: "Frontend", lessons: ["React components", "State management", "Routing", "Real project"] },
           { title: "Backend Fundamentals", lessons: ["Node.js", "REST API", "Databases", "Authentication"] },

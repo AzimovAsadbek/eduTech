@@ -67,18 +67,12 @@ export function MobileCtaBar({ phone, telegram }: Props) {
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0",
       )}
     >
-      <div
-        className={cn(
-          "flex items-center gap-1.5 rounded-[26px] p-1.5 backdrop-blur-2xl backdrop-saturate-150 transition-colors duration-300",
-          "shadow-[0_18px_48px_-16px_rgba(0,0,0,.45),inset_0_1px_0_rgba(255,255,255,.55)]",
-          dark ? "border border-white/12 bg-[rgba(24,24,26,.72)] shadow-[0_18px_48px_-16px_rgba(0,0,0,.7),inset_0_1px_0_rgba(255,255,255,.12)]" : "border border-white/70 bg-[rgba(255,255,255,.72)]",
-        )}
-      >
+      <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onPrimary}
           tabIndex={visible ? 0 : -1}
-          className="relative flex h-12 flex-1 items-center justify-center gap-2 overflow-hidden rounded-[20px] bg-[linear-gradient(180deg,#ff8a45_0%,#ff6b1a_55%,#f25f11_100%)] font-semibold text-white shadow-[0_8px_20px_-8px_rgba(255,107,26,.8),inset_0_1px_0_rgba(255,255,255,.35)] transition-transform duration-200 active:scale-[0.97]"
+          className="relative flex h-14 flex-1 items-center justify-center gap-2 overflow-hidden rounded-full bg-[linear-gradient(180deg,#ff8a45_0%,#ff6b1a_55%,#ee5c0f_100%)] text-[15px] font-semibold text-white shadow-[0_16px_36px_-12px_rgba(255,107,26,.75),inset_0_1px_0_rgba(255,255,255,.35)] backdrop-blur-xl transition-transform duration-200 active:scale-[0.97]"
         >
           {isMediaPage ? t("order") : t("apply")} <ArrowUpRight size={18} />
         </button>
@@ -88,7 +82,7 @@ export function MobileCtaBar({ phone, telegram }: Props) {
             aria-label={tb("call")}
             tabIndex={visible ? 0 : -1}
             onClick={() => track("phone_click", { source: "mobile-bar" })}
-            className={cn("grid size-12 shrink-0 place-items-center rounded-[20px] transition-transform duration-200 active:scale-95", dark ? "bg-white/12 text-white" : "bg-ink/[0.06] text-ink")}
+            className={cn("grid size-14 shrink-0 place-items-center rounded-full border backdrop-blur-xl transition-transform duration-200 active:scale-95", dark ? "border-white/12 bg-[rgba(24,24,26,.7)] text-white" : "border-white/70 bg-[rgba(255,255,255,.75)] text-ink shadow-[0_12px_28px_-14px_rgba(0,0,0,.35)]")}
           >
             <Phone size={18} />
           </a>
@@ -101,7 +95,7 @@ export function MobileCtaBar({ phone, telegram }: Props) {
             aria-label="Telegram"
             tabIndex={visible ? 0 : -1}
             onClick={() => track("telegram_click", { source: "mobile-bar" })}
-            className={cn("grid size-12 shrink-0 place-items-center rounded-[20px] transition-transform duration-200 active:scale-95", dark ? "bg-white/12 text-white" : "bg-ink/[0.06] text-ink")}
+            className={cn("grid size-14 shrink-0 place-items-center rounded-full border backdrop-blur-xl transition-transform duration-200 active:scale-95", dark ? "border-white/12 bg-[rgba(24,24,26,.7)] text-white" : "border-white/70 bg-[rgba(255,255,255,.75)] text-ink shadow-[0_12px_28px_-14px_rgba(0,0,0,.35)]")}
           >
             <Send size={18} />
           </a>

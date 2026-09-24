@@ -119,11 +119,16 @@ export async function CourseBody({ course, branches }: { course: CourseDetail; b
 
         {course.outcomes.length ? (
           <Block id="natija" eyebrow={t("outcomes.eyebrow")} title={t("outcomes.title")}>
-            <ol className="space-y-3">
+            <ol className="grid gap-3 sm:grid-cols-2">
               {course.outcomes.map((o, i) => (
-                <li key={o} className="flex items-center gap-4 rounded-(--radius-lg) bg-ink p-5 text-white">
-                  <span className="font-display text-2xl font-bold text-orange">{pad2(i + 1)}</span>
-                  <span className="t-h4">{o}</span>
+                <li key={o} className="relative flex items-start gap-4 overflow-hidden rounded-(--radius-lg) border border-orange/15 bg-orange-soft/50 p-5 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-orange">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-orange text-white">
+                    <Check size={16} />
+                  </span>
+                  <span>
+                    <span className="t-meta block text-orange">{pad2(i + 1)}</span>
+                    <span className="mt-0.5 block font-semibold leading-snug">{o}</span>
+                  </span>
                 </li>
               ))}
             </ol>
