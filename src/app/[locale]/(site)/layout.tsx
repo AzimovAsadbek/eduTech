@@ -3,6 +3,7 @@ import { Cursor } from "@/components/motion/cursor";
 import { ApplyDialogProvider } from "@/components/site/apply-dialog";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
+import { MobileCtaBar } from "@/components/site/mobile-cta-bar";
 import { JsonLd, organizationJsonLd } from "@/components/site/json-ld";
 import { localizeAll } from "@/i18n/localize";
 import { localizeCourses } from "@/i18n/localize-content";
@@ -31,6 +32,7 @@ export default async function SiteLayout({ children, params }: { children: React
       <Header />
       <main id="main">{children}</main>
       <Footer settings={settings} />
+      <MobileCtaBar phone={settings.phone || undefined} telegram={settings.telegram || undefined} />
       <Cursor />
     </ApplyDialogProvider>
   );

@@ -256,6 +256,32 @@
     linear-gradient(160deg, #1c1c1f, #0b0b0c);
 }
 
+/* Slow drifting light leak for cinematic dark sections */
+@keyframes light-leak {
+  0% { transform: translate3d(-6%, -4%, 0) scale(1); opacity: .9; }
+  50% { transform: translate3d(6%, 4%, 0) scale(1.12); opacity: 1; }
+  100% { transform: translate3d(-6%, -4%, 0) scale(1); opacity: .9; }
+}
+.light-leak { animation: light-leak 14s ease-in-out infinite; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .light-leak { animation: none; } }
+
+/* Horizontal snap rails (mobile) */
+@utility snap-rail {
+  display: flex;
+  min-width: 0;
+  max-width: calc(100% + 2 * var(--gutter));
+  gap: 0.875rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  padding-inline: var(--gutter);
+  margin-inline: calc(-1 * var(--gutter));
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.snap-rail::-webkit-scrollbar { display: none; }
+.snap-rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
 /* ───────────────────────── Motion helpers ───────────────────────── */
 [data-reveal] { opacity: 0; transform: translateY(24px); }
 [data-reveal].is-visible,

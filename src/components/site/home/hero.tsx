@@ -3,6 +3,7 @@
 import { ArrowDown, ArrowUpRight, Play } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
+import { Link } from "@/i18n/navigation";
 import { gsap, isDesktop, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
 import { Counter } from "@/components/motion/counter";
 import { Button } from "@/components/ui/button";
@@ -13,13 +14,15 @@ import { routes } from "@/config/site";
 interface Props {
   stats: { students: string; courses: string; projects: string };
   heroImage?: string | null;
+  /** Course titles for the mobile direction chips. */
+  directions?: { slug: string; title: string }[];
 }
 
 /**
  * Signature hero: editorial headline on the left, an "ecosystem" composition on the right —
  * code, AI, robotics and content tiles orbiting a real-photo slot. Entrance timeline + cursor parallax.
  */
-export function Hero({ stats, heroImage }: Props) {
+export function Hero({ stats, heroImage, directions = [] }: Props) {
   const t = useTranslations("hero");
   const tc = useTranslations("common");
   const root = useRef<HTMLElement>(null);
@@ -92,7 +95,7 @@ export function Hero({ stats, heroImage }: Props) {
       <div aria-hidden className="pointer-events-none absolute top-1/2 left-[-20%] h-[50vh] w-[40vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,178,122,.25),transparent)] blur-3xl" />
 
       <div className="container-x grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-6">
+        <div className="min-w-0 lg:col-span-6">
           <h1 id="hero-title" className="t-display" aria-label={t("headline")}>
             {headline.map((w, i) => (
               <span key={`${w}-${i}`} className="inline-block overflow-hidden pb-[0.06em] align-top" aria-hidden>
@@ -115,7 +118,17 @@ export function Hero({ stats, heroImage }: Props) {
             </Button>
           </div>
 
-          <dl data-hero-fade className="mt-12 grid max-w-md grid-cols-3 gap-3">
+          {directions.length ? (
+            <div data-hero-fade className="snap-rail mt-7 py-1 lg:hidden" aria-label={tc("nav.courses")}>
+              {directions.map((d) => (
+                <Link key={d.slug} href={routes.course(d.slug)} className="glass rounded-full px-4 py-2 text-sm font-semibold whitespace-nowrap text-ink active:bg-orange-soft">
+                  {d.title}
+                </Link>
+              ))}
+            </div>
+          ) : null}
+
+          <dl data-hero-fade className="mt-10 grid max-w-md grid-cols-3 gap-3 lg:mt-12">
             {[
               { v: stats.students, l: tc("stats.students") },
               { v: stats.courses, l: tc("stats.courses") },

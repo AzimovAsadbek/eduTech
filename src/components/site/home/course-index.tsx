@@ -30,29 +30,46 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
   const [cat, setCat] = useState<string>("all");
   const [activeId, setActiveId] = useState<string | null>(courses[0]?.id ?? null);
   const list = useRef<HTMLOListElement>(null);
+  const rail = useRef<HTMLOListElement>(null);
   const panel = useRef<HTMLDivElement>(null);
 
   const visible = useMemo(() => (cat === "all" ? courses : courses.filter((c) => c.category?.slug === cat)), [cat, courses]);
   const usedCats = useMemo(() => categories.filter((c) => courses.some((x) => x.category?.id === c.id)), [categories, courses]);
   const active = visible.find((c) => c.id === activeId) ?? visible[0] ?? null;
 
-  // Rows: one quick entrance when the list scrolls into view; re-runs softly when the filter changes.
+  // Desktop rows: one quick entrance when the list scrolls into view; re-runs softly when the filter changes.
   useGSAP(
     () => {
       const el = list.current;
-      if (!el || prefersReducedMotion()) return;
+      if (!el || prefersReducedMotion() || !isDesktop()) return;
       const rows = el.querySelectorAll<HTMLElement>("[data-row]");
-      if (!isDesktop()) {
-        rows.forEach((r) => {
-          const tw = gsap.fromTo(r, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out", paused: true, immediateRender: true });
-          ScrollTrigger.create({ trigger: r, start: "top 94%", once: true, onEnter: () => tw.play() });
-        });
-        return;
-      }
       const tween = gsap.fromTo(rows, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.04, paused: true, immediateRender: true });
       ScrollTrigger.create({ trigger: el, start: "top 88%", once: true, onEnter: () => tween.play() });
     },
     { scope: list, dependencies: [cat] },
+  );
+
+  // Mobile rail: cards rise in as the rail enters, then scale with their distance from the viewport centre while swiping.
+  useGSAP(
+    () => {
+      const el = rail.current;
+      if (!el || prefersReducedMotion() || isDesktop()) return;
+      const cards = el.querySelectorAll<HTMLElement>("[data-card]");
+      const enter = gsap.fromTo(cards, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.07, paused: true, immediateRender: true });
+      ScrollTrigger.create({ trigger: el, start: "top 90%", once: true, onEnter: () => enter.play() });
+      const update = () => {
+        const mid = el.getBoundingClientRect().left + el.clientWidth / 2;
+        cards.forEach((c) => {
+          const r = c.getBoundingClientRect();
+          const d = Math.min(1, Math.abs(r.left + r.width / 2 - mid) / el.clientWidth);
+          gsap.to(c, { scale: 1 - d * 0.06, duration: 0.3, overwrite: "auto" });
+        });
+      };
+      update();
+      el.addEventListener("scroll", update, { passive: true });
+      return () => el.removeEventListener("scroll", update);
+    },
+    { scope: rail, dependencies: [cat] },
   );
 
   // Spotlight: cross-fade its content whenever the active course changes.
@@ -97,7 +114,45 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
           </div>
         ) : null}
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-12">
+        {/* Mobile / tablet: swipeable course cards */}
+        <div className="mt-8 lg:hidden">
+          <ol ref={rail} className="snap-rail py-2" aria-label={t("swipe")}>
+            {visible.map((c, i) => (
+              <li key={c.id} data-card className="w-[74vw] max-w-[19rem] will-change-transform">
+                <Link href={routes.course(c.slug)} className="group relative block overflow-hidden rounded-(--radius-xl) bg-ink text-white shadow-md active:scale-[0.98] transition-transform duration-300">
+                  <div className="relative aspect-[4/4.6]">
+                    {c.coverImage ? (
+                      <PlaceholderImage src={c.coverImage} alt="" className="absolute inset-0" sizes="74vw" />
+                    ) : (
+                      <div className="grain absolute inset-0" style={{ background: `linear-gradient(160deg, ${c.accent ?? "#FF6B1A"} 0%, #FF6B1A 60%, #E5560A 100%)` }} aria-hidden />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" aria-hidden />
+                    <span className="font-display absolute top-3 right-4 text-[5.5rem] leading-none font-bold text-white/15 select-none" aria-hidden>
+                      {pad2(i + 1)}
+                    </span>
+                    <div className="absolute inset-x-5 bottom-5">
+                      <p className="t-eyebrow text-white/70">{c.roleLabel}</p>
+                      <h3 className="font-display mt-1.5 text-[1.75rem] leading-none font-semibold tracking-tight">{c.title}</h3>
+                      <p className="mt-2 line-clamp-2 text-sm text-white/75">{c.tagline}</p>
+                      <div className="mt-4 flex items-center justify-between">
+                        <div className="flex gap-1.5">
+                          <span className="t-meta rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{c.durationLabel}</span>
+                          <span className="t-meta rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{compact ? tc(`format.${c.format}`) : tc(`level.${c.level}`)}</span>
+                        </div>
+                        <span className="grid size-9 place-items-center rounded-full bg-orange text-white">
+                          <ArrowUpRight size={18} />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ol>
+          {visible.length === 0 ? <p className="py-12 text-center text-(--fg-muted)">{t("empty")}</p> : null}
+        </div>
+
+        <div className="mt-8 hidden gap-10 lg:grid lg:grid-cols-12 lg:gap-12">
           <ol ref={list} className="divide-y divide-(--line) border-y border-(--line) lg:col-span-8">
             {visible.map((c, i) => {
               const isActive = active?.id === c.id;

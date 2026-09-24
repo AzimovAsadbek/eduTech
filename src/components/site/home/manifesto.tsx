@@ -25,7 +25,18 @@ export async function Manifesto({ gallery }: { gallery: GalleryItem[] }) {
               <p className="t-lead mt-6 max-w-md">{t("lead")}</p>
             </Reveal>
           </div>
-          <Reveal stagger={0.08} as="ol" className="grid gap-x-10 sm:grid-cols-2 lg:col-span-7">
+          {/* Mobile: swipeable glass cards */}
+          <Reveal stagger={0.06} as="ol" className="snap-rail py-2 sm:hidden">
+            {statements.map((s, i) => (
+              <li key={s.title} className="glass w-[78vw] max-w-[20rem] rounded-(--radius-xl) p-6">
+                <p className="font-display text-3xl font-bold text-orange">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="t-h4 mt-4">{s.title}</h3>
+                <p className="mt-2 text-(--fg-muted)">{s.text}</p>
+              </li>
+            ))}
+          </Reveal>
+          {/* Tablet / desktop: editorial ledger */}
+          <Reveal stagger={0.08} as="ol" className="hidden gap-x-10 sm:grid sm:grid-cols-2 lg:col-span-7">
             {statements.map((s, i) => (
               <li key={s.title} className="border-t border-(--line) py-6">
                 <p className="t-meta text-orange">{String(i + 1).padStart(2, "0")}</p>

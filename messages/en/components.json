@@ -8,7 +8,9 @@
   },
   "hero": {
     "headline": "Learn the professions of tomorrow, today.",
-    "accent": ["professions"],
+    "accent": [
+      "professions"
+    ],
     "lead": "Hands-on knowledge, modern technology and real projects — that is how you land a new profession.",
     "photoAlt": "EduTech students during a hands-on class",
     "tiles": {
@@ -27,10 +29,34 @@
     "titleAccent": "From skill to profession.",
     "lead": "Four stages. Each one grows out of the last — from theory to a real profession.",
     "steps": [
-      { "n": "01", "key": "Learn", "title": "Learn", "text": "Live classes with a mentor. Only as much theory as practice actually needs.", "detail": "2–3 classes a week · small groups" },
-      { "n": "02", "key": "Practice", "title": "Practise", "text": "Every class is a task. Every week is a mini project. Mistakes are fine — stopping is not.", "detail": "Code review · feedback · retakes" },
-      { "n": "03", "key": "Build", "title": "Build", "text": "You ship a product for a real client or a real problem. That is a portfolio, not a certificate.", "detail": "Capstone project · teamwork" },
-      { "n": "04", "key": "Grow", "title": "Grow", "text": "A job, freelance work or your own project. We stay by your side after graduation too.", "detail": "Career support · community" }
+      {
+        "n": "01",
+        "key": "Learn",
+        "title": "Learn",
+        "text": "Live classes with a mentor. Only as much theory as practice actually needs.",
+        "detail": "2–3 classes a week · small groups"
+      },
+      {
+        "n": "02",
+        "key": "Practice",
+        "title": "Practise",
+        "text": "Every class is a task. Every week is a mini project. Mistakes are fine — stopping is not.",
+        "detail": "Code review · feedback · retakes"
+      },
+      {
+        "n": "03",
+        "key": "Build",
+        "title": "Build",
+        "text": "You ship a product for a real client or a real problem. That is a portfolio, not a certificate.",
+        "detail": "Capstone project · teamwork"
+      },
+      {
+        "n": "04",
+        "key": "Grow",
+        "title": "Grow",
+        "text": "A job, freelance work or your own project. We stay by your side after graduation too.",
+        "detail": "Career support · community"
+      }
     ]
   },
   "courseIndex": {
@@ -39,23 +65,49 @@
     "filterLabel": "Course categories",
     "all": "All",
     "empty": "No courses in this category yet.",
-    "coverAlt": "{title} course"
+    "coverAlt": "{title} course",
+    "swipe": "Swipe"
   },
   "manifesto": {
     "eyebrow": "Why EduTech",
     "title": "We don't sell courses. We give you a profession.",
-    "accent": ["profession."],
+    "accent": [
+      "profession."
+    ],
     "lead": "Six principles define how we work. They are not slogans — they are rules we check in class every day.",
     "statements": [
-      { "title": "Hands-on learning", "text": "A class is not a lecture. Every topic is tried by hand the same day." },
-      { "title": "Modern technology", "text": "AI, robotics, mobile production — the tools the market needs right now." },
-      { "title": "Experienced mentors", "text": "Our teachers work in their field and bring that experience into the classroom." },
-      { "title": "Real projects", "text": "You graduate with a portfolio, not just a certificate." },
-      { "title": "Career-focused", "text": "Each curriculum starts from what employers need — never the other way round." },
-      { "title": "Creative environment", "text": "Studio, cameras, a team — learning itself runs like a project." }
+      {
+        "title": "Hands-on learning",
+        "text": "A class is not a lecture. Every topic is tried by hand the same day."
+      },
+      {
+        "title": "Modern technology",
+        "text": "AI, robotics, mobile production — the tools the market needs right now."
+      },
+      {
+        "title": "Experienced mentors",
+        "text": "Our teachers work in their field and bring that experience into the classroom."
+      },
+      {
+        "title": "Real projects",
+        "text": "You graduate with a portfolio, not just a certificate."
+      },
+      {
+        "title": "Career-focused",
+        "text": "Each curriculum starts from what employers need — never the other way round."
+      },
+      {
+        "title": "Creative environment",
+        "text": "Studio, cameras, a team — learning itself runs like a project."
+      }
     ],
     "photoAlt": "The EduTech environment — placeholder for a real photo",
-    "photoLabels": ["In class", "Studio", "Team", "Event"]
+    "photoLabels": [
+      "In class",
+      "Studio",
+      "Team",
+      "Event"
+    ]
   },
   "proof": {
     "title": "Our results speak for themselves.",
@@ -77,7 +129,9 @@
   "mediaHero": {
     "eyebrow": "EduTech Media · for businesses",
     "title": "Show your brand through content.",
-    "accent": ["content."],
+    "accent": [
+      "content."
+    ],
     "lead": "Creative content, SMM and digital marketing for your business — all in one place."
   },
   "serviceExplorer": {
@@ -141,8 +195,19 @@
       "messagePlaceholderMedia": "A few words about the project…",
       "messagePlaceholder": "Your question or comment…"
     },
-    "budgets": ["Up to 1M UZS", "1–3M UZS", "3–10M UZS", "Over 10M UZS", "Not sure yet"],
-    "interests": ["Courses", "Media services", "Partnership", "Other"],
+    "budgets": [
+      "Up to 1M UZS",
+      "1–3M UZS",
+      "3–10M UZS",
+      "Over 10M UZS",
+      "Not sure yet"
+    ],
+    "interests": [
+      "Courses",
+      "Media services",
+      "Partnership",
+      "Other"
+    ],
     "privacy": "Your details are used only to get in touch with you.",
     "submitting": "Sending…"
   },
@@ -171,14 +236,39 @@
       "mentor": "Mentor",
       "faq": "FAQ"
     },
-    "whoFor": { "eyebrow": "Who it's for", "title": "This course is for you if…" },
-    "curriculum": { "eyebrow": "Curriculum", "title": "{count, plural, one {# module} other {# modules}}" },
-    "skills": { "eyebrow": "Skills", "title": "What you'll learn" },
-    "projects": { "eyebrow": "Practice", "title": "Projects you'll build during the course", "item": "Project {n}" },
-    "outcomes": { "eyebrow": "Outcome", "title": "What you'll be able to do after the course" },
-    "mentor": { "eyebrow": "Mentor", "title": "{count, plural, one {Mentor} other {Mentors}}" },
-    "testimonials": { "eyebrow": "Graduates", "title": "What they say" },
-    "faq": { "eyebrow": "FAQ", "title": "Questions" },
+    "whoFor": {
+      "eyebrow": "Who it's for",
+      "title": "This course is for you if…"
+    },
+    "curriculum": {
+      "eyebrow": "Curriculum",
+      "title": "{count, plural, one {# module} other {# modules}}"
+    },
+    "skills": {
+      "eyebrow": "Skills",
+      "title": "What you'll learn"
+    },
+    "projects": {
+      "eyebrow": "Practice",
+      "title": "Projects you'll build during the course",
+      "item": "Project {n}"
+    },
+    "outcomes": {
+      "eyebrow": "Outcome",
+      "title": "What you'll be able to do after the course"
+    },
+    "mentor": {
+      "eyebrow": "Mentor",
+      "title": "{count, plural, one {Mentor} other {Mentors}}"
+    },
+    "testimonials": {
+      "eyebrow": "Graduates",
+      "title": "What they say"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions"
+    },
     "otherCourses": "Other courses"
   },
   "courseApply": {
@@ -205,5 +295,8 @@
   },
   "cursor": {
     "view": "View"
+  },
+  "mobileBar": {
+    "call": "Call"
   }
 }
