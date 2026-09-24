@@ -1,18 +1,25 @@
 "use client";
 
+import { BookOpen, Repeat, Rocket, TrendingUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { cn } from "@/lib/utils";
 
-type Step = { n: string; key: string; title: string; text: string; detail: string };
+const ICONS = [BookOpen, Repeat, Rocket, TrendingUp];
+
+interface Step {
+  n: string;
+  key: string;
+  title: string;
+  text: string;
+  detail: string;
+}
 
 /**
- * DISCOVERY: the education model as a scroll-driven journey.
- * Desktop: the whole block (heading included) pins; the rail fills and steps cross-fade with overlap, so
- * the heading and every step title stay readable throughout.
- * Mobile: no pinning — a vertical timeline whose rail fills with scroll and whose steps light up in turn.
+ * DISCOVERY: the education model as a four-step process anyone can read at a glance.
+ * Desktop: four cards in a row under a progress track that fills left→right on scroll; cards light up in order.
+ * Mobile: a vertical timeline whose rail fills with scroll, a glowing marker rides along it and each step pops in.
  */
 export function Journey() {
   const t = useTranslations("journey");
@@ -22,54 +29,59 @@ export function Journey() {
   useGSAP(
     () => {
       const el = root.current!;
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion()) {
+        el.querySelectorAll<HTMLElement>("[data-step]").forEach((s) => (s.dataset.active = ""));
+        return;
+      }
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1024px)", () => {
-        const panels = el.querySelectorAll<HTMLElement>("[data-step]");
-        const rail = el.querySelector<HTMLElement>("[data-rail]")!;
-        const items = el.querySelectorAll<HTMLElement>("[data-rail-item]");
-        gsap.set(panels, { autoAlpha: 0, y: 24 });
-        gsap.set(panels[0], { autoAlpha: 1, y: 0 });
-        items[0].dataset.active = "";
-
-        const tl = gsap.timeline({
+        const cards = el.querySelectorAll<HTMLElement>("[data-d-card]");
+        const nodes = el.querySelectorAll<HTMLElement>("[data-d-node]");
+        const track = el.querySelector<HTMLElement>("[data-d-track]")!;
+        gsap.set(cards, { opacity: 0, y: 28 });
+        // Cards enter as a group once the block is in view…
+        const enter = gsap.to(cards, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.12, paused: true });
+        ScrollTrigger.create({ trigger: el, start: "top 70%", once: true, onEnter: () => enter.play() });
+        // …and the track fills while the section scrolls through, lighting each step in turn.
+        gsap.fromTo(track, { scaleX: 0 }, {
+          scaleX: 1,
+          ease: "none",
           scrollTrigger: {
-            trigger: el.querySelector("[data-pin]"),
-            start: "top top+=88",
-            end: `+=${panels.length * 60}%`,
-            pin: true,
-            scrub: 0.5,
-            anticipatePin: 1,
+            trigger: el,
+            start: "top 60%",
+            end: "bottom 70%",
+            scrub: 0.4,
             onUpdate: (self) => {
-              const idx = Math.min(panels.length - 1, Math.floor(self.progress * panels.length + 0.15));
-              items.forEach((it, i) => (i <= idx ? (it.dataset.active = "") : delete it.dataset.active));
+              const idx = Math.min(steps.length - 1, Math.floor(self.progress * steps.length + 0.2));
+              nodes.forEach((n, i) => (i <= idx ? (n.dataset.active = "") : delete n.dataset.active));
+              cards.forEach((c, i) => (i <= idx ? (c.dataset.active = "") : delete c.dataset.active));
             },
           },
-        });
-        tl.to(rail, { scaleY: 1, ease: "none", duration: panels.length }, 0);
-        panels.forEach((p, i) => {
-          if (i === 0) return;
-          // Overlapping cross-fade: the previous step is still visible while the next enters.
-          tl.to(panels[i - 1], { autoAlpha: 0, y: -16, duration: 0.45, ease: "power2.inOut" }, i - 0.2).to(p, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" }, i - 0.1);
         });
       });
 
       mm.add("(max-width: 1023px)", () => {
-        const rail = el.querySelector<HTMLElement>("[data-mobile-rail]");
-        const items = el.querySelectorAll<HTMLElement>("[data-mobile-step]");
-        if (rail) {
-          gsap.fromTo(rail, { scaleY: 0 }, { scaleY: 1, ease: "none", scrollTrigger: { trigger: rail.parentElement, start: "top 70%", end: "bottom 70%", scrub: true } });
-        }
+        const list = el.querySelector<HTMLElement>("[data-m-list]")!;
+        const rail = el.querySelector<HTMLElement>("[data-m-rail]")!;
+        const marker = el.querySelector<HTMLElement>("[data-m-marker]")!;
+        const items = el.querySelectorAll<HTMLElement>("[data-step]");
+        // Rail + glowing marker follow the scroll position through the list.
+        gsap.fromTo(rail, { scaleY: 0 }, { scaleY: 1, ease: "none", scrollTrigger: { trigger: list, start: "top 65%", end: "bottom 75%", scrub: 0.3 } });
+        gsap.fromTo(marker, { top: "0%" }, { top: "100%", ease: "none", scrollTrigger: { trigger: list, start: "top 65%", end: "bottom 75%", scrub: 0.3 } });
         items.forEach((it) => {
-          const tween = gsap.fromTo(it, { opacity: 0.35, x: -8 }, { opacity: 1, x: 0, duration: 0.6, ease: "power2.out", paused: true });
+          const num = it.querySelector<HTMLElement>("[data-m-num]")!;
+          const card = it.querySelector<HTMLElement>("[data-m-card]")!;
+          const tl = gsap.timeline({ paused: true })
+            .fromTo(card, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" }, 0)
+            .fromTo(num, { scale: 0.7 }, { scale: 1, duration: 0.5, ease: "back.out(2.5)" }, 0);
           ScrollTrigger.create({
             trigger: it,
-            start: "top 78%",
+            start: "top 72%",
             once: true,
             onEnter: () => {
               it.dataset.active = "";
-              tween.play();
+              tl.play();
             },
           });
         });
@@ -82,71 +94,84 @@ export function Journey() {
 
   return (
     <section ref={root} className="section-y relative" aria-labelledby="journey-title">
-      {/* Desktop: pinned block (heading + rail + steps) */}
-      <div data-pin className="container-x hidden lg:block">
-        <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-5">
+      <div className="container-x">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
             <Eyebrow className="mb-4">{t("eyebrow")}</Eyebrow>
             <h2 id="journey-title" className="t-h2">
               {t("title")} <span className="text-orange">{t("titleAccent")}</span>
             </h2>
-            <p className="t-lead mt-4 max-w-sm">{t("lead")}</p>
-
-            <div className="relative mt-12">
-              <div className="absolute top-2 bottom-2 left-[1.35rem] w-px bg-(--line)" aria-hidden />
-              <div data-rail className="absolute top-2 bottom-2 left-[1.35rem] w-px origin-top scale-y-0 bg-orange" aria-hidden />
-              {steps.map((s) => (
-                <div key={s.n} data-rail-item className="group relative flex items-center gap-5 py-3.5">
-                  <span className="font-display relative z-10 grid size-11 place-items-center rounded-full border border-(--line) bg-paper text-base font-semibold text-muted-2 transition-[color,border-color,background-color] duration-300 group-data-[active]:border-orange group-data-[active]:bg-orange group-data-[active]:text-white">
-                    {s.n}
-                  </span>
-                  <span className="flex flex-col">
-                    <span className="t-meta text-(--fg-muted)">{s.key}</span>
-                    <span className="font-semibold text-muted-2 transition-colors duration-300 group-data-[active]:text-ink">{s.title}</span>
-                  </span>
-                </div>
-              ))}
-            </div>
           </div>
+          <p className="t-lead lg:col-span-4 lg:col-start-9">{t("lead")}</p>
+        </div>
 
-          <div className="relative col-span-6 col-start-7 min-h-[32rem]">
+        {/* Desktop: process row */}
+        <div className="mt-14 hidden lg:block">
+          <div className="relative mx-[12.5%] h-px bg-(--line)">
+            <div data-d-track className="absolute inset-0 origin-left scale-x-0 bg-orange" aria-hidden />
             {steps.map((s, i) => (
-              <article key={s.n} data-step className={cn("absolute inset-0 flex flex-col justify-center", i !== 0 && "invisible opacity-0")} aria-hidden={i !== 0}>
-                <p className="t-eyebrow text-orange">
-                  {s.n} — {s.key}
-                </p>
-                <h3 className="t-h1 mt-4">{s.title}</h3>
-                <p className="t-lead mt-6 max-w-xl">{s.text}</p>
-                <p className="t-meta glass mt-8 inline-flex w-fit rounded-full px-3 py-2 text-ink [--glass-bg:color-mix(in_srgb,var(--color-orange-soft)_70%,white)] [--glass-border:rgba(255,107,26,.18)]">{s.detail}</p>
-              </article>
+              <span
+                key={s.n}
+                data-d-node
+                className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-muted-2 transition-[background-color,transform] duration-300 data-[active]:scale-125 data-[active]:bg-orange"
+                style={{ left: `${(i / (steps.length - 1)) * 100}%` }}
+                aria-hidden
+              />
             ))}
           </div>
+          <ol className="mt-8 grid grid-cols-4 gap-5">
+            {steps.map((s, i) => {
+              const Icon = ICONS[i] ?? BookOpen;
+              return (
+                <li
+                  key={s.n}
+                  data-d-card
+                  className="group flex flex-col rounded-(--radius-xl) border border-(--line) bg-paper p-6 transition-[border-color,box-shadow,transform] duration-500 data-[active]:-translate-y-1 data-[active]:border-orange/40 data-[active]:shadow-[0_24px_48px_-24px_rgba(255,107,26,.35)]"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-display text-3xl font-bold text-muted-2 transition-colors duration-300 group-data-[active]:text-orange">{s.n}</span>
+                    <span className="grid size-11 place-items-center rounded-full bg-orange-soft text-orange transition-colors duration-300 group-data-[active]:bg-orange group-data-[active]:text-white">
+                      <Icon size={20} />
+                    </span>
+                  </div>
+                  <p className="t-meta mt-6 text-(--fg-muted)">{s.key}</p>
+                  <h3 className="t-h3 mt-1">{s.title}</h3>
+                  <p className="mt-3 flex-1 text-(--fg-muted)">{s.text}</p>
+                  <p className="t-meta mt-6 inline-flex w-fit rounded-full bg-orange-soft px-3 py-1.5 text-ink">{s.detail}</p>
+                </li>
+              );
+            })}
+          </ol>
         </div>
-      </div>
 
-      {/* Mobile / tablet: scroll-lit timeline */}
-      <div className="container-x lg:hidden">
-        <Eyebrow className="mb-4">{t("eyebrow")}</Eyebrow>
-        <h2 className="t-h2">
-          {t("title")} <span className="text-orange">{t("titleAccent")}</span>
-        </h2>
-        <p className="t-lead mt-4">{t("lead")}</p>
-        <ol className="relative mt-10">
-          <div className="absolute top-3 bottom-3 left-[1.35rem] w-px bg-(--line)" aria-hidden />
-          <div data-mobile-rail className="absolute top-3 bottom-3 left-[1.35rem] w-px origin-top bg-orange" aria-hidden />
-          {steps.map((s) => (
-            <li key={s.n} data-mobile-step className="group relative grid grid-cols-[2.75rem_1fr] gap-4 py-6">
-              <span className="font-display relative z-10 grid size-11 place-items-center rounded-full border border-(--line) bg-paper text-base font-semibold transition-[background-color,color,border-color] duration-300 group-data-[active]:border-orange group-data-[active]:bg-orange group-data-[active]:text-white">
-                {s.n}
-              </span>
-              <div>
-                <p className="t-eyebrow text-orange">{s.key}</p>
-                <h3 className="t-h3 mt-1.5">{s.title}</h3>
-                <p className="mt-2 text-(--fg-muted)">{s.text}</p>
-                <p className="t-meta glass mt-3 inline-flex rounded-full px-3 py-1.5 text-ink [--glass-bg:color-mix(in_srgb,var(--color-orange-soft)_70%,white)] [--glass-border:rgba(255,107,26,.18)]">{s.detail}</p>
-              </div>
-            </li>
-          ))}
+        {/* Mobile / tablet: timeline with a travelling marker */}
+        <ol data-m-list className="relative mt-10 lg:hidden">
+          <div className="absolute top-4 bottom-4 left-[1.35rem] w-px bg-(--line)" aria-hidden />
+          <div data-m-rail className="absolute top-4 bottom-4 left-[1.35rem] w-px origin-top bg-orange" aria-hidden />
+          <div className="absolute top-4 bottom-4 left-[1.35rem]" aria-hidden>
+            <span data-m-marker className="absolute left-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange shadow-[0_0_0_6px_rgba(255,107,26,.2),0_0_24px_rgba(255,107,26,.8)]" />
+          </div>
+          {steps.map((s, i) => {
+            const Icon = ICONS[i] ?? BookOpen;
+            return (
+              <li key={s.n} data-step className="group relative grid grid-cols-[2.75rem_1fr] gap-4 py-4">
+                <span data-m-num className="font-display relative z-10 grid size-11 place-items-center rounded-full border border-(--line) bg-paper text-base font-semibold transition-[background-color,color,border-color] duration-300 group-data-[active]:border-orange group-data-[active]:bg-orange group-data-[active]:text-white">
+                  {s.n}
+                </span>
+                <div data-m-card className="glass rounded-(--radius-xl) p-5">
+                  <div className="flex items-center justify-between">
+                    <p className="t-eyebrow text-orange">{s.key}</p>
+                    <span className="grid size-9 place-items-center rounded-full bg-orange-soft text-orange">
+                      <Icon size={16} />
+                    </span>
+                  </div>
+                  <h3 className="t-h3 mt-2">{s.title}</h3>
+                  <p className="mt-2 text-(--fg-muted)">{s.text}</p>
+                  <p className="t-meta mt-4 inline-flex rounded-full bg-orange-soft px-3 py-1.5 text-ink">{s.detail}</p>
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>

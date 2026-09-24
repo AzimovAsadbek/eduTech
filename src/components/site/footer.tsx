@@ -96,8 +96,9 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
-          <p>{t("rights", { year, brand: siteConfig.name })}</p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-display text-sm font-semibold tracking-tight text-white/70">{t("closing")}</p>
+          <p className="t-meta text-white/40">{t("rights", { year, brand: siteConfig.name })}</p>
           <p className="font-display text-sm font-semibold tracking-tight text-white/60">
             Edu<span className="text-orange">Tech</span> · {settings.city}
           </p>

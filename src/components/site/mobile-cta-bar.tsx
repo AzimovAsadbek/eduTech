@@ -21,6 +21,7 @@ export function MobileCtaBar({ phone, telegram }: Props) {
   const tb = useTranslations("mobileBar");
   const { open } = useApplyDialog();
   const [visible, setVisible] = useState(false);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const hideZones = () => Array.from(document.querySelectorAll<HTMLElement>("#ariza, #media-inquiry, footer, [data-hide-cta]"));
@@ -32,6 +33,10 @@ export function MobileCtaBar({ phone, telegram }: Props) {
         return r.top < vh * 0.9 && r.bottom > vh * 0.4;
       });
       setVisible(window.scrollY > 560 && !overZone);
+      // Match the surface underneath the dock: dark glass over MEDIA-world sections.
+      const probeY = vh - 40;
+      const under = document.elementFromPoint(window.innerWidth / 2, probeY);
+      setDark(Boolean(under?.closest('[data-world="media"]')));
     };
     check();
     window.addEventListener("scroll", check, { passive: true });
@@ -54,7 +59,7 @@ export function MobileCtaBar({ phone, telegram }: Props) {
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0",
       )}
     >
-      <div className="glass flex items-center gap-2 rounded-full p-1.5 shadow-lg [--glass-bg:rgba(255,255,255,.78)]">
+      <div className={cn("glass flex items-center gap-2 rounded-full p-1.5 shadow-lg transition-colors duration-300", dark ? "[--glass-bg:rgba(20,20,22,.72)] [--glass-border:rgba(255,255,255,.14)]" : "[--glass-bg:rgba(255,255,255,.78)]")}>
         <button
           type="button"
           onClick={() => {
@@ -67,12 +72,12 @@ export function MobileCtaBar({ phone, telegram }: Props) {
           {t("apply")} <ArrowUpRight size={18} />
         </button>
         {phone ? (
-          <a href={`tel:${phone.replace(/\s/g, "")}`} aria-label={tb("call")} tabIndex={visible ? 0 : -1} onClick={() => track("phone_click", { source: "mobile-bar" })} className="grid size-12 shrink-0 place-items-center rounded-full bg-ink text-white active:bg-ink-3">
+          <a href={`tel:${phone.replace(/\s/g, "")}`} aria-label={tb("call")} tabIndex={visible ? 0 : -1} onClick={() => track("phone_click", { source: "mobile-bar" })} className={cn("grid size-12 shrink-0 place-items-center rounded-full", dark ? "bg-white text-ink" : "bg-ink text-white active:bg-ink-3")}>
             <Phone size={18} />
           </a>
         ) : null}
         {telegram ? (
-          <a href={telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" tabIndex={visible ? 0 : -1} onClick={() => track("telegram_click", { source: "mobile-bar" })} className="grid size-12 shrink-0 place-items-center rounded-full border border-ink/10 bg-white/70 text-ink active:bg-orange-soft">
+          <a href={telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" tabIndex={visible ? 0 : -1} onClick={() => track("telegram_click", { source: "mobile-bar" })} className={cn("grid size-12 shrink-0 place-items-center rounded-full border", dark ? "border-white/15 bg-white/10 text-white" : "border-ink/10 bg-white/70 text-ink active:bg-orange-soft")}>
             <Send size={18} />
           </a>
         ) : null}

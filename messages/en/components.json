@@ -4,7 +4,8 @@
     "site": "Site",
     "directions": "Explore",
     "contact": "Contact",
-    "rights": "© {year} {brand}. All rights reserved."
+    "rights": "© {year} {brand} · Namangan",
+    "closing": "Future professions — starting today."
   },
   "hero": {
     "headline": "Learn the professions of tomorrow, today.",
@@ -66,7 +67,16 @@
     "all": "All",
     "empty": "No courses in this category yet.",
     "coverAlt": "{title} course",
-    "swipe": "Swipe"
+    "swipe": "Swipe",
+    "card": {
+      "duration": "Duration",
+      "level": "Level",
+      "format": "Format",
+      "age": "Age",
+      "outcomes": "After the course you can",
+      "price": "Price",
+      "priceOnRequest": "On request"
+    }
   },
   "manifesto": {
     "eyebrow": "Why EduTech",

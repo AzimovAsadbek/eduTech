@@ -25,7 +25,6 @@ export function Header() {
   const [stage, setStage] = useState<Stage>("top");
   const [dark, setDark] = useState(false);
   const [open, setOpen] = useState(false);
-  const [spy, setSpy] = useState<string | null>(null);
   const { open: openApply } = useApplyDialog();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -71,29 +70,6 @@ export function Header() {
     }
   }, [pathname]);
 
-  // Scroll-spy: on pages with `data-nav` sections (the homepage), the nav item whose section
-  // crosses the upper third of the viewport becomes active.
-  useEffect(() => {
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-nav]"));
-    const check = () => {
-      const line = window.innerHeight * 0.35;
-      let current: string | null = null;
-      for (const s of sections) {
-        const r = s.getBoundingClientRect();
-        if (r.top <= line && r.bottom > line) current = s.dataset.nav ?? null;
-      }
-      setSpy((prev) => (prev === current ? prev : current));
-    };
-    check(); // pages without `data-nav` sections resolve to null here
-    if (!sections.length) return;
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
-    return () => {
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("resize", check);
-    };
-  }, [pathname]);
-
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
@@ -134,7 +110,7 @@ export function Header() {
           <Logo tone={inverted ? "dark" : "light"} tagline height={stage === "compact" ? 36 : 42} href={homeHref} label={t("a11y.home")} className="max-sm:[&_svg]:h-9 max-sm:[&_svg]:w-auto" />
           <nav aria-label={t("a11y.mainNav")} className="hidden items-center gap-1 lg:flex">
             {nav.map((item) => {
-              const active = spy ? spy === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}

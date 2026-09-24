@@ -26,45 +26,24 @@ export function Cursor() {
     const dxTo = gsap.quickTo(d, "x", { duration: 0.08, ease: "power3" });
     const dyTo = gsap.quickTo(d, "y", { duration: 0.08, ease: "power3" });
 
-    let magnet: HTMLElement | null = null;
-
     const move = (e: PointerEvent) => {
       if (!shown) {
         shown = true;
         gsap.set([d, r], { x: e.clientX, y: e.clientY });
         gsap.to([d, r], { opacity: 1, duration: 0.3 });
       }
-      if (magnet) {
-        const b = magnet.getBoundingClientRect();
-        const cx = b.left + b.width / 2;
-        const cy = b.top + b.height / 2;
-        const mx = cx + (e.clientX - cx) * 0.25;
-        const my = cy + (e.clientY - cy) * 0.25;
-        xTo(mx);
-        yTo(my);
-      } else {
-        xTo(e.clientX);
-        yTo(e.clientY);
-      }
+      xTo(e.clientX);
+      yTo(e.clientY);
       dxTo(e.clientX);
       dyTo(e.clientY);
     };
 
     const over = (e: PointerEvent) => {
       const t = (e.target as HTMLElement).closest<HTMLElement>("a, button, [role=button], input, textarea, select, [data-cursor]");
-      const m = (e.target as HTMLElement).closest<HTMLElement>("[data-magnetic]");
-      if (m && m !== magnet) {
-        magnet = m;
-        const b = m.getBoundingClientRect();
-        gsap.to(r, { width: b.width + 16, height: b.height + 16, borderRadius: 999, duration: 0.35, ease: "power3" });
-      } else if (!m && magnet) {
-        magnet = null;
-        gsap.to(r, { width: 36, height: 36, duration: 0.35, ease: "power3" });
-      }
       const mode = t?.dataset.cursor ?? (t ? "link" : "default");
       r.dataset.mode = mode;
       d.dataset.mode = mode;
-      if (!m) gsap.to(r, { scale: t ? 1.6 : 1, duration: 0.3, ease: "power3" });
+      gsap.to(r, { scale: t ? 1.5 : 1, duration: 0.3, ease: "power3" });
     };
 
     const down = () => gsap.to(r, { scale: 0.85, duration: 0.15 });

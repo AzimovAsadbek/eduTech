@@ -4,7 +4,8 @@
     "site": "Sayt",
     "directions": "Yoʻnalishlar",
     "contact": "Kontakt",
-    "rights": "© {year} {brand}. Barcha huquqlar himoyalangan."
+    "rights": "© {year} {brand} · Namangan",
+    "closing": "Kelajak kasblari — bugundan."
   },
   "hero": {
     "headline": "Kelajak kasblarini bugundan oʻrganing.",
@@ -66,7 +67,16 @@
     "all": "Barchasi",
     "empty": "Bu yoʻnalishda hozircha kurs yoʻq.",
     "coverAlt": "{title} kursi",
-    "swipe": "Chapga suring"
+    "swipe": "Chapga suring",
+    "card": {
+      "duration": "Davomiylik",
+      "level": "Daraja",
+      "format": "Format",
+      "age": "Yosh",
+      "outcomes": "Kursdan keyin siz",
+      "price": "Narx",
+      "priceOnRequest": "Konsultatsiyada"
+    }
   },
   "manifesto": {
     "eyebrow": "Nega EduTech",

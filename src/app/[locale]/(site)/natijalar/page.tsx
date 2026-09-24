@@ -53,17 +53,17 @@ export default async function ResultsPage({ params }: Props) {
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: tc("nav.home"), path: "/" }, { name: tc("nav.results"), path: "/natijalar" }], locale)} />
       <PageHeader eyebrow={t("eyebrow")} title={t("title")} accent={t.raw("accent") as string[]} lead={t("lead")}>
-        <dl className="mt-8 grid grid-cols-3 gap-4">
+        <dl className="mt-8 grid grid-cols-3 gap-2 sm:gap-3">
           {[
             [settings.stats.students, tc("stats.students")],
             [settings.stats.courses, tc("stats.courses")],
             [settings.stats.projects, t("statProjects")],
           ].map(([v, l]) => (
-            <div key={l}>
-              <dd className="font-display text-3xl font-bold tracking-tight">
+            <div key={l} className="glass rounded-(--radius-lg) px-3 py-3 sm:px-4">
+              <dd className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 <Counter value={v} />
               </dd>
-              <dt className="t-meta text-(--fg-muted)">{l}</dt>
+              <dt className="t-meta mt-1 text-(--fg-muted)">{l}</dt>
             </div>
           ))}
         </dl>
@@ -71,7 +71,7 @@ export default async function ResultsPage({ params }: Props) {
 
       {empty ? (
         <section className="container-x pb-24">
-          <div className="rounded-(--radius-xl) border border-dashed border-(--line) p-12 text-center">
+          <div className="glass rounded-(--radius-xl) p-8 text-center sm:p-12">
             <p className="t-h3">{t("empty.title")}</p>
             <p className="mt-3 text-(--fg-muted)">{t("empty.text")}</p>
           </div>
