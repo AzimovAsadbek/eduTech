@@ -14,7 +14,7 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-orange text-white shadow-[0_6px_20px_-8px_rgba(254,126,3,.55)] hover:bg-orange-deep hover:shadow-[0_10px_28px_-8px_rgba(254,126,3,.6)] after:absolute after:inset-0 after:-z-10 after:bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,.18)_50%,transparent_70%)] after:translate-x-[-120%] after:transition-transform after:duration-700 after:ease-[var(--ease-out)] hover:after:translate-x-[120%]",
+    "bg-orange text-white shadow-[0_6px_20px_-8px_rgba(255,107,26,.55)] hover:bg-orange-deep hover:shadow-[0_10px_28px_-8px_rgba(255,107,26,.6)] after:absolute after:inset-0 after:-z-10 after:bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,.18)_50%,transparent_70%)] after:translate-x-[-120%] after:transition-transform after:duration-700 after:ease-[var(--ease-out)] hover:after:translate-x-[120%]",
   secondary: "bg-ink text-white hover:bg-ink-3",
   ghost: "bg-transparent text-ink border border-(--line) hover:border-ink/30 hover:bg-ink/[0.04] media-world:text-white media-world:border-white/15 media-world:hover:border-white/40 media-world:hover:bg-white/[0.06]",
   inverse: "bg-white text-ink hover:bg-orange-soft",

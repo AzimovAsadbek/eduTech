@@ -4,18 +4,14 @@
 
 /* ───────────────────────── Design tokens ───────────────────────── */
 @theme {
-  --color-orange: #FE7E03;
-  --color-orange-deep: #E06C00;
-  --color-orange-soft: #FFF3E6;
-  --color-orange-glow: #FFB76B;
+  --color-orange: #FF6B1A;
+  --color-orange-deep: #E5560A;
+  --color-orange-soft: #FFF1E8;
+  --color-orange-glow: #ffb27a;
   --color-ink: #111111;
   --color-ink-2: #1a1a1a;
   --color-ink-3: #2a2a2a;
   --color-ink-4: #3a3a3a;
-  --color-charcoal: #3a3a39;
-  --color-green: #00382c;
-  --color-green-deep: #04231c;
-  --color-green-soft: #0b4a3c;
   --color-muted: #737373;
   --color-muted-2: #a3a3a3;
   --color-paper: #ffffff;
@@ -41,7 +37,7 @@
   --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.04), 0 2px 8px rgba(17, 17, 17, 0.04);
   --shadow-md: 0 4px 12px rgba(17, 17, 17, 0.06), 0 12px 32px rgba(17, 17, 17, 0.08);
   --shadow-lg: 0 12px 24px rgba(17, 17, 17, 0.08), 0 32px 64px rgba(17, 17, 17, 0.12);
-  --shadow-glow: 0 24px 64px -16px rgba(254, 126, 3, 0.45);
+  --shadow-glow: 0 24px 64px -16px rgba(255, 107, 26, 0.45);
   --shadow-glass: 0 8px 32px rgba(17, 17, 17, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -89,13 +85,13 @@
 @media (min-width: 1024px) { :root { --gutter: 2.5rem; } }
 
 [data-world="media"] {
-  --surface: #04231c;
-  --surface-2: #00382c;
-  --surface-3: #0b4a3c;
+  --surface: #0b0b0c;
+  --surface-2: #141416;
+  --surface-3: #1c1c1f;
   --fg: #ffffff;
-  --fg-muted: #a9bdb7;
+  --fg-muted: #a3a3a3;
   --line: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(0, 56, 44, 0.5);
+  --glass-bg: rgba(20, 20, 22, 0.55);
   --glass-border: rgba(255, 255, 255, 0.12);
   color-scheme: dark;
 }
@@ -226,7 +222,7 @@
   content: "";
   position: absolute;
   inset: -20% -10%;
-  background: radial-gradient(60% 60% at 50% 40%, rgba(254, 126, 3, 0.22), transparent 70%);
+  background: radial-gradient(60% 60% at 50% 40%, rgba(255, 107, 26, 0.22), transparent 70%);
   filter: blur(40px);
   pointer-events: none;
   z-index: -1;
@@ -248,15 +244,15 @@
 /* Placeholder surface for missing photography — never a stock image */
 @utility placeholder-surface {
   background:
-    radial-gradient(120% 80% at 80% 0%, rgba(254, 126, 3, 0.35), transparent 60%),
-    radial-gradient(80% 80% at 0% 100%, rgba(255, 183, 107, 0.35), transparent 60%),
-    linear-gradient(160deg, #FFF3E6, #ffd9c2);
+    radial-gradient(120% 80% at 80% 0%, rgba(255, 107, 26, 0.35), transparent 60%),
+    radial-gradient(80% 80% at 0% 100%, rgba(255, 178, 122, 0.35), transparent 60%),
+    linear-gradient(160deg, #FFF1E8, #ffd9c2);
 }
 [data-world="media"] .placeholder-surface {
   background:
-    radial-gradient(120% 80% at 80% 0%, rgba(254, 126, 3, 0.45), transparent 60%),
-    radial-gradient(80% 80% at 0% 100%, rgba(254, 126, 3, 0.15), transparent 60%),
-    linear-gradient(160deg, #0b4a3c, #04231c);
+    radial-gradient(120% 80% at 80% 0%, rgba(255, 107, 26, 0.45), transparent 60%),
+    radial-gradient(80% 80% at 0% 100%, rgba(255, 107, 26, 0.15), transparent 60%),
+    linear-gradient(160deg, #1c1c1f, #0b0b0c);
 }
 
 /* ───────────────────────── Motion helpers ───────────────────────── */
@@ -278,6 +274,6 @@
 /* Scrollbar (subtle) */
 @media (hover: hover) {
   ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-thumb { background: rgba(58, 58, 57, 0.28); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb { background: rgba(17, 17, 17, 0.18); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
   ::-webkit-scrollbar-track { background: transparent; }
 }

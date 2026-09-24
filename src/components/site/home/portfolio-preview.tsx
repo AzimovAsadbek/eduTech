@@ -34,7 +34,7 @@ export function PortfolioPreview({ projects, heading = true, limit = 5 }: { proj
           {items.map((p, i) => {
             const hasVideo = Array.isArray(p.videos) && (p.videos as unknown[]).length > 0;
             return (
-              <Link key={p.id} href={routes.project(p.slug)} data-cursor="view" className={cn("group relative overflow-hidden rounded-(--radius-lg) bg-green", spans[i] ?? "lg:col-span-4", i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[4/3] lg:aspect-auto")}>
+              <Link key={p.id} href={routes.project(p.slug)} data-cursor="view" className={cn("group relative overflow-hidden rounded-(--radius-lg) bg-ink-2", spans[i] ?? "lg:col-span-4", i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[4/3] lg:aspect-auto")}>
                 <PlaceholderImage src={p.coverImage} alt={p.title} className="absolute inset-0 transition-transform duration-700 ease-[var(--ease-out)] group-hover:scale-[1.04]" sizes="(min-width:1024px) 50vw, 100vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" aria-hidden />
                 {hasVideo ? (

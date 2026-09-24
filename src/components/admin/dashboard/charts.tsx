@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/admin/ui/empty-state";
 import { BarChart3 } from "lucide-react";
 
 /** Brand palette: identity is carried by fixed hue order + legend + direct labels, never colour alone. */
-export const TYPE_COLORS: Record<LeadType, string> = { EDUCATION: "#FE7E03", MEDIA: "#111111", GENERAL: "#737373" };
+export const TYPE_COLORS: Record<LeadType, string> = { EDUCATION: "#FF6B1A", MEDIA: "#111111", GENERAL: "#737373" };
 const TYPE_ORDER: LeadType[] = ["EDUCATION", "MEDIA", "GENERAL"];
 const MUTED = "#737373";
 const LINE = "rgba(17,17,17,0.08)";
@@ -96,7 +96,7 @@ export function TopBarChart({ data, emptyTitle }: { data: { title: string; count
           <XAxis type="number" hide allowDecimals={false} />
           <YAxis type="category" dataKey="title" width={140} tick={{ fontSize: 12, fill: "#111111" }} tickLine={false} axisLine={false} />
           <Tooltip content={TooltipCard} cursor={{ fill: "rgba(17,17,17,0.03)" }} />
-          <Bar dataKey="count" name="Lidlar" fill="#FE7E03" radius={[0, 4, 4, 0]} barSize={18} isAnimationActive={false} label={{ position: "right", fontSize: 12, fill: "#111111" }} />
+          <Bar dataKey="count" name="Lidlar" fill="#FF6B1A" radius={[0, 4, 4, 0]} barSize={18} isAnimationActive={false} label={{ position: "right", fontSize: 12, fill: "#111111" }} />
         </BarChart>
       </ResponsiveContainer>
     </div>

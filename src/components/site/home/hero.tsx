@@ -76,8 +76,8 @@ export function Hero({ stats, heroImage }: Props) {
   return (
     <section ref={root} className="relative overflow-hidden pt-32 pb-16 sm:pt-36 lg:pt-40 lg:pb-24" aria-labelledby="hero-title">
       {/* Ambient orange light — the "energy" of the brand */}
-      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-[70vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.22),transparent)] blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute top-1/2 left-[-20%] h-[50vh] w-[40vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,183,107,.25),transparent)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-[70vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.22),transparent)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute top-1/2 left-[-20%] h-[50vh] w-[40vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,178,122,.25),transparent)] blur-3xl" />
 
       <div className="container-x grid items-center gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-6">
@@ -150,7 +150,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* Reel tile */}
-            <div data-tile data-depth="0.8" className="absolute bottom-[4%] left-[2%] w-[30%] overflow-hidden rounded-(--radius-lg) bg-green-deep text-white shadow-lg will-change-transform">
+            <div data-tile data-depth="0.8" className="absolute bottom-[4%] left-[2%] w-[30%] overflow-hidden rounded-(--radius-lg) bg-ink text-white shadow-lg will-change-transform">
               <div className="placeholder-surface aspect-[9/14]" data-world="media">
                 <div className="absolute inset-0 grid place-items-center">
                   <span className="grid size-10 place-items-center rounded-full bg-white/90 text-ink">

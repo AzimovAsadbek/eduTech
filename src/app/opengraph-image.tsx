@@ -32,8 +32,8 @@ export default async function OgImage() {
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 72, background: "#ffffff", position: "relative", fontFamily: "sans-serif" }}>
-        <div style={{ position: "absolute", top: -300, right: -220, width: 820, height: 820, borderRadius: 9999, background: "rgba(254,126,3,0.10)" }} />
-        <div style={{ position: "absolute", top: -120, right: -60, width: 460, height: 460, borderRadius: 9999, background: "rgba(254,126,3,0.12)" }} />
+        <div style={{ position: "absolute", top: -300, right: -220, width: 820, height: 820, borderRadius: 9999, background: "rgba(255,107,26,0.10)" }} />
+        <div style={{ position: "absolute", top: -120, right: -60, width: 460, height: 460, borderRadius: 9999, background: "rgba(255,107,26,0.12)" }} />
         <svg width={420} height={95} viewBox={`0 0 ${LOGO.width} ${LOGO.height}`}>
           <path d={LOGO.markE} fill={BRAND.orange} />
           <path d={LOGO.markL} fill={BRAND.orange} />

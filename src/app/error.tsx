@@ -8,8 +8,8 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
     console.error(error);
   }, [error]);
   return (
-    <main className="relative flex min-h-dvh items-center overflow-hidden bg-green-deep text-white">
-      <div aria-hidden className="pointer-events-none absolute -bottom-1/3 left-[-10%] size-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.3),transparent)] blur-3xl" />
+    <main className="relative flex min-h-dvh items-center overflow-hidden bg-ink text-white">
+      <div aria-hidden className="pointer-events-none absolute -bottom-1/3 left-[-10%] size-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.3),transparent)] blur-3xl" />
       <div className="container-x relative py-24">
         <p className="t-eyebrow text-orange">500</p>
         <h1 className="t-display mt-4">Nimadir xato ketdi.</h1>

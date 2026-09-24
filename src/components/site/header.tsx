@@ -156,7 +156,7 @@ export function Header() {
         aria-modal="true"
         aria-label="Menyu"
         hidden={!open}
-        className={cn("fixed inset-0 z-40 flex flex-col bg-green-deep text-white transition-opacity duration-300 lg:hidden", open ? "opacity-100" : "pointer-events-none opacity-0")}
+        className={cn("fixed inset-0 z-40 flex flex-col bg-ink text-white transition-opacity duration-300 lg:hidden", open ? "opacity-100" : "pointer-events-none opacity-0")}
       >
         <div className="orange-glow absolute inset-0 overflow-hidden" aria-hidden />
         <div className="container-x relative flex flex-1 flex-col pt-28 pb-10">

@@ -18,8 +18,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
   ].filter(Boolean) as { kind: "telegram" | "instagram"; href: string; label: string }[];
 
   return (
-    <footer className="relative overflow-hidden bg-green-deep text-white" data-world="media">
-      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-80 w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.22),transparent)] blur-3xl" />
+    <footer className="relative overflow-hidden bg-ink text-white" data-world="media">
+      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-80 w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.22),transparent)] blur-3xl" />
       <div className="container-x relative pt-14 pb-8">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">

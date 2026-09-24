@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 export default function NotFound() {
   return (
     <main className="relative flex min-h-dvh items-center overflow-hidden bg-paper">
-      <div aria-hidden className="pointer-events-none absolute -top-1/3 right-[-10%] size-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(254,126,3,.22),transparent)] blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -top-1/3 right-[-10%] size-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.22),transparent)] blur-3xl" />
       <div className="container-x relative py-24">
         <p className="t-eyebrow text-orange">404</p>
         <h1 className="t-display mt-4">

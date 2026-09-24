@@ -51,7 +51,7 @@ export function WorldShift() {
 
   return (
     <section ref={root} className="relative flex min-h-[70vh] items-center overflow-hidden bg-paper lg:min-h-screen" aria-label="Taʼlimdan mediaga oʻtish">
-      <div data-curtain className="absolute inset-0 origin-top scale-y-0 bg-green-deep" aria-hidden />
+      <div data-curtain className="absolute inset-0 origin-top scale-y-0 bg-ink" aria-hidden />
       <div className="orange-glow absolute inset-0 opacity-60" aria-hidden />
       <div className="container-x relative py-24 text-center">
         <p className="t-eyebrow mb-8 text-(--fg-muted) mix-blend-difference">Ikki dunyo — bitta jamoa</p>
