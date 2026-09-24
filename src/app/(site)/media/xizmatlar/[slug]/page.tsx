@@ -14,20 +14,24 @@ import { routes } from "@/config/site";
 import { getPublishedServices, getServiceBySlug } from "@/server/modules/content/public";
 import { getAuth } from "@/server/modules/auth/service";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { notFoundMetadata, pageMetadata } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
 type Step = { step: string; title: string; description: string };
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { slug } = await params;
-  const s = await getServiceBySlug(slug);
-  if (!s) return { title: "Xizmat topilmadi" };
-  return {
-    title: s.seoTitle ?? `${s.title} — EduTech Media`,
-    description: s.seoDescription ?? `${s.tagline} ${s.description.slice(0, 140)}`,
-    alternates: { canonical: `/media/xizmatlar/${s.slug}` },
-    openGraph: { title: s.seoTitle ?? `${s.title} — EduTech Media`, description: s.seoDescription ?? s.tagline, url: `/media/xizmatlar/${s.slug}`, images: s.coverImage ? [{ url: s.coverImage, alt: s.title }] : undefined },
-  };
+export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Promise<{ preview?: string }> }): Promise<Metadata> {
+  const [{ slug }, { preview }] = await Promise.all([params, searchParams]);
+  const s = await getServiceBySlug(slug, { preview: preview === "1" });
+  if (!s) return notFoundMetadata;
+  return pageMetadata({
+    title: s.seoTitle ?? `${s.title} — Media xizmati, Namangan`,
+    description: s.seoDescription ?? `${s.tagline} ${s.description}`,
+    path: `/media/xizmatlar/${s.slug}`,
+    image: s.coverImage,
+    imageAlt: `${s.title} — EduTech Media`,
+    keywords: [`${s.title} Namangan`, ...s.attributes],
+    noindex: preview === "1" || s.status !== "PUBLISHED",
+  });
 }
 
 export default async function ServicePage({ params, searchParams }: { params: Params; searchParams: Promise<{ preview?: string }> }) {

@@ -1,25 +1,25 @@
-import type { Metadata } from "next";
 import { Clock, MapPin, Phone, Send } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ContactLink } from "@/components/site/contact-link";
-import { JsonLd, breadcrumbJsonLd, organizationJsonLd } from "@/components/site/json-ld";
+import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from "@/components/site/json-ld";
 import { LeadForm } from "@/components/site/lead-form";
 import { PageHeader } from "@/components/site/page-header";
 import { getActiveBranches } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Kontakt — Namangan",
-  description: "EduTech bilan bogʻlaning: Namangan, telefon, Telegram, Instagram, ish vaqti va manzil xaritada.",
-  alternates: { canonical: "/kontakt" },
-};
+  description: "EduTech bilan bogʻlaning: Namangan, telefon, Telegram, Instagram, ish vaqti va manzil xaritada. Kurs yoki media xizmat boʻyicha bepul konsultatsiya.",
+  path: "/kontakt",
+});
 
 export default async function ContactPage() {
   const [settings, branches] = await Promise.all([getSiteSettings(), getActiveBranches()]);
   const mapUrl = settings.mapEmbedUrl || branches.find((b) => b.mapUrl)?.mapUrl || "";
   return (
     <>
-      <JsonLd data={organizationJsonLd(settings)} />
+      <JsonLd data={webPageJsonLd("ContactPage", "Kontakt — EduTech Namangan", "/kontakt")} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Kontakt", path: "/kontakt" }])} />
       <PageHeader eyebrow="Kontakt" title="Keling, gaplashamiz." accent={["gaplashamiz."]} lead="Kurs, media xizmat yoki hamkorlik — bir xabar yetarli. Ish kunlari bir soat ichida javob beramiz." />
 

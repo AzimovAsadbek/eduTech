@@ -14,15 +14,24 @@ import { routes } from "@/config/site";
 import { getProjectBySlug, getPublishedProjects, getPublishedServices } from "@/server/modules/content/public";
 import { getAuth } from "@/server/modules/auth/service";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { notFoundMetadata, pageMetadata } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
 type Video = { url: string; title?: string; poster?: string };
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { slug } = await params;
-  const p = await getProjectBySlug(slug);
-  if (!p) return { title: "Loyiha topilmadi" };
-  return { title: `${p.title} — ${p.client}`, description: p.description.slice(0, 160), alternates: { canonical: `/media/portfolio/${p.slug}` }, openGraph: { images: p.coverImage ? [{ url: p.coverImage }] : undefined } };
+export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Promise<{ preview?: string }> }): Promise<Metadata> {
+  const [{ slug }, { preview }] = await Promise.all([params, searchParams]);
+  const p = await getProjectBySlug(slug, { preview: preview === "1" });
+  if (!p) return notFoundMetadata;
+  return pageMetadata({
+    title: `${p.title} — ${p.client}`,
+    description: p.description,
+    path: `/media/portfolio/${p.slug}`,
+    image: p.coverImage,
+    imageAlt: `${p.title} — ${p.client} loyihasi`,
+    type: "article",
+    noindex: preview === "1" || p.status !== "PUBLISHED",
+  });
 }
 
 export default async function ProjectPage({ params, searchParams }: { params: Params; searchParams: Promise<{ preview?: string }> }) {

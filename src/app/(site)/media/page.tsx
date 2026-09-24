@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
 import { FaqSection } from "@/components/site/faq-section";
 import { MediaHero } from "@/components/site/home/media-hero";
@@ -9,12 +8,14 @@ import { MediaInquiry } from "@/components/site/media/media-inquiry";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getPublishedFaqs, getPublishedProjects, getPublishedServices } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Media xizmatlar — Reels, YouTube, SMM, Target, Video Production",
+export const metadata = pageMetadata({
+  title: "Media xizmatlar — Reels, YouTube, SMM, Target",
   description: "EduTech Media: Namangandagi bizneslar uchun Reels va YouTube prodakshn, SMM, target reklama, video ishlab chiqarish, personal branding va Instagram boshqaruvi.",
-  alternates: { canonical: "/media" },
-};
+  path: "/media",
+  keywords: ["SMM xizmati Namangan", "video prodakshn Namangan", "Reels ishlab chiqarish", "target reklama Namangan"],
+});
 
 const process = [
   { n: "01", t: "Brif va tahlil", d: "Maqsad, auditoriya, raqobatchilar. Nimani va kim uchun yaratayotganimizni aniqlaymiz." },

@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import { PortfolioPreview } from "@/components/site/home/portfolio-preview";
 import { JsonLd, breadcrumbJsonLd } from "@/components/site/json-ld";
 import { MediaInquiry } from "@/components/site/media/media-inquiry";
 import { PageHeader } from "@/components/site/page-header";
 import { getPublishedProjects, getPublishedServices } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Portfolio — biz yaratgan kontentlar",
-  description: "EduTech Media portfoliosi: Reels, YouTube, reklama roliklari, SMM kampaniyalari va brend loyihalari.",
-  alternates: { canonical: "/media/portfolio" },
-};
+  description: "EduTech Media portfoliosi: Reels, YouTube, reklama roliklari, SMM kampaniyalari va brend loyihalari. Real mijozlar, real natijalar.",
+  path: "/media/portfolio",
+});
 
 export default async function PortfolioPage() {
   const [projects, services, settings] = await Promise.all([getPublishedProjects(), getPublishedServices(), getSiteSettings()]);

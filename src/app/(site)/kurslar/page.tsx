@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { CourseIndex } from "@/components/site/home/course-index";
 import { FaqSection } from "@/components/site/faq-section";
 import { PageHeader } from "@/components/site/page-header";
@@ -6,12 +5,14 @@ import { Conversion } from "@/components/site/home/conversion";
 import { JsonLd, breadcrumbJsonLd, courseListJsonLd } from "@/components/site/json-ld";
 import { getActiveBranches, getCourseCategories, getPublishedCourses, getPublishedFaqs, getPublishedServices } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Kurslar",
+export const metadata = pageMetadata({
+  title: "Kurslar — IT, AI, media va marketing",
   description: "Namangandagi EduTech kurslari: dasturlash, robototexnika, sunʼiy intellekt, IT-Kids, notiqlik, mobilografiya, videografiya, SMM va target. Amaliy taʼlim, real loyihalar.",
-  alternates: { canonical: "/kurslar" },
-};
+  path: "/kurslar",
+  keywords: ["dasturlash kursi Namangan", "IT kurslari Namangan", "SMM kursi", "robototexnika kursi"],
+});
 
 export default async function CoursesPage() {
   const [courses, categories, faqs, settings, services, branches] = await Promise.all([

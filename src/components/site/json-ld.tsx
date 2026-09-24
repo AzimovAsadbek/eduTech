@@ -54,6 +54,18 @@ function openingHours(raw: string) {
   return [{ "@type": "OpeningHoursSpecification", dayOfWeek: days, opens: m[3], closes: m[4] }];
 }
 
+export function webPageJsonLd(type: "AboutPage" | "ContactPage" | "CollectionPage" | "WebPage", name: string, path: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    name,
+    url: absoluteUrl(path),
+    inLanguage: "uz",
+    isPartOf: { "@id": absoluteUrl("/#website") },
+    about: { "@id": absoluteUrl("/#organization") },
+  };
+}
+
 export function faqJsonLd(faqs: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",

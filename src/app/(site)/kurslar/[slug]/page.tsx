@@ -5,23 +5,24 @@ import { CourseHero } from "@/components/site/course/course-hero";
 import { JsonLd, breadcrumbJsonLd, courseJsonLd } from "@/components/site/json-ld";
 import { getActiveBranches, getCourseBySlug } from "@/server/modules/content/public";
 import { getAuth } from "@/server/modules/auth/service";
+import { notFoundMetadata, pageMetadata } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
 type Search = Promise<{ preview?: string }>;
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { slug } = await params;
-  const course = await getCourseBySlug(slug);
-  if (!course) return { title: "Kurs topilmadi" };
-  const title = course.seoTitle ?? `${course.title} kursi`;
-  const description = course.seoDescription ?? `${course.tagline} ${course.description.slice(0, 140)}`;
-  return {
-    title,
-    description,
-    alternates: { canonical: `/kurslar/${course.slug}` },
-    openGraph: { title, description, type: "website", url: `/kurslar/${course.slug}`, images: course.coverImage ? [{ url: course.coverImage, alt: course.title }] : undefined },
-    twitter: { card: "summary_large_image", title, description },
-  };
+export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Search }): Promise<Metadata> {
+  const [{ slug }, { preview }] = await Promise.all([params, searchParams]);
+  const course = await getCourseBySlug(slug, { preview: preview === "1" });
+  if (!course) return notFoundMetadata;
+  return pageMetadata({
+    title: course.seoTitle ?? `${course.title} kursi — ${course.roleLabel}`,
+    description: course.seoDescription ?? `${course.tagline} ${course.description}`,
+    path: `/kurslar/${course.slug}`,
+    image: course.coverImage,
+    imageAlt: `${course.title} kursi — EduTech, Namangan`,
+    keywords: [`${course.title} kursi`, `${course.title} Namangan`, ...course.skills.slice(0, 4)],
+    noindex: preview === "1" || course.status !== "PUBLISHED",
+  });
 }
 
 export default async function CoursePage({ params, searchParams }: { params: Params; searchParams: Search }) {

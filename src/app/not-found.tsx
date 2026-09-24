@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { notFoundMetadata } from "@/lib/seo";
+
+export const metadata = notFoundMetadata;
 
 export default function NotFound() {
   return (

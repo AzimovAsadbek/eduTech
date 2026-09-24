@@ -9,8 +9,8 @@ import { Proof } from "@/components/site/home/proof";
 import { ServiceExplorer } from "@/components/site/home/service-explorer";
 import { WorldShift } from "@/components/site/home/world-shift";
 import { FaqSection } from "@/components/site/faq-section";
-import type { Metadata } from "next";
-import { JsonLd, courseListJsonLd, organizationJsonLd } from "@/components/site/json-ld";
+import { JsonLd, courseListJsonLd } from "@/components/site/json-ld";
+import { pageMetadata } from "@/lib/seo";
 import {
   getActiveBranches,
   getCourseCategories,
@@ -24,10 +24,11 @@ import {
 } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-  openGraph: { url: "/" },
-};
+export const metadata = pageMetadata({
+  title: "Zamonaviy kasblar akademiyasi va media studiya",
+  description: "EduTech Namangan: dasturlash, AI, robototexnika, SMM, mobilografiya va videografiya kurslari. Bizneslar uchun Reels, YouTube, SMM va video prodakshn.",
+  path: "/",
+});
 
 export default async function HomePage() {
   const [settings, courses, categories, services, projects, testimonials, results, gallery, faqs, branches] = await Promise.all([
@@ -47,7 +48,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <JsonLd data={organizationJsonLd(settings)} />
       <JsonLd data={courseListJsonLd(courses)} />
       <Hero stats={settings.stats} heroImage={gallery.find((g) => g.category === "CLASSROOM")?.image} />
       <Journey />

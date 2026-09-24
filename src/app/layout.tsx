@@ -12,7 +12,7 @@ const bricolage = Bricolage_Grotesque({
 const manrope = Manrope({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-manrope", display: "swap" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-jetbrains", display: "swap", weight: ["400", "500"] });
 
-const title = `${siteConfig.name} — Zamonaviy kasblar akademiyasi va media studiya, Namangan`;
+const title = `${siteConfig.name} — Zamonaviy kasblar akademiyasi | Namangan`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl("/")),

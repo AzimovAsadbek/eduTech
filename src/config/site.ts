@@ -1,8 +1,7 @@
 export const siteConfig = {
   name: "EduTech",
   legalName: "EduTech — Zamonaviy kasblar akademiyasi",
-  description:
-    "EduTech — Namangandagi zamonaviy kasblar akademiyasi va media studiya. Dasturlash, AI, robototexnika, SMM, video prodakshn va boshqa kurslar. Bizneslar uchun kontent va marketing xizmatlari.",
+  description: "Namangandagi zamonaviy kasblar akademiyasi va media studiya: dasturlash, AI, robototexnika, SMM, video prodakshn kurslari va bizneslar uchun kontent xizmatlari.",
   locale: "uz_UZ",
   city: "Namangan",
   keywords: ["EduTech", "Namangan", "IT kurslar", "dasturlash kurslari", "AI kurs", "robototexnika", "SMM", "video prodakshn", "media studiya Namangan"],

@@ -101,7 +101,7 @@ export function Header() {
         )}
       >
         <div className="container-x flex h-full items-center justify-between gap-6">
-          <Logo tone={inverted ? "dark" : "light"} height={34} />
+          <Logo tone={inverted ? "dark" : "light"} tagline height={stage === "compact" ? 36 : 42} className="max-sm:[&_svg]:h-9 max-sm:[&_svg]:w-auto" />
           <nav aria-label="Asosiy navigatsiya" className="hidden items-center gap-1 lg:flex">
             {nav.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);

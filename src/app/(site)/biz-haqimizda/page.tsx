@@ -1,20 +1,20 @@
-import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { Conversion } from "@/components/site/home/conversion";
-import { JsonLd, breadcrumbJsonLd } from "@/components/site/json-ld";
+import { JsonLd, breadcrumbJsonLd, webPageJsonLd } from "@/components/site/json-ld";
 import { PageHeader } from "@/components/site/page-header";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getActiveBranches, getPublishedCourses, getPublishedGallery, getPublishedServices, getPublishedTeachers } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Biz haqimizda — zamonaviy kasblar akademiyasi",
   description: "EduTech — Namangandagi IT, AI, digital va kreativ yoʻnalishlar boʻyicha taʼlim markazi va media studiya. Falsafamiz, jamoamiz va muhitimiz.",
-  alternates: { canonical: "/biz-haqimizda" },
-};
+  path: "/biz-haqimizda",
+});
 
 const pillars = [
   { k: "IT", t: "Dasturlash va muhandislik", d: "Web, mobil, backend — bozor talab qiladigan stack bilan." },
@@ -37,6 +37,7 @@ export default async function AboutPage() {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd([{ name: "Bosh sahifa", path: "/" }, { name: "Biz haqimizda", path: "/biz-haqimizda" }])} />
+      <JsonLd data={webPageJsonLd("AboutPage", "Biz haqimizda — EduTech", "/biz-haqimizda")} />
       <PageHeader eyebrow={`EduTech · ${settings.city}`} title="Zamonaviy kasblar akademiyasi." accent={["kasblar"]} lead="IT + AI + Digital + Creative. Biz toʻrt yoʻnalishni bitta muhitda birlashtirdik — chunki zamonaviy kasb chegaralarda emas, kesishmalarda tugʻiladi." />
 
       <section className="section-y pt-0" aria-labelledby="pillars-title">

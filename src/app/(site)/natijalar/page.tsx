@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Quote } from "lucide-react";
 import { Counter } from "@/components/motion/counter";
 import { Reveal } from "@/components/motion/reveal";
@@ -11,12 +10,13 @@ import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getActiveBranches, getPublishedCourses, getPublishedGallery, getPublishedResults, getPublishedServices, getPublishedTestimonials } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Natijalar — oʻquvchilarimiz hikoyalari",
-  description: "EduTech bitiruvchilarining natijalari: ishga joylashish, real loyihalar, sertifikatlar va oʻsish hikoyalari.",
-  alternates: { canonical: "/natijalar" },
-};
+  description: "EduTech bitiruvchilarining natijalari: ishga joylashish, real loyihalar, sertifikatlar va oʻsish hikoyalari. 500+ oʻquvchi, 9+ yoʻnalish, 100+ loyiha.",
+  path: "/natijalar",
+});
 
 const KIND: Record<string, string> = { PROJECT: "Loyiha", CAREER: "Karyera", GROWTH: "Oʻsish", CERTIFICATE: "Sertifikat" };
 
