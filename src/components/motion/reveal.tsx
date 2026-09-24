@@ -2,7 +2,7 @@
 
 import { useRef, type ElementType } from "react";
 import { cn } from "@/lib/utils";
-import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "./gsap";
+import { gsap, isDesktop, prefersReducedMotion, ScrollTrigger, useGSAP } from "./gsap";
 
 interface Props {
   children: React.ReactNode;
@@ -28,6 +28,14 @@ export function Reveal({ children, className, as: Tag = "div", stagger, delay = 
       const targets = stagger ? Array.from(el.children) : [el];
       if (prefersReducedMotion()) {
         gsap.set(targets, { opacity: 1, y: 0, clearProps: "all" });
+        return;
+      }
+      // On phones a staggered group would reveal off-screen children too early — trigger each one as it enters.
+      if (stagger && !isDesktop()) {
+        targets.forEach((t) => {
+          const tw = gsap.fromTo(t, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", paused: true, immediateRender: true });
+          ScrollTrigger.create({ trigger: t, start: "top 92%", once: true, onEnter: () => tw.play() });
+        });
         return;
       }
       const tween = gsap.fromTo(

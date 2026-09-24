@@ -49,8 +49,14 @@ export function Hero({ stats, heroImage }: Props) {
         gsap.to(t, { y: `+=${8 + (i % 3) * 4}`, duration: 3 + i * 0.4, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1.8 });
       });
 
-      // Cursor parallax on desktop
-      if (!isDesktop()) return;
+      // Phones/tablets: depth layers drift with scroll instead of the cursor.
+      if (!isDesktop()) {
+        el.querySelectorAll<HTMLElement>("[data-depth]").forEach((l) => {
+          const depth = Number(l.dataset.depth);
+          gsap.to(l, { yPercent: -14 * depth, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.6 } });
+        });
+        return;
+      }
       const scene = el.querySelector<HTMLElement>("[data-scene]")!;
       const layers = el.querySelectorAll<HTMLElement>("[data-depth]");
       const xs = Array.from(layers).map((l) => gsap.quickTo(l, "x", { duration: 0.8, ease: "power3" }));

@@ -103,12 +103,14 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
             const isOpen = s.id === activeId;
             return (
               <li key={s.id}>
-                <button type="button" aria-expanded={isOpen} onClick={() => setActiveId(isOpen ? "" : s.id)} className="flex w-full items-center gap-4 py-4 text-left">
+                <button type="button" aria-expanded={isOpen} onClick={() => setActiveId(isOpen ? "" : s.id)} className="flex w-full items-center gap-4 py-4 text-left transition-colors active:bg-white/5">
                   <span className="t-meta w-8 text-white/50">{pad2(i + 1)}</span>
                   <span className="t-h4 flex-1">{s.title}</span>
                   <ArrowUpRight size={18} className={cn("transition-transform duration-300", isOpen ? "rotate-90 text-orange" : "text-white/50")} />
                 </button>
-                <div hidden={!isOpen} className="pb-6 pl-12">
+                <div className={cn("grid transition-[grid-template-rows] duration-400 ease-[var(--ease-out)]", isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]")} aria-hidden={!isOpen}>
+                  <div className="overflow-hidden">
+                  <div className={cn("pb-6 pl-12 transition-[opacity,transform] duration-400 ease-[var(--ease-out)]", isOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0")}>
                   <p className="text-white/70">{s.tagline}</p>
                   <ul className="mt-4 flex flex-wrap gap-2">
                     {s.attributes.map((a) => (
@@ -117,9 +119,11 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
                       </li>
                     ))}
                   </ul>
-                  <Link href={routes.service(s.slug)} className="mt-5 inline-flex items-center gap-1 font-semibold text-orange">
+                  <Link href={routes.service(s.slug)} className="mt-5 inline-flex items-center gap-1 font-semibold text-orange" tabIndex={isOpen ? 0 : -1}>
                     Batafsil <ArrowUpRight size={16} />
                   </Link>
+                  </div>
+                  </div>
                 </div>
               </li>
             );

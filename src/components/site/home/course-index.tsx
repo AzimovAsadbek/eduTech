@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
+import { gsap, isDesktop, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
 import { Chip } from "@/components/ui/chip";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -42,6 +42,13 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
       const el = list.current;
       if (!el || prefersReducedMotion()) return;
       const rows = el.querySelectorAll<HTMLElement>("[data-row]");
+      if (!isDesktop()) {
+        rows.forEach((r) => {
+          const tw = gsap.fromTo(r, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.6, ease: "expo.out", paused: true, immediateRender: true });
+          ScrollTrigger.create({ trigger: r, start: "top 94%", once: true, onEnter: () => tw.play() });
+        });
+        return;
+      }
       const tween = gsap.fromTo(rows, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.04, paused: true, immediateRender: true });
       ScrollTrigger.create({ trigger: el, start: "top 88%", once: true, onEnter: () => tween.play() });
     },
@@ -99,7 +106,7 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
                     aria-current={isActive ? "true" : undefined}
                     className={cn(
                       "group grid grid-cols-[2rem_1fr_auto] items-center gap-3 py-4 transition-colors duration-300 sm:grid-cols-[2.5rem_1.3fr_1fr_auto_auto] sm:gap-5 sm:py-5 lg:px-4",
-                      isActive ? "bg-orange-soft/60" : "hover:bg-orange-soft/40",
+                      isActive ? "bg-orange-soft/60" : "hover:bg-orange-soft/40 active:bg-orange-soft/60",
                     )}
                   >
                     <span className={cn("t-meta transition-colors", isActive ? "text-orange" : "text-(--fg-muted)")}>{pad2(i + 1)}</span>

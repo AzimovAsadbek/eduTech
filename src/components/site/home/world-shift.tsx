@@ -43,15 +43,33 @@ export function WorldShift() {
           .fromTo("[data-tag]", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.8);
       };
       mm.add("(min-width: 1024px)", () => build(true));
-      mm.add("(max-width: 1023px)", () => build(false));
+      mm.add("(max-width: 1023px)", () => {
+        // Phones: the whole section darkens with scroll (no curtain, so nothing is left uncovered), then the word morphs.
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: "top 75%",
+            end: "top 15%",
+            scrub: 0.4,
+            onUpdate: (self) => {
+              if (self.progress > 0.35) el.dataset.world = "media";
+              else delete el.dataset.world;
+            },
+          },
+        });
+        tl.fromTo(el, { backgroundColor: "#ffffff" }, { backgroundColor: "#0b0b0c", ease: "none", duration: 0.5 }, 0)
+          .to("[data-edu]", { yPercent: -120, autoAlpha: 0, duration: 0.35 }, 0.2)
+          .fromTo("[data-media]", { yPercent: 120, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.35 }, 0.4)
+          .fromTo("[data-tag]", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.25 }, 0.7);
+      });
       return () => mm.revert();
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} className="relative flex min-h-[70vh] items-center overflow-hidden bg-paper lg:min-h-screen" aria-label="Taʼlimdan mediaga oʻtish">
-      <div data-curtain className="absolute inset-0 origin-top scale-y-0 bg-ink" aria-hidden />
+    <section ref={root} className="relative flex min-h-[60vh] items-center overflow-hidden bg-paper lg:min-h-screen" aria-label="Taʼlimdan mediaga oʻtish">
+      <div data-curtain className="absolute inset-0 hidden origin-top scale-y-0 bg-ink lg:block" aria-hidden />
       <div className="orange-glow absolute inset-0 opacity-60" aria-hidden />
       <div className="container-x relative py-24 text-center">
         <p className="t-eyebrow mb-8 text-(--fg-muted) mix-blend-difference">Ikki dunyo — bitta jamoa</p>
