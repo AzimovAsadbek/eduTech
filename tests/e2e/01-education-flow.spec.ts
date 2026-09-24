@@ -16,7 +16,7 @@ test.describe.serial("Education: course list → detail → application → admi
     await page.goto("/kurslar");
     await expect(page.locator("h1")).toBeVisible();
 
-    const firstCourse = page.locator('ol a[href^="/kurslar/"]:visible').first();
+    const firstCourse = page.locator('ol a[href^="/kurslar/"]').first();
     await expect(firstCourse).toBeVisible();
     const href = await firstCourse.getAttribute("href");
     courseSlug = href!.split("/").pop()!;
