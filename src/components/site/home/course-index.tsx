@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { gsap, isDesktop, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
+import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/components/motion/gsap";
 import { Chip } from "@/components/ui/chip";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -23,19 +23,20 @@ interface Props {
 
 /**
  * EXPLORATION: courses as an editorial index (not a card grid).
- * Rows slide in once on scroll; on desktop a preview card follows the cursor (GSAP-only transforms, no CSS transition conflicts).
+ * Left: the index rows. Right (desktop): a sticky spotlight panel that shows the hovered course —
+ * cover, profession, tagline and outcomes — cross-fading between courses. No cursor-following elements.
  */
 export function CourseIndex({ courses, categories, compact, heading = true }: Props) {
   const [cat, setCat] = useState<string>("all");
-  const [active, setActive] = useState<string | null>(null);
-  const root = useRef<HTMLElement>(null);
+  const [activeId, setActiveId] = useState<string | null>(courses[0]?.id ?? null);
   const list = useRef<HTMLOListElement>(null);
-  const preview = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
 
   const visible = useMemo(() => (cat === "all" ? courses : courses.filter((c) => c.category?.slug === cat)), [cat, courses]);
   const usedCats = useMemo(() => categories.filter((c) => courses.some((x) => x.category?.id === c.id)), [categories, courses]);
+  const active = visible.find((c) => c.id === activeId) ?? visible[0] ?? null;
 
-  // Rows: a single, quick entrance when the list scrolls into view; re-run softly when the filter changes.
+  // Rows: one quick entrance when the list scrolls into view; re-runs softly when the filter changes.
   useGSAP(
     () => {
       const el = list.current;
@@ -47,36 +48,16 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
     { scope: list, dependencies: [cat] },
   );
 
-  // Preview card: follows the cursor on desktop.
-  useGSAP(
-    () => {
-      if (!isDesktop() || prefersReducedMotion()) return;
-      const el = root.current!;
-      const p = preview.current!;
-      gsap.set(p, { xPercent: 4, yPercent: -50, opacity: 0, scale: 0.92 });
-      const xTo = gsap.quickTo(p, "x", { duration: 0.45, ease: "power3" });
-      const yTo = gsap.quickTo(p, "y", { duration: 0.45, ease: "power3" });
-      const onMove = (e: MouseEvent) => {
-        const r = el.getBoundingClientRect();
-        xTo(e.clientX - r.left + 24);
-        yTo(e.clientY - r.top);
-      };
-      el.addEventListener("mousemove", onMove);
-      return () => el.removeEventListener("mousemove", onMove);
-    },
-    { scope: root },
-  );
-
+  // Spotlight: cross-fade its content whenever the active course changes.
   useEffect(() => {
-    const p = preview.current;
-    if (!p || !isDesktop() || prefersReducedMotion()) return;
-    gsap.to(p, { opacity: active ? 1 : 0, scale: active ? 1 : 0.92, duration: 0.35, ease: "power3.out", overwrite: "auto" });
-  }, [active]);
-
-  const activeCourse = courses.find((c) => c.id === active) ?? null;
+    const el = panel.current;
+    if (!el || prefersReducedMotion()) return;
+    gsap.fromTo(el.querySelectorAll("[data-anim]"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", stagger: 0.05, overwrite: "auto" });
+    gsap.fromTo(el.querySelector("[data-cover]"), { scale: 1.04, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.7, ease: "expo.out", overwrite: "auto" });
+  }, [active?.id]);
 
   return (
-    <section ref={root} className="section-y relative" aria-labelledby="courses-title">
+    <section className="section-y relative" aria-labelledby="courses-title">
       <div className="container-x">
         {heading ? (
           <SectionHeading
@@ -105,54 +86,98 @@ export function CourseIndex({ courses, categories, compact, heading = true }: Pr
           </div>
         ) : null}
 
-        <div className="relative mt-8">
-          {/* Cursor-following preview (desktop only) */}
-          <div ref={preview} aria-hidden className="pointer-events-none absolute top-0 left-0 z-10 hidden w-60 overflow-hidden rounded-(--radius-lg) shadow-lg will-change-transform lg:block">
-            {activeCourse ? (
-              <div className="relative aspect-[4/5]">
-                <PlaceholderImage src={activeCourse.coverImage} alt="" className="absolute inset-0" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute right-4 bottom-4 left-4 text-white">
-                  <p className="t-eyebrow text-white/70">{activeCourse.roleLabel}</p>
-                  <p className="font-display mt-1 text-lg font-semibold">{activeCourse.tagline}</p>
+        <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <ol ref={list} className="divide-y divide-(--line) border-y border-(--line) lg:col-span-8">
+            {visible.map((c, i) => {
+              const isActive = active?.id === c.id;
+              return (
+                <li key={c.id} data-row>
+                  <Link
+                    href={routes.course(c.slug)}
+                    onMouseEnter={() => setActiveId(c.id)}
+                    onFocus={() => setActiveId(c.id)}
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "group grid grid-cols-[2rem_1fr_auto] items-center gap-3 py-4 transition-colors duration-300 sm:grid-cols-[2.5rem_1.3fr_1fr_auto_auto] sm:gap-5 sm:py-5 lg:px-4",
+                      isActive ? "bg-orange-soft/60" : "hover:bg-orange-soft/40",
+                    )}
+                  >
+                    <span className={cn("t-meta transition-colors", isActive ? "text-orange" : "text-(--fg-muted)")}>{pad2(i + 1)}</span>
+                    <span className="min-w-0">
+                      <span className={cn("block font-display text-xl font-semibold tracking-tight transition-transform duration-500 ease-[var(--ease-out)] sm:text-2xl", isActive && "translate-x-1")}>{c.title}</span>
+                      <span className="mt-0.5 block text-sm text-(--fg-muted) sm:hidden">
+                        {c.roleLabel} · {c.durationLabel}
+                      </span>
+                    </span>
+                    <span className="hidden min-w-0 text-(--fg-muted) sm:block">
+                      <span className="block truncate font-semibold text-(--fg)">{c.roleLabel}</span>
+                      <span className="block truncate text-sm">{c.tagline}</span>
+                    </span>
+                    <span className="t-meta hidden text-right text-(--fg-muted) sm:block">{c.durationLabel}</span>
+                    <span
+                      className={cn(
+                        "grid size-9 place-items-center justify-self-end rounded-full border transition-[background-color,color,transform,border-color] duration-300 ease-[var(--ease-out)] sm:size-10",
+                        isActive ? "rotate-45 border-orange bg-orange text-white" : "border-(--line)",
+                      )}
+                    >
+                      <ArrowUpRight size={18} />
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+            {visible.length === 0 ? <li className="py-12 text-center text-(--fg-muted)">Bu yoʻnalishda hozircha kurs yoʻq.</li> : null}
+          </ol>
+
+          {/* Spotlight (desktop) */}
+          <aside className="hidden lg:col-span-4 lg:block" aria-live="polite">
+            {active ? (
+              <div ref={panel} className="sticky top-28 overflow-hidden rounded-(--radius-xl) border border-(--line) bg-paper shadow-md">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <div data-cover className="absolute inset-0 will-change-transform">
+                    {active.coverImage ? (
+                      <PlaceholderImage key={active.id} src={active.coverImage} alt={`${active.title} kursi`} className="absolute inset-0" sizes="33vw" />
+                    ) : (
+                      <div className="grain absolute inset-0" style={{ background: `linear-gradient(150deg, ${active.accent ?? "#FF6B1A"} 0%, #FF6B1A 55%, #E5560A 100%)` }} aria-hidden>
+                        <span className="font-display absolute -top-4 -right-2 text-[9rem] leading-none font-bold text-white/15 select-none">{pad2(visible.findIndex((c) => c.id === active.id) + 1)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" aria-hidden />
+                  <div className="absolute right-5 bottom-5 left-5 text-white">
+                    <p data-anim className="t-eyebrow text-white/75">
+                      {active.roleLabel}
+                    </p>
+                    <p data-anim className="font-display mt-1 text-2xl font-semibold tracking-tight">
+                      {active.tagline}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <div data-anim className="flex flex-wrap gap-2">
+                    <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{active.durationLabel}</span>
+                    <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{compact ? FORMAT[active.format] : LEVEL[active.level]}</span>
+                    {active.ageLabel ? <span className="t-meta rounded-full bg-orange-soft px-2.5 py-1 text-ink">{active.ageLabel}</span> : null}
+                  </div>
+                  {active.outcomes.length ? (
+                    <ul data-anim className="mt-5 space-y-2">
+                      {active.outcomes.slice(0, 3).map((o) => (
+                        <li key={o} className="flex items-start gap-2.5 text-sm">
+                          <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-orange text-white">
+                            <Check size={12} />
+                          </span>
+                          <span>{o}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  <Link data-anim href={routes.course(active.slug)} className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 font-semibold text-white transition-colors hover:bg-orange">
+                    Kurs haqida <ArrowUpRight size={16} />
+                  </Link>
                 </div>
               </div>
             ) : null}
-          </div>
-
-          <ol ref={list} className="divide-y divide-(--line) border-y border-(--line)">
-            {visible.map((c, i) => (
-              <li key={c.id} data-row>
-                <Link
-                  href={routes.course(c.slug)}
-                  onMouseEnter={() => setActive(c.id)}
-                  onMouseLeave={() => setActive(null)}
-                  onFocus={() => setActive(c.id)}
-                  onBlur={() => setActive(null)}
-                  data-cursor="view"
-                  className="group grid grid-cols-[2rem_1fr_auto] items-center gap-3 py-4 transition-colors duration-300 hover:bg-orange-soft/60 sm:grid-cols-[3rem_1.4fr_1fr_auto_auto] sm:gap-6 sm:py-6 lg:grid-cols-[3rem_1.4fr_1fr_8rem_8rem_3rem] lg:px-4"
-                >
-                  <span className="t-meta text-(--fg-muted)">{pad2(i + 1)}</span>
-                  <span className="min-w-0">
-                    <span className={cn("block font-display text-xl font-semibold tracking-tight transition-transform duration-500 ease-[var(--ease-out)] group-hover:translate-x-1 sm:text-2xl")}>{c.title}</span>
-                    <span className="mt-0.5 block text-sm text-(--fg-muted) sm:hidden">
-                      {c.roleLabel} · {c.durationLabel}
-                    </span>
-                  </span>
-                  <span className="hidden text-(--fg-muted) sm:block">
-                    <span className="block font-semibold text-(--fg)">{c.roleLabel}</span>
-                    <span className="text-sm">{c.tagline}</span>
-                  </span>
-                  <span className="t-meta hidden text-(--fg-muted) lg:block">{c.durationLabel}</span>
-                  <span className="t-meta hidden text-right text-(--fg-muted) sm:block">{compact ? FORMAT[c.format] : LEVEL[c.level]}</span>
-                  <span className="grid size-9 place-items-center justify-self-end rounded-full border border-(--line) transition-[background-color,color,transform,border-color] duration-300 ease-[var(--ease-out)] group-hover:rotate-45 group-hover:border-orange group-hover:bg-orange group-hover:text-white sm:size-10">
-                    <ArrowUpRight size={18} />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-          {visible.length === 0 ? <p className="py-12 text-center text-(--fg-muted)">Bu yoʻnalishda hozircha kurs yoʻq.</p> : null}
+          </aside>
         </div>
       </div>
     </section>
