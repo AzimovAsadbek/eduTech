@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useId, useState } from "react";
+import { isExternalImage } from "@/components/ui/placeholder-image";
 
 /** Accessible comparison slider: a range input drives the clip, keyboard works out of the box. */
 export function BeforeAfter({ before, after, alt }: { before: string; after: string; alt: string }) {
@@ -9,9 +10,9 @@ export function BeforeAfter({ before, after, alt }: { before: string; after: str
   const id = useId();
   return (
     <div className="relative aspect-[16/9] select-none overflow-hidden rounded-(--radius-xl)">
-      <Image src={before} alt={`${alt} — before`} fill sizes="100vw" className="object-cover" />
+      <Image src={before} alt={`${alt} — before`} fill sizes="100vw" className="object-cover" unoptimized={isExternalImage(before)} />
       <div className="absolute inset-0" style={{ clipPath: `inset(0 0 0 ${pos}%)` }}>
-        <Image src={after} alt={`${alt} — after`} fill sizes="100vw" className="object-cover" />
+        <Image src={after} alt={`${alt} — after`} fill sizes="100vw" className="object-cover" unoptimized={isExternalImage(after)} />
       </div>
       <div className="pointer-events-none absolute inset-y-0 w-0.5 bg-white shadow-[0_0_0_1px_rgba(0,0,0,.2)]" style={{ left: `${pos}%` }} aria-hidden>
         <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-ink shadow-md">⇔</span>

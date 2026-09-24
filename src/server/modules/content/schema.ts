@@ -11,12 +11,9 @@ const text = (max: number) => z.string().trim().max(max);
 const optText = (max: number) => z.string().trim().max(max).nullable().optional();
 const strList = z.array(z.string().trim().min(1).max(300)).max(50).default([]);
 const url = z.string().trim().max(500).nullable().optional();
-/**
- * Public pages render CMS images through `next/image`, which has no remote hosts configured —
- * an external URL would 500 the page. Images must therefore be site-local paths (uploads from the library).
- */
-export const IMAGE_PATH_MESSAGE = "Rasm manzili sayt ichidagi yoʻl boʻlishi kerak (masalan /uploads/…)";
-const imagePath = z.string().trim().max(500).regex(/^\/(?!\/)\S*$/, IMAGE_PATH_MESSAGE);
+/** Images are either library uploads (site-local path) or external https URLs (rendered unoptimised). */
+export const IMAGE_PATH_MESSAGE = "Rasm manzili /uploads/… yoʻli yoki https:// bilan boshlanuvchi URL boʻlishi kerak";
+const imagePath = z.string().trim().max(500).regex(/^(\/(?!\/)\S*|https:\/\/\S+)$/, IMAGE_PATH_MESSAGE);
 const optImagePath = imagePath.nullable().optional();
 const imageList = z.array(imagePath).max(50).default([]);
 

@@ -17,11 +17,14 @@ interface Props {
  * Renders a real photo when the CMS has one; otherwise an honest, branded placeholder surface
  * (never a stock image). Keeps layout stable either way.
  */
+/** External (https) images bypass the optimiser — no remote host allow-list needed. */
+export const isExternalImage = (src: string) => /^https?:\/\//.test(src);
+
 export function PlaceholderImage({ src, alt, className, label, sizes = "(min-width: 1024px) 50vw, 100vw", priority, width, height }: Props) {
   if (src) {
     return (
       <div className={cn("relative overflow-hidden", className)}>
-        <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" {...(width && height ? {} : {})} />
+        <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" unoptimized={isExternalImage(src)} {...(width && height ? {} : {})} />
       </div>
     );
   }

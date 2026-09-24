@@ -13,13 +13,15 @@ import { useUploader } from "./use-uploader";
  * Public pages render images through `next/image`, which only knows this site's origin —
  * so a pasted URL is accepted only when it resolves to a site-local path (e.g. a copied library URL).
  */
-function toLocalImagePath(raw: string): string | null {
+/** Site-local paths stay as paths; same-origin URLs become paths; external https URLs are kept as-is. */
+function toImageSource(raw: string): string | null {
   const v = raw.trim();
   if (!v) return null;
   if (/^\/(?!\/)/.test(v)) return v;
   try {
     const u = new URL(v, window.location.origin);
     if (u.origin === window.location.origin) return `${u.pathname}${u.search}`;
+    if (u.protocol === "https:") return u.toString();
   } catch {
     /* not a URL */
   }
@@ -54,9 +56,9 @@ export function ImageField({ label, value, onChange, error, hint, required }: { 
 
   const applyUrl = (raw: string): boolean => {
     if (!raw.trim()) return false;
-    const path = toLocalImagePath(raw);
+    const path = toImageSource(raw);
     if (!path) {
-      toast.error("Tashqi rasm manzili qoʻllab-quvvatlanmaydi", "Rasmni kutubxonaga yuklang yoki /uploads/… koʻrinishidagi yoʻlni kiriting.");
+      toast.error("Rasm manzili notoʻgʻri", "https:// bilan boshlanuvchi URL yoki /uploads/… yoʻlini kiriting.");
       return false;
     }
     onChange(path);
