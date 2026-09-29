@@ -189,7 +189,7 @@ Tugma bosilganda status DB'da yangilanadi, xabar tahrirlanadi, `AuditLog` yozila
 
 ## 10. Excel
 
-`GET /api/v1/admin/leads/export?type=&status=&from=&to=&q=&courseId=&serviceId=` — lead jadvalidagi filtrlar bilan bir xil. Ustunlar: Sana, Turi, Ism, Telefon, Kurs/Xizmat, Filial, Kompaniya, Byudjet, Status, Manba, Xabar, Masʼul, created_at, ID. Header muzlatilgan, autofilter yoqilgan. Har export `AuditLog`ga yoziladi.
+`GET /api/v1/admin/leads/export?type=&status=&channel=&campaign=&from=&to=&q=&courseId=&serviceId=` — lead jadvalidagi filtrlar bilan bir xil. Ustunlar: Sana, Turi, Ism, Telefon, Kurs/Xizmat, Filial, Kompaniya, Byudjet, Status, Kanal, Joylashuv (utm_medium), Kampaniya (utm_campaign), utm_source, Kirish sahifasi, Forma, Xabar, Masʼul, created_at, ID. Header muzlatilgan, autofilter yoqilgan. Har export `AuditLog`ga yoziladi.
 
 ## 11. Admin
 
@@ -268,13 +268,38 @@ Dev uchun faqat DB: `docker compose -f docker-compose.dev.yml up -d`.
 * SEO: har sahifada `hreflang` (uz/ru/en + x-default), til boʻyicha canonical, sitemap barcha tillarni oʻz ichiga oladi, `<html lang>` va OpenGraph `locale` toʻgʻri.
 * Til almashtirgich header va mobil menyuda — foydalanuvchi oʻsha sahifada qoladi.
 
+## 15b. Instagram va marketing statistikasi
+
+Maqsad: Instagramdan (va boshqa kanallardan) kelgan har bir odamni kuzatish — nechtasi saytga kirdi, nechtasi ariza qoldirdi, nechtasi **kursga yozildi** — va Instagram mehmonlarini imkon qadar tez arizaga olib kelish.
+
+**Atributsiya (qayerdan keldi)**
+* Brauzer sessiyaning birinchi sahifasida manbani yozib oladi (`src/lib/attribution.ts`): UTM teglari, tashqi referrer, Instagram/Facebook/Telegram ilova ichidagi brauzer, Meta `fbclid`. Birinchi manbali tashrif 30 kun saqlanadi.
+* Kanal serverda aniqlanadi (`src/server/modules/attribution/channel.ts`): avval `utm_source`, keyin ilova brauzeri, keyin referrer, keyin `fbclid`. Meta reklamalaridagi `{{site_source_name}}` (`ig`, `fb`) ham tushuniladi.
+* `Visit` jadvali — har sessiyaga bitta qator (shaxsiy maʼlumot, IP saqlanmaydi): kanal, UTM, kirish sahifasi, qurilma, ilova brauzeri. Botlar hisobga olinmaydi.
+* Har bir lid: `channel`, `utmSource`, `utmMedium` (Instagramda: bio / story / reels / post / highlight / direct / ads), `utmCampaign`, `utmContent`, `landingPage`, `referrer`, `sessionId`. Qaytib kelgan odam 30 kun ichidagi birinchi manbali tashrifiga yoziladi (dushanba kuni Instagramdan kirib, chorshanba kuni manzilni yozib kelgan odam — Instagram lidi).
+* Telegram xabarida kanal qatori: `📸 Instagram · story · kuz_qabul`; Excel va admin filtrlarida kanal/kampaniya.
+* `contactedAt` lid birinchi marta NEW holatidan chiqqanda yoziladi — javob tezligi statistikasi uchun.
+
+**Instagram mehmonlari uchun**
+* `/ig` — Instagram bio havolasi uchun sahifa: 30 soniyalik ariza (ism + telefon + kurs), kurslar roʻyxati, Telegram / qoʻngʻiroq / Instagram tugmalari, manzil. Teglanmagan tashriflar avtomatik `instagram · bio` deb yoziladi. Qidiruvdan yopiq (`noindex`). Bio uchun havola: `https://<domen>/ig`.
+* Instagramdan kelgan mehmonga (ilova brauzeri, `utm_source=instagram` yoki Instagram referreri) bosh sahifada “Instagramdan xush kelibsiz” kartasi chiqadi → qisqa ariza. Har sessiyada bir marta, Media sahifalarida koʻrsatilmaydi.
+* Ariza qabul qilingach — “Telegram orqali yozish” va “Qoʻngʻiroq qilish” tugmalari (sozlamalarda kiritilgan boʻlsa).
+* Admin → **Havolalar**: Instagram (bio/story/reels/…), Telegram, Facebook uchun teglangan havola generatori va kampaniyalar natijasi. Dashboard'da kanallar jadvali va Instagram funneli: tashrif → ariza → bogʻlanildi → kursga yozildi.
+
+**Meta Pixel + Conversions API (ixtiyoriy)**
+* `NEXT_PUBLIC_META_PIXEL_ID` — brauzer Pixel'i: PageView, ViewContent (kurs), Lead (ariza), Contact (telefon/Telegram). CSP faqat pixel sozlanganda Meta domenlariga ruxsat beradi.
+* `META_CAPI_ACCESS_TOKEN` — server Conversions API: ariza saqlanganda `Lead`, kurs lidi admin/Telegramda **Yakunlandi (CONVERTED)** qilinganda `CompleteRegistration`. Shu tufayli Instagram reklamasi “ariza qoldiradiganlar”ga emas, **haqiqatan kursga yoziladiganlar**ga optimallashtirilishi mumkin.
+* Telefon va ism faqat SHA-256 xeshlangan holda yuboriladi; `Lead` hodisasi brauzer va server tomonidan bir xil `event_id` (lid ID) bilan yuboriladi — Meta dublikatni olib tashlaydi.
+* Pixel yoqilganda formadagi maxfiylik matni avtomatik “bogʻlanish va reklama samaradorligini oʻlchash” deb oʻzgaradi.
+* Tekshirish: Events Manager → Test events, `META_CAPI_TEST_EVENT_CODE` bilan.
+
 ## 16. SEO & Analytics
 
 * Har sahifa `metadata` (title template, description, canonical, OpenGraph, generated OG image).
 * `sitemap.xml` (dinamik: kurslar, xizmatlar, loyihalar), `robots.txt` (admin/api yopiq).
 * JSON-LD: `EducationalOrganization`/`LocalBusiness`, `Course`, `Service`, `BreadcrumbList` — Namangan uchun local SEO.
 * Semantik HTML, `lang="uz"`, skip-link, ARIA, focus ringlar, reduced-motion.
-* Analytics facade `src/lib/analytics.ts` — cookie'siz `window.dataLayer` eventlari: `cta_click`, `course_view`, `service_view`, `application_submit`, `media_inquiry_submit`, `phone_click`, `telegram_click`, `instagram_click`. GTM/GA4 yoki Plausible ulash uchun tayyor.
+* Analytics facade `src/lib/analytics.ts` — `window.dataLayer` eventlari: `cta_click`, `course_view`, `service_view`, `application_submit`, `media_inquiry_submit`, `phone_click`, `telegram_click`, `instagram_click`, `ig_welcome_view`, `ig_welcome_click`. GTM/GA4 ulash uchun tayyor; Meta Pixel sozlangan boʻlsa konversiya eventlari unga ham yuboriladi (15b).
 
 ## 17. Content principles
 

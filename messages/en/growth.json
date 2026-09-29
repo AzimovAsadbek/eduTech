@@ -1,0 +1,40 @@
+{
+  "growth": {
+    "privacyMeta": "Your details are used to contact you and to measure how well our ads work.",
+    "success": {
+      "next": "Don't want to wait? Reach us right away:",
+      "telegram": "Message on Telegram",
+      "call": "Call us"
+    },
+    "quick": {
+      "eyebrow": "Apply in 30 seconds",
+      "title": "Free consultation",
+      "lead": "Leave your name and phone — we'll help you pick the right course."
+    },
+    "igWelcome": {
+      "title": "Welcome from Instagram!",
+      "text": "Book a free consultation in 30 seconds — we'll pick the right course together.",
+      "cta": "Book now",
+      "close": "Close"
+    },
+    "ig": {
+      "metaTitle": "Instagram — EduTech Namangan",
+      "metaDescription": "EduTech courses, a free consultation and contacts — everything for our Instagram followers on one page.",
+      "eyebrow": "Namangan · Academy of modern professions",
+      "title": "Pick a profession — we'll teach you the rest.",
+      "lead": "Hands-on classes, experienced mentors and real projects. Book a free consultation and we'll choose your direction together.",
+      "formTitle": "Free consultation",
+      "formLead": "Name and phone — 30 seconds. We'll get back to you within one working day.",
+      "submit": "Send request",
+      "coursesTitle": "Courses",
+      "coursesLead": "Tap a course for the curriculum, duration and outcomes.",
+      "allCourses": "All courses",
+      "contactTitle": "Contact",
+      "telegram": "Telegram",
+      "call": "Call",
+      "instagram": "Instagram",
+      "map": "Address",
+      "site": "Go to the website"
+    }
+  }
+}

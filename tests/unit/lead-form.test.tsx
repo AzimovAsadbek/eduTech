@@ -6,6 +6,7 @@ import type { ReactElement } from "react";
 import { LeadForm } from "@/components/site/lead-form";
 import common from "../../messages/uz/common.json";
 import components from "../../messages/uz/components.json";
+import growth from "../../messages/uz/growth.json";
 
 // next-intl's navigation helpers pull in `next/navigation`, which has no runtime under Vitest.
 vi.mock("@/i18n/navigation", () => ({
@@ -20,7 +21,7 @@ vi.mock("@/i18n/navigation", () => ({
 
 const renderIntl = (ui: ReactElement) =>
   render(
-    <NextIntlClientProvider locale="uz" messages={{ ...common, ...components }}>
+    <NextIntlClientProvider locale="uz" messages={{ ...common, ...components, ...growth }}>
       {ui}
     </NextIntlClientProvider>,
   );
@@ -171,5 +172,37 @@ describe("<LeadForm />", () => {
     await user.type(screen.getByLabelText(/Telefon/), "1234567");
     await user.click(screen.getByRole("button", { name: /Yuborish/ }));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Tarmoq xatosi"));
+  });
+  it("sends the visitor's attribution and reports the lead id to analytics", async () => {
+    sessionStorage.setItem("et_sid", "3f2b8c1e-6a9d-4d2f-9a51-0c7e2b1d4a66");
+    sessionStorage.setItem("et_last", JSON.stringify({ utmSource: "instagram", utmMedium: "story", landingPath: "/", at: Date.now() }));
+    const fetchSpy = mockFetch({ ok: true, data: { id: "clead_attr_1" } });
+    renderIntl(<LeadForm type="GENERAL" />);
+    await user.type(screen.getByLabelText(/Ismingiz/), "Ali Valiyev");
+    await user.type(screen.getByLabelText(/Telefon/), "1234567");
+    await user.click(screen.getByRole("button", { name: /Yuborish/ }));
+    await screen.findByRole("heading", { name: "Arizangiz qabul qilindi" });
+    const body = JSON.parse(String((fetchSpy.mock.calls[0] as unknown as [string, RequestInit])[1].body));
+    expect(body.attribution).toMatchObject({ sessionId: "3f2b8c1e-6a9d-4d2f-9a51-0c7e2b1d4a66", last: { utmSource: "instagram", utmMedium: "story" } });
+    expect(window.dataLayer?.some((e) => (e as { event: string; leadId?: string }).leadId === "clead_attr_1")).toBe(true);
+    sessionStorage.clear();
+  });
+
+  it("quick variant keeps only name, phone and course", () => {
+    renderIntl(<LeadForm type="EDUCATION" variant="quick" courses={courses} branches={branches} />);
+    expect(screen.getByRole("combobox", { name: /Qiziqqan kurs/ })).toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: /Filial/ })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Xabar")).not.toBeInTheDocument();
+  });
+
+  it("offers Telegram and a call on the success screen when contacts are known", async () => {
+    mockFetch({ ok: true, data: { id: "x" } });
+    renderIntl(<LeadForm type="GENERAL" contacts={{ phone: "+998 90 000 00 00", telegram: "https://t.me/edutech" }} />);
+    await user.type(screen.getByLabelText(/Ismingiz/), "Ali Valiyev");
+    await user.type(screen.getByLabelText(/Telefon/), "1234567");
+    await user.click(screen.getByRole("button", { name: /Yuborish/ }));
+    await screen.findByRole("heading", { name: "Arizangiz qabul qilindi" });
+    expect(screen.getByRole("link", { name: /Telegram orqali yozish/ })).toHaveAttribute("href", "https://t.me/edutech");
+    expect(screen.getByRole("link", { name: /Qoʻngʻiroq qilish/ })).toHaveAttribute("href", "tel:+998900000000");
   });
 });

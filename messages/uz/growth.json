@@ -1,0 +1,40 @@
+{
+  "growth": {
+    "privacyMeta": "Maʼlumotlaringiz siz bilan bogʻlanish va reklama samaradorligini oʻlchash uchun ishlatiladi.",
+    "success": {
+      "next": "Kutib oʻtirmasdan yozishingiz ham mumkin:",
+      "telegram": "Telegram orqali yozish",
+      "call": "Qoʻngʻiroq qilish"
+    },
+    "quick": {
+      "eyebrow": "30 soniyada ariza",
+      "title": "Bepul konsultatsiya",
+      "lead": "Ismingiz va telefoningizni qoldiring — sizga mos kursni tanlashga yordam beramiz."
+    },
+    "igWelcome": {
+      "title": "Instagramdan xush kelibsiz!",
+      "text": "Bepul konsultatsiyaga 30 soniyada yoziling — sizga mos kursni birga tanlaymiz.",
+      "cta": "Yozilish",
+      "close": "Yopish"
+    },
+    "ig": {
+      "metaTitle": "Instagram — EduTech Namangan",
+      "metaDescription": "EduTech kurslari, bepul konsultatsiya va aloqa — Instagram obunachilari uchun bitta sahifada.",
+      "eyebrow": "Namangan · Zamonaviy kasblar akademiyasi",
+      "title": "Kasb tanlang — qolganini biz oʻrgatamiz.",
+      "lead": "Amaliy darslar, tajribali mentorlar va real loyihalar. Bepul konsultatsiyaga yoziling — sizga mos yoʻnalishni birga tanlaymiz.",
+      "formTitle": "Bepul konsultatsiya",
+      "formLead": "Ism va telefon — 30 soniya. Bir ish kuni ichida bogʻlanamiz.",
+      "submit": "Ariza yuborish",
+      "coursesTitle": "Kurslar",
+      "coursesLead": "Kursni bosing — dastur, davomiylik va natijalar.",
+      "allCourses": "Barcha kurslar",
+      "contactTitle": "Bogʻlanish",
+      "telegram": "Telegram",
+      "call": "Qoʻngʻiroq",
+      "instagram": "Instagram",
+      "map": "Manzil",
+      "site": "Saytga oʻtish"
+    }
+  }
+}

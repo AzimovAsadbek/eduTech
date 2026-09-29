@@ -1,8 +1,12 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { headers } from "next/headers";
 import { Cursor } from "@/components/motion/cursor";
 import { ApplyDialogProvider } from "@/components/site/apply-dialog";
+import { AttributionTracker } from "@/components/site/attribution-tracker";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
+import { InstagramWelcome } from "@/components/site/instagram-welcome";
+import { MetaPixel } from "@/components/site/meta-pixel";
 import { MobileCtaBar } from "@/components/site/mobile-cta-bar";
 import { JsonLd, organizationJsonLd } from "@/components/site/json-ld";
 import { localizeAll } from "@/i18n/localize";
@@ -24,8 +28,16 @@ export default async function SiteLayout({ children, params }: { children: React
   const settings = localizeSettings(rawSettings, locale);
   const courses = localizeCourses(rawCourses, locale);
   const branches = localizeAll(rawBranches, locale);
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const contacts = { phone: settings.phone || undefined, telegram: settings.telegram || undefined };
   return (
-    <ApplyDialogProvider courses={courses.map((c) => ({ value: c.slug, label: c.title }))} services={services.map((s) => ({ value: s.slug, label: s.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))}>
+    <ApplyDialogProvider
+      courses={courses.map((c) => ({ value: c.slug, label: c.title }))}
+      services={services.map((s) => ({ value: s.slug, label: s.title }))}
+      branches={branches.map((b) => ({ value: b.id, label: b.name }))}
+      contacts={contacts}
+    >
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-orange focus:px-4 focus:py-2 focus:text-white">
         {t("a11y.skipToContent")}
       </a>
@@ -33,7 +45,10 @@ export default async function SiteLayout({ children, params }: { children: React
       <Header />
       <main id="main">{children}</main>
       <Footer settings={settings} />
-      <MobileCtaBar phone={settings.phone || undefined} telegram={settings.telegram || undefined} />
+      <MobileCtaBar phone={contacts.phone} telegram={contacts.telegram} />
+      <InstagramWelcome />
+      <AttributionTracker />
+      {pixelId ? <MetaPixel pixelId={pixelId} nonce={nonce} /> : null}
       <Cursor />
     </ApplyDialogProvider>
   );

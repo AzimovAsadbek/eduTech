@@ -1,4 +1,7 @@
 import type { ChannelKey } from "@/lib/channels";
+import { detectInApp, type InApp } from "@/lib/user-agent";
+
+export { detectDevice, detectInApp, isBot, type Device, type InApp } from "@/lib/user-agent";
 
 /**
  * Pure attribution helpers — no I/O, unit-tested.
@@ -10,9 +13,6 @@ import type { ChannelKey } from "@/lib/channels";
  *   4. Meta click id (fbclid) without other signals
  *   5. otherwise DIRECT
  */
-
-export type InApp = "instagram" | "facebook" | "telegram";
-export type Device = "mobile" | "tablet" | "desktop";
 
 export interface ChannelSignals {
   utmSource?: string | null;
@@ -50,28 +50,6 @@ const APP_PACKAGES: [RegExp, ChannelKey][] = [
   [/^ru\.yandex\./, "YANDEX"],
   [/^com\.google\.android\.youtube/, "YOUTUBE"],
 ];
-
-export function detectInApp(userAgent?: string | null): InApp | null {
-  if (!userAgent) return null;
-  if (/Instagram/i.test(userAgent)) return "instagram";
-  if (/FBAN|FBAV|FB_IAB|FBIOS|FB4A|\[FB/i.test(userAgent)) return "facebook";
-  if (/Telegram/i.test(userAgent)) return "telegram";
-  return null;
-}
-
-export function detectDevice(userAgent?: string | null): Device {
-  if (!userAgent) return "desktop";
-  // Android tablets omit "Mobile"; checked on the whole UA (in-app browsers repeat "Android" later in the string).
-  if (/iPad|Tablet|PlayBook|Silk/i.test(userAgent) || (/Android/i.test(userAgent) && !/Mobile/i.test(userAgent))) return "tablet";
-  if (/Mobi|iPhone|iPod|Android|Opera Mini|IEMobile/i.test(userAgent)) return "mobile";
-  return "desktop";
-}
-
-const BOT_UA = /bot\b|bot\/|crawl|spider|slurp|preview|facebookexternalhit|facebookcatalog|embedly|quora link|pinterest|whatsapp|headless|lighthouse|pagespeed|phantomjs|puppeteer|playwright|python-requests|curl\/|wget/i;
-
-export function isBot(userAgent?: string | null): boolean {
-  return !userAgent || BOT_UA.test(userAgent);
-}
 
 /** Lower-cased host of a referrer (http(s) URL or android-app:// URI); null when missing/invalid. */
 export function referrerHost(referrer?: string | null): string | null {
