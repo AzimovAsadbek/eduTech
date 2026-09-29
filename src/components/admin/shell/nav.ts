@@ -9,6 +9,7 @@ import {
   Images,
   Inbox,
   LayoutDashboard,
+  Link2,
   MessageSquareQuote,
   Settings,
   Trophy,
@@ -36,6 +37,7 @@ export const NAV: NavSection[] = [
     items: [
       { href: "/admin", label: "Boshqaruv", icon: LayoutDashboard, min: "EDITOR" },
       { href: "/admin/leads", label: "Lidlar", icon: Inbox, min: "ADMIN" },
+      { href: "/admin/links", label: "Havolalar", icon: Link2, min: "ADMIN" },
     ],
   },
   {

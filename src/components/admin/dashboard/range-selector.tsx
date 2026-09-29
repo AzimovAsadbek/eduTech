@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Segmented } from "@/components/admin/ui/segmented";
 
 const OPTIONS = [
@@ -11,8 +11,10 @@ const OPTIONS = [
 
 type Range = (typeof OPTIONS)[number]["value"];
 
+/** 7 / 30 / 90-day switch for the current admin page; the range lives in `?days=`. */
 export function RangeSelector({ days }: { days: number }) {
   const router = useRouter();
+  const pathname = usePathname();
   const value = (String(days) as Range) || "30";
-  return <Segmented<Range> label="Davr" value={value} options={[...OPTIONS]} onChange={(v) => router.push(`/admin?days=${v}`)} />;
+  return <Segmented<Range> label="Davr" value={value} options={[...OPTIONS]} onChange={(v) => router.push(`${pathname}?days=${v}`, { scroll: false })} />;
 }

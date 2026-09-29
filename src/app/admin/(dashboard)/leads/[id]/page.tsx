@@ -7,6 +7,7 @@ import { roleAtLeast } from "@/components/admin/labels";
 import { Forbidden } from "@/components/admin/ui/forbidden";
 import { PageHeader } from "@/components/admin/ui/page-header";
 import { LeadDetailView, type LeadDetail } from "@/components/admin/leads/lead-detail";
+import { ChannelBadge, channelDetail } from "@/components/admin/analytics/channel-badge";
 
 export const metadata: Metadata = { title: "Lid" };
 
@@ -30,9 +31,12 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
         crumbs={[{ label: "Lidlar", href: "/admin/leads" }, { label: `#${lead.id.slice(-8)}` }]}
         title={lead.name}
         description={
-          <span className="font-mono text-xs">
-            {lead.phone}
-            {lead.company ? ` · ${lead.company}` : ""}
+          <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <span className="font-mono text-xs">
+              {lead.phone}
+              {lead.company ? ` · ${lead.company}` : ""}
+            </span>
+            <ChannelBadge channel={lead.channel} detail={channelDetail(lead.utmMedium, lead.utmCampaign)} />
           </span>
         }
       />
