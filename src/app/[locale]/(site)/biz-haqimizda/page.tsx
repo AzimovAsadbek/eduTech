@@ -106,9 +106,13 @@ export default async function AboutPage({ params }: Props) {
       <section className="section-y bg-ink text-white" data-world="media" aria-labelledby="env-title">
         <div className="container-x">
           <SectionHeading eyebrow={t("environment.eyebrow")} title={<span id="env-title">{t("environment.title")}</span>} lead={t("environment.lead")} align="split" />
-          <Reveal stagger={0.08} className="mt-12 grid gap-4 md:grid-cols-3">
+          {/* Placeholders (no campus photos yet) only balance the tablet/desktop layout; on phones they would be
+              about a thousand pixels of empty frames. Real photos show everywhere, in shorter frames on phones. */}
+          {/* The first photo takes two thirds of the width and the full height; the other two stack on the right.
+              (Before, a two-row first photo in three equal columns left two empty cells under the others.) */}
+          <Reveal stagger={0.08} className={`mt-12 grid gap-4 md:grid-cols-3 ${campus.length ? "" : "max-md:hidden"}`}>
             {(campus.length ? campus : [null, null, null]).map((g, i) => (
-              <PlaceholderImage key={g?.id ?? i} src={g?.image} alt={g?.alt ?? t("environment.alt")} label={g ? undefined : envLabels[i]} className={`rounded-(--radius-lg) ${i === 0 ? "aspect-[4/5] md:row-span-2" : "aspect-[4/3]"}`} sizes="(min-width:768px) 33vw, 100vw" />
+              <PlaceholderImage key={g?.id ?? i} src={g?.image} alt={g?.alt ?? t("environment.alt")} label={g ? undefined : envLabels[i]} className={`rounded-(--radius-lg) ${i === 0 ? "aspect-[4/3] md:col-span-2 md:row-span-2 md:aspect-auto md:h-full" : "aspect-[16/9]"}`} sizes={i === 0 ? "(min-width:768px) 66vw, 100vw" : "(min-width:768px) 33vw, 100vw"} />
             ))}
           </Reveal>
         </div>

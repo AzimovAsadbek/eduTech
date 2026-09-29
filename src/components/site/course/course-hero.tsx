@@ -5,6 +5,7 @@ import { SplitHeading } from "@/components/motion/split-heading";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
 import type { CourseDetail } from "@/server/modules/content/public";
+import { cn } from "@/lib/utils";
 
 export async function CourseHero({ course }: { course: CourseDetail }) {
   const [t, tc] = await Promise.all([getTranslations("courseHero"), getTranslations("common")]);
@@ -38,8 +39,10 @@ export async function CourseHero({ course }: { course: CourseDetail }) {
             ))}
           </Reveal>
         </div>
-        <Reveal className="lg:col-span-5" delay={0.2}>
-          <PlaceholderImage src={course.coverImage} alt={t("coverAlt", { title: course.title })} label={t("coverLabel")} className="aspect-[4/5] rounded-(--radius-xl) shadow-lg lg:aspect-[4/4.6]" priority sizes="(min-width:1024px) 40vw, 100vw" />
+        {/* Phones: without a real photo the placeholder would be an empty screen-tall block, so it only
+            balances the desktop layout; a real photo shows on phones in a shorter frame. */}
+        <Reveal className={cn("lg:col-span-5", !course.coverImage && "max-lg:hidden")} delay={0.2}>
+          <PlaceholderImage src={course.coverImage} alt={t("coverAlt", { title: course.title })} label={t("coverLabel")} className="aspect-[16/10] rounded-(--radius-xl) shadow-lg lg:aspect-square" priority sizes="(min-width:1024px) 40vw, 100vw" />
         </Reveal>
       </div>
     </section>

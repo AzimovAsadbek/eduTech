@@ -47,7 +47,9 @@ export async function Manifesto({ gallery }: { gallery: GalleryItem[] }) {
           </Reveal>
         </div>
 
-        <Reveal stagger={0.08} className="mt-16 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {/* Without real photos the strip is placeholders only: it balances the wider layouts, but on phones
+            it would be half a screen of empty tiles, so it is left out there. */}
+        <Reveal stagger={0.08} className={`mt-16 grid grid-cols-2 gap-3 sm:grid-cols-4 ${photos.length ? "" : "max-sm:hidden"}`}>
           {(photos.length ? photos : [null, null, null, null]).map((p, i) => (
             <PlaceholderImage
               key={p?.id ?? i}
