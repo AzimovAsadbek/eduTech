@@ -14,7 +14,6 @@ export const CLIENT_NAMESPACES = [
   "leadForm",
   "applyDialog",
   "serviceExplorer",
-  "journey",
   "courseIndex",
   "courseApply",
   "videoEmbed",
