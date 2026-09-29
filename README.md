@@ -3,7 +3,7 @@
 EduTech'ning rasmiy web-platformasi: **EDU** (zamonaviy kasblar akademiyasi) va **MEDIA** (bizneslar uchun kontent va marketing studiyasi) — bitta premium digital tajriba, lead pipeline (Telegram + Excel) va toʻliq admin panel bilan.
 
 ```
-Next.js 16 · React 19 · TypeScript · Tailwind v4 · GSAP · Prisma 6 · PostgreSQL · Docker
+Next.js 16 · React 19 · TypeScript · Tailwind v4 · Prisma 6 · PostgreSQL · Docker
 ```
 
 ## Mundarija
@@ -52,7 +52,7 @@ Browser ──► Next.js (RSC pages + Route Handlers /api/v1) ──► src/ser
                                     └──► Storage provider (local volume, S3-ready)
 ```
 
-* **Server Components by default**, client komponentlar faqat interaktivlik uchun (GSAP, formalar, admin jadvallari).
+* **Server Components by default**, client komponentlar faqat interaktivlik uchun (formalar, menyu, dialog, admin jadvallari). Hero va bosh sahifadagi kurslar serverda render qilinadi.
 * **`src/server/modules`** — yagona biznes-logika qatlami: `auth`, `leads`, `telegram`, `excel`, `content`, `settings`, `uploads`, `audit`. `src/app` hech qachon Prisma'ni toʻgʻridan-toʻgʻri chaqirmaydi.
 * **Public API** (`/api/v1/public/*`) va **Admin API** (`/api/v1/admin/*`) alohida authorization qatlami bilan (`adminRoute(minRole, handler)`).
 * **Cache**: public kontent `unstable_cache` + taglar; admin mutatsiyalari `revalidateTag` chaqiradi.
@@ -75,7 +75,7 @@ Browser ──► Next.js (RSC pages + Route Handlers /api/v1) ──► src/ser
 │   │   ├── sitemap.ts · robots.ts · opengraph-image.tsx · not-found.tsx · error.tsx
 │   ├── components/
 │   │   ├── ui/             Button, Input/Textarea/Select, Chip, Accordion, SectionHeading, PlaceholderImage
-│   │   ├── motion/         gsap.ts, Reveal, SplitHeading, Counter, Cursor, Marquee
+│   │   ├── motion/         MotionRuntime, Reveal, SplitHeading, Counter, Cursor (GSAP yoʻq)
 │   │   ├── site/           Header, Footer, LeadForm, ApplyDialog, home/*, course/*, media/*
 │   │   └── admin/          admin UI
 │   ├── server/
@@ -124,7 +124,13 @@ SEED_DEMO=1 npm run db:seed
 | `npm run db:studio` | Prisma Studio |
 | `npm run test` / `test:e2e` | Testlar ([§12](#12-testing)) |
 
-Kod qoidalari: strict TypeScript, `any` yoʻq, komponentlar kichik va kompozitsion, biznes-logika faqat `src/server/modules`, animatsiya faqat `transform/opacity`, har ScrollTrigger `useGSAP` scope ichida (avtomatik cleanup), `prefers-reduced-motion` hurmat qilinadi.
+Kod qoidalari: strict TypeScript, `any` yoʻq, komponentlar kichik va kompozitsion, biznes-logika faqat `src/server/modules`, animatsiya faqat `transform/opacity` (CSS), `prefers-reduced-motion` hurmat qilinadi.
+
+**Tezlik qoidalari** (oʻlchov va natijalar: `docs/PERFORMANCE.md`):
+* **Animatsiya:** `<Reveal>`, `<SplitHeading>`, `<Counter>` oddiy server markup; ularni bitta `MotionRuntime` (IntersectionObserver) va CSS transition boshqaradi. Ekranda turgan kontent hech qachon yashirilmaydi, JS oʻchiq boʻlsa ham hammasi koʻrinadi. Birinchi ekrandagi animatsiyalar CSS keyframe (JS kutmaydi).
+* **Shriftlar:** faqat birinchi chizish uchun kerakli ikkita lotin fayli preload qilinadi. Bricolage opsz 96 da qotirilgan nusxa (`src/app/fonts`), JetBrains Mono preload qilinmaydi.
+* **Client JS:** zod faqat serverda; formalar react-hook-form qoidalari bilan tekshiriladi. Client komponent yangi tarjima namespace ishlatsa, uni `src/i18n/client-messages.ts` ga qoʻshing (test tekshiradi).
+* **Maʼlumot:** client komponentga faqat kerakli maydonlar beriladi (masalan, `toCourseTile`); `localize()` saqlangan tarjimalarni natijadan olib tashlaydi.
 
 ## 6. Environment
 
@@ -320,4 +326,4 @@ Maqsad: Instagramdan (va boshqa kanallardan) kelgan har bir odamni kuzatish — 
 | 403 `Cross-site request blocked` | `NEXT_PUBLIC_SITE_URL` sayt domeni bilan bir xil boʻlishi kerak |
 | Rasm yuklanmayapti | `UPLOAD_DIR` yozish huquqi; hajm `UPLOAD_MAX_MB`; format JPEG/PNG/WebP/GIF/AVIF |
 | Tashqi rasm URL | `https://` URL qabul qilinadi (optimizatsiyasiz koʻrsatiladi); `/uploads/...` kutubxona rasmlari WebP ga optimallashtiriladi |
-| Prod'da fontlar yoʻq | Build vaqtida Google Fonts'ga internet kerak (`next/font` self-host qiladi) |
+| Prod'da fontlar yoʻq | Build vaqtida Google Fonts'ga internet kerak (Manrope va JetBrains Mono uchun `next/font` self-host qiladi; Bricolage `src/app/fonts` da) |

@@ -35,7 +35,7 @@ export function CourseIndex({ courses, categories = [], heading = true }: Props)
   };
 
   return (
-    <section className="section-y relative" aria-labelledby="courses-title" data-nav="/kurslar">
+    <section className="section-y relative" aria-labelledby={heading ? "courses-title" : undefined} aria-label={heading ? undefined : t("filterLabel")} data-nav="/kurslar">
       <div className="container-x">
         {heading ? <SectionHeading eyebrow={tc("nav.courses")} title={<span id="courses-title">{t("title")}</span>} lead={t("lead")} align="split" /> : null}
 
