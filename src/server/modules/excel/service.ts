@@ -1,6 +1,7 @@
 import "server-only";
 import ExcelJS from "exceljs";
 import type { LeadListItem } from "@/server/modules/leads/service";
+import { CHANNEL_LABELS } from "@/lib/channels";
 import { STATUS_LABELS } from "@/server/modules/telegram/format";
 
 const TYPE_LABELS: Record<string, string> = { EDUCATION: "Taʼlim", MEDIA: "Media", GENERAL: "Umumiy" };
@@ -22,7 +23,12 @@ export async function buildLeadsWorkbook(leads: LeadListItem[]): Promise<Buffer>
     { header: "Kompaniya", key: "company", width: 22 },
     { header: "Byudjet", key: "budget", width: 14 },
     { header: "Status", key: "status", width: 14 },
-    { header: "Manba", key: "source", width: 28 },
+    { header: "Kanal", key: "channel", width: 16 },
+    { header: "Joylashuv (utm_medium)", key: "utmMedium", width: 18 },
+    { header: "Kampaniya (utm_campaign)", key: "utmCampaign", width: 22 },
+    { header: "utm_source", key: "utmSource", width: 14 },
+    { header: "Kirish sahifasi", key: "landingPage", width: 26 },
+    { header: "Forma", key: "source", width: 24 },
     { header: "Xabar", key: "message", width: 40 },
     { header: "Masʼul", key: "assignee", width: 18 },
     { header: "created_at", key: "createdAt", width: 22 },
@@ -46,6 +52,11 @@ export async function buildLeadsWorkbook(leads: LeadListItem[]): Promise<Buffer>
       company: lead.company ?? "",
       budget: lead.budget ?? "",
       status: STATUS_LABELS[lead.status],
+      channel: CHANNEL_LABELS[lead.channel],
+      utmMedium: lead.utmMedium ?? "",
+      utmCampaign: lead.utmCampaign ?? "",
+      utmSource: lead.utmSource ?? "",
+      landingPage: lead.landingPage ?? "",
       source: lead.source ?? "",
       message: lead.message ?? "",
       assignee: lead.assignedTo?.name ?? "",
@@ -54,7 +65,7 @@ export async function buildLeadsWorkbook(leads: LeadListItem[]): Promise<Buffer>
     });
   }
   ws.getColumn("date").numFmt = "dd.mm.yyyy hh:mm";
-  ws.autoFilter = { from: "A1", to: `N${Math.max(1, leads.length + 1)}` };
+  ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: Math.max(1, leads.length + 1), column: ws.columns.length } };
 
   const buffer = await wb.xlsx.writeBuffer();
   return Buffer.from(buffer);

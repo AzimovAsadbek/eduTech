@@ -1,13 +1,17 @@
 "use client";
 
-import { Download, Search, X } from "lucide-react";
+import { Download, Search, Tag, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { LEAD_STATUS_LABELS, LEAD_STATUS_ORDER, LEAD_TYPE_LABELS } from "@/components/admin/labels";
 import { Button } from "@/components/admin/ui/button";
 import { controlBase, selectChrome } from "@/components/admin/ui/field";
+import { SelectMenu, type MenuOption } from "@/components/admin/ui/select-menu";
+import { CHANNEL_COLORS, CHANNEL_LABELS, CHANNELS } from "@/lib/channels";
 import { cn } from "@/lib/utils";
 import { exportQueryFromSearch } from "./filters";
+
+const CHANNEL_OPTIONS: MenuOption[] = [{ value: "", label: "Barcha kanallar" }, ...CHANNELS.map((c) => ({ value: c, label: CHANNEL_LABELS[c], dot: CHANNEL_COLORS[c] }))];
 
 const SORTS = [
   { value: "createdAt:desc", label: "Yangi → eski" },
@@ -30,6 +34,13 @@ export function LeadsToolbar({ total }: { total: number }) {
     setPrevUrlQ(urlQ);
     setQ(urlQ);
   }
+  const urlCampaign = sp.get("campaign") ?? "";
+  const [campaign, setCampaign] = useState(urlCampaign);
+  const [prevUrlCampaign, setPrevUrlCampaign] = useState(urlCampaign);
+  if (urlCampaign !== prevUrlCampaign) {
+    setPrevUrlCampaign(urlCampaign);
+    setCampaign(urlCampaign);
+  }
 
   const set = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams(sp.toString());
@@ -43,10 +54,11 @@ export function LeadsToolbar({ total }: { total: number }) {
 
   const type = sp.get("type") ?? "";
   const status = sp.get("status") ?? "";
+  const channel = sp.get("channel") ?? "";
   const from = sp.get("from") ?? "";
   const to = sp.get("to") ?? "";
   const sort = `${sp.get("sort") ?? "createdAt"}:${sp.get("dir") ?? "desc"}`;
-  const hasFilters = Boolean(sp.get("q") || type || status || from || to);
+  const hasFilters = Boolean(sp.get("q") || type || status || channel || urlCampaign || from || to);
 
   const select = cn(controlBase, selectChrome, "h-9 w-auto min-w-0 text-[13px]");
 
@@ -92,17 +104,58 @@ export function LeadsToolbar({ total }: { total: number }) {
           ))}
         </select>
 
-        <label className="sr-only" htmlFor="leads-from">
-          Boshlanish sanasi
-        </label>
-        <input id="leads-from" type="date" value={from} max={to || undefined} onChange={(e) => set({ from: e.target.value })} className={cn(controlBase, "h-9 w-auto text-[13px]")} />
-        <span className="t-meta text-muted" aria-hidden>
-          –
-        </span>
-        <label className="sr-only" htmlFor="leads-to">
-          Tugash sanasi
-        </label>
-        <input id="leads-to" type="date" value={to} min={from || undefined} onChange={(e) => set({ to: e.target.value })} className={cn(controlBase, "h-9 w-auto text-[13px]")} />
+        <SelectMenu
+          id="leads-channel"
+          label="Kanal"
+          hideLabel
+          size="sm"
+          value={channel}
+          onChange={(v) => set({ channel: v })}
+          options={CHANNEL_OPTIONS}
+          triggerClassName="w-auto min-w-[10.5rem]"
+        />
+
+        <form
+          className="relative"
+          onSubmit={(e) => {
+            e.preventDefault();
+            set({ campaign: campaign.trim().toLowerCase() });
+          }}
+        >
+          <label htmlFor="leads-campaign" className="sr-only">
+            Kampaniya (utm_campaign)
+          </label>
+          <Tag size={14} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted" aria-hidden />
+          <input
+            id="leads-campaign"
+            type="search"
+            value={campaign}
+            onChange={(e) => {
+              setCampaign(e.target.value);
+              // Clearing the field (✕ or backspace) drops the filter right away; typing applies on Enter.
+              if (!e.target.value && urlCampaign) set({ campaign: null });
+            }}
+            placeholder="Kampaniya"
+            autoComplete="off"
+            spellCheck={false}
+            className={cn(controlBase, "h-9 w-36 pl-8 text-[13px]")}
+          />
+        </form>
+
+        {/* The range wraps as one unit so "from – to" never splits across lines. */}
+        <div className="flex items-center gap-2">
+          <label className="sr-only" htmlFor="leads-from">
+            Boshlanish sanasi
+          </label>
+          <input id="leads-from" type="date" value={from} max={to || undefined} onChange={(e) => set({ from: e.target.value })} className={cn(controlBase, "h-9 w-auto text-[13px]")} />
+          <span className="t-meta text-muted" aria-hidden>
+            –
+          </span>
+          <label className="sr-only" htmlFor="leads-to">
+            Tugash sanasi
+          </label>
+          <input id="leads-to" type="date" value={to} min={from || undefined} onChange={(e) => set({ to: e.target.value })} className={cn(controlBase, "h-9 w-auto text-[13px]")} />
+        </div>
 
         <label className="sr-only" htmlFor="leads-sort">
           Saralash

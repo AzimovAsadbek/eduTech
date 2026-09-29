@@ -3,6 +3,8 @@ import { Inbox, Percent, Sparkles, Clapperboard, GraduationCap, CalendarRange } 
 import { redirect } from "next/navigation";
 import { getAuth } from "@/server/modules/auth/service";
 import { listLeads, leadStats } from "@/server/modules/leads/service";
+import { rangeFromSearch } from "@/server/modules/analytics/schema";
+import { channelAnalytics } from "@/server/modules/analytics/service";
 import { listResource } from "@/server/modules/content/admin";
 import { resources, type ResourceKey } from "@/server/modules/content/registry";
 import { roleAtLeast } from "@/components/admin/labels";
@@ -14,10 +16,9 @@ import { LeadsOverTimeChart, StatusFunnel, TopBarChart, TypeBreakdownChart, type
 import { RangeSelector } from "@/components/admin/dashboard/range-selector";
 import { RecentLeads } from "@/components/admin/dashboard/recent-leads";
 import { EditorHome, type ContentCount } from "@/components/admin/dashboard/editor-home";
+import { ChannelsSection } from "@/components/admin/analytics/channels-section";
 
 export const metadata: Metadata = { title: "Boshqaruv" };
-
-const RANGES = new Set([7, 30, 90]);
 
 function buildSeries(days: number, rows: { day: string; type: string; count: number }[]): SeriesPoint[] {
   const map = new Map<string, SeriesPoint>();
@@ -64,8 +65,7 @@ async function contentCounts(): Promise<ContentCount[]> {
 export default async function AdminDashboardPage({ searchParams }: { searchParams: Promise<{ days?: string }> }) {
   const [auth, sp] = await Promise.all([getAuth(), searchParams]);
   if (!auth) redirect("/admin/login");
-  const parsed = Number(sp.days ?? 30);
-  const days = RANGES.has(parsed) ? parsed : 30;
+  const days = rangeFromSearch(sp.days);
 
   if (!roleAtLeast(auth.user.role, "ADMIN")) {
     const counts = await contentCounts();
@@ -77,7 +77,11 @@ export default async function AdminDashboardPage({ searchParams }: { searchParam
     );
   }
 
-  const [stats, recent] = await Promise.all([leadStats(days), listLeads({ page: 1, pageSize: 8, sort: "createdAt", dir: "desc" })]);
+  const [stats, recent, channels] = await Promise.all([
+    leadStats(days),
+    listLeads({ page: 1, pageSize: 8, sort: "createdAt", dir: "desc" }),
+    channelAnalytics({ days }),
+  ]);
   const series = buildSeries(days, stats.series);
 
   const kpis = [
@@ -100,51 +104,61 @@ export default async function AdminDashboardPage({ searchParams }: { searchParam
 
       <KpiCards items={kpis} />
 
-      <div className="mt-6 grid gap-4 xl:grid-cols-3">
-        <Card className="xl:col-span-2">
-          <CardHeader title="Lidlar dinamikasi" description={`Oxirgi ${days} kun, turlar boʻyicha`} />
-          <CardBody>
-            <LeadsOverTimeChart data={series} />
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader title="Holatlar voronkasi" description="Barcha vaqt boʻyicha" />
-          <CardBody>
-            <StatusFunnel byStatus={stats.byStatus} />
-            <div className="mt-5 border-t border-(--line) pt-4">
-              <p className="t-eyebrow mb-2 text-[10px] text-muted">Turlar boʻyicha</p>
-              <TypeBreakdownChart byType={stats.byType} />
-            </div>
-          </CardBody>
-        </Card>
-      </div>
+      <ChannelsSection data={channels} />
 
-      <div className="mt-4 grid gap-4 xl:grid-cols-3">
-        <Card>
-          <CardHeader title="Top kurslar" description="Eng koʻp murojaat" />
-          <CardBody>
-            <TopBarChart data={stats.topCourses} emptyTitle="Kurslarga murojaat yoʻq" />
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader title="Top xizmatlar" description="Eng koʻp soʻrov" />
-          <CardBody>
-            <TopBarChart data={stats.topServices} emptyTitle="Xizmatlarga soʻrov yoʻq" />
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader
-            title="Soʻnggi lidlar"
-            description="Oxirgi 8 ta murojaat"
-            actions={
-              <Button href="/admin/leads" variant="ghost" size="xs">
-                Barchasi
-              </Button>
-            }
-          />
-          <RecentLeads leads={recent.items} />
-        </Card>
-      </div>
+      <section aria-labelledby="leads-flow-title" className="mt-10">
+        <div className="mb-4">
+          <p className="t-eyebrow mb-2 text-orange">CRM</p>
+          <h2 id="leads-flow-title" className="t-h3 text-ink">
+            Lidlar oqimi
+          </h2>
+        </div>
+        <div className="grid gap-4 xl:grid-cols-3">
+          <Card className="xl:col-span-2">
+            <CardHeader title="Lidlar dinamikasi" description={`Oxirgi ${days} kun, turlar boʻyicha`} />
+            <CardBody>
+              <LeadsOverTimeChart data={series} />
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader title="Holatlar voronkasi" description="Barcha vaqt boʻyicha" />
+            <CardBody>
+              <StatusFunnel byStatus={stats.byStatus} />
+              <div className="mt-5 border-t border-(--line) pt-4">
+                <p className="t-eyebrow mb-2 text-[10px] text-muted">Turlar boʻyicha</p>
+                <TypeBreakdownChart byType={stats.byType} />
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+
+        <div className="mt-4 grid gap-4 xl:grid-cols-3">
+          <Card>
+            <CardHeader title="Top kurslar" description="Eng koʻp murojaat" />
+            <CardBody>
+              <TopBarChart data={stats.topCourses} emptyTitle="Kurslarga murojaat yoʻq" />
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader title="Top xizmatlar" description="Eng koʻp soʻrov" />
+            <CardBody>
+              <TopBarChart data={stats.topServices} emptyTitle="Xizmatlarga soʻrov yoʻq" />
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader
+              title="Soʻnggi lidlar"
+              description="Oxirgi 8 ta murojaat"
+              actions={
+                <Button href="/admin/leads" variant="ghost" size="xs">
+                  Barchasi
+                </Button>
+              }
+            />
+            <RecentLeads leads={recent.items} />
+          </Card>
+        </div>
+      </section>
     </>
   );
 }

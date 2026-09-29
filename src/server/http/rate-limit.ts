@@ -57,4 +57,6 @@ export const limits = {
   login: () => limiter("login", 8, 15 * 60 * 1000),
   adminApi: () => limiter("admin-api", 300, 60 * 1000),
   upload: () => limiter("upload", 30, 10 * 60 * 1000),
+  // Generous: mobile carriers put many visitors behind one IP (CGNAT); this only stops floods.
+  visit: () => limiter("visit", 120, 60 * 1000),
 };

@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 import { LeadForm, type LeadFormOption } from "./lead-form";
 
 export type ApplyKind = "EDUCATION" | "MEDIA";
@@ -11,6 +11,10 @@ export interface ApplyPreset {
   type?: ApplyKind;
   courseSlug?: string;
   serviceSlug?: string;
+  /** Short form (name, phone, course) — e.g. for visitors from Instagram. */
+  quick?: boolean;
+  /** Overrides the lead's form-source label, e.g. "ig-welcome". */
+  source?: string;
 }
 
 interface Ctx {
@@ -31,16 +35,20 @@ interface ProviderProps {
   courses: LeadFormOption[];
   services: LeadFormOption[];
   branches: LeadFormOption[];
+  contacts?: { phone?: string; telegram?: string };
 }
 
 /**
  * Global application dialog for both worlds: course application (EDUCATION) and service request (MEDIA).
  * Native <dialog> gives focus trapping, Esc and inert background; on phones it presents as an iOS-style bottom sheet.
  */
-export function ApplyDialogProvider({ children, courses, services, branches }: ProviderProps) {
+export function ApplyDialogProvider({ children, courses, services, branches, contacts }: ProviderProps) {
   const t = useTranslations("applyDialog");
+  const tg = useTranslations("growth");
   const tc = useTranslations("common.actions");
   const ref = useRef<HTMLDialogElement>(null);
+  // Unique: pages also render section headings with ids like "apply-title".
+  const titleId = useId();
   const [preset, setPreset] = useState<ApplyPreset>({});
   const [mounted, setMounted] = useState(false);
 
@@ -74,14 +82,15 @@ export function ApplyDialogProvider({ children, courses, services, branches }: P
 
   const value = useMemo(() => ({ open, close }), [open, close]);
   const isMedia = preset.type === "MEDIA";
-  const source = typeof window !== "undefined" ? `dialog:${window.location.pathname}` : "dialog";
+  const quick = Boolean(preset.quick) && !isMedia;
+  const source = preset.source ?? (typeof window !== "undefined" ? `dialog:${window.location.pathname}` : "dialog");
 
   return (
     <ApplyContext.Provider value={value}>
       {children}
       <dialog
         ref={ref}
-        aria-labelledby="apply-title"
+        aria-labelledby={titleId}
         data-world={isMedia ? "media" : undefined}
         className={[
           // Phones: bottom sheet. Desktop: centred card.
@@ -102,15 +111,15 @@ export function ApplyDialogProvider({ children, courses, services, branches }: P
             >
               <X size={18} />
             </button>
-            <p className="t-eyebrow mb-2 text-orange">{isMedia ? tc("order") : tc("apply")}</p>
-            <h2 id="apply-title" className="t-h3 mb-2 pr-12">
-              {isMedia ? t("media.title") : t("title")}
+            <p className="t-eyebrow mb-2 text-orange">{isMedia ? tc("order") : quick ? tg("quick.eyebrow") : tc("apply")}</p>
+            <h2 id={titleId} className="t-h3 mb-2 pr-12">
+              {isMedia ? t("media.title") : quick ? tg("quick.title") : t("title")}
             </h2>
-            <p className={isMedia ? "mb-6 text-white/65" : "mb-6 text-(--fg-muted)"}>{isMedia ? t("media.lead") : t("lead")}</p>
+            <p className={isMedia ? "mb-6 text-white/65" : "mb-6 text-(--fg-muted)"}>{isMedia ? t("media.lead") : quick ? tg("quick.lead") : t("lead")}</p>
             {isMedia ? (
-              <LeadForm type="MEDIA" services={services} defaultServiceSlug={preset.serviceSlug} source={source} onDone={close} dark />
+              <LeadForm type="MEDIA" services={services} defaultServiceSlug={preset.serviceSlug} source={source} onDone={close} contacts={contacts} dark />
             ) : (
-              <LeadForm type="EDUCATION" courses={courses} branches={branches} defaultCourseSlug={preset.courseSlug} source={source} onDone={close} />
+              <LeadForm type="EDUCATION" courses={courses} branches={branches} defaultCourseSlug={preset.courseSlug} source={source} onDone={close} contacts={contacts} variant={quick ? "quick" : "full"} />
             )}
           </div>
         ) : null}

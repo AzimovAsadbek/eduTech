@@ -6,6 +6,8 @@ import { normalizePhone } from "@/lib/utils";
 import { badRequest, notFound } from "@/server/http/errors";
 import { audit } from "@/server/modules/audit/service";
 import { notifyNewLead, syncLeadMessage } from "@/server/modules/telegram/service";
+import { resolveLeadAttribution } from "@/server/modules/attribution/service";
+import { sendLeadConversion, sendLeadCreated } from "@/server/modules/meta/capi";
 import type { LeadFilter, PublicLeadInput } from "./schema";
 
 const MIN_FORM_SECONDS = 2; // bots submit instantly; humans do not
@@ -20,7 +22,7 @@ export const leadInclude = {
 export type LeadListItem = Prisma.LeadGetPayload<{ include: typeof leadInclude }>;
 
 /** Single public write path for all lead types. */
-export async function createPublicLead(input: PublicLeadInput, meta: { ip?: string }) {
+export async function createPublicLead(input: PublicLeadInput, meta: { ip?: string; userAgent?: string | null }) {
   if (input.website) throw badRequest("Spam aniqlandi");
   if (input.startedAt && Date.now() - input.startedAt < MIN_FORM_SECONDS * 1000) throw badRequest("Iltimos, formani toʻldiring");
 
@@ -41,6 +43,8 @@ export async function createPublicLead(input: PublicLeadInput, meta: { ip?: stri
       ? ((await db.branch.findUnique({ where: { id: input.branchId }, select: { id: true } }))?.id ?? null)
       : null;
 
+  const attribution = resolveLeadAttribution(input.attribution, { userAgent: meta.userAgent });
+
   const lead = await db.lead.create({
     data: {
       type: input.type,
@@ -55,13 +59,23 @@ export async function createPublicLead(input: PublicLeadInput, meta: { ip?: stri
       serviceId,
       branchId,
       source: clean(input.source),
-      utm: input.utm ?? undefined,
+      channel: attribution.channel,
+      utmSource: attribution.utmSource,
+      utmMedium: attribution.utmMedium,
+      utmCampaign: attribution.utmCampaign,
+      utmContent: attribution.utmContent,
+      landingPage: attribution.landingPage,
+      referrer: attribution.referrer,
+      sessionId: attribution.sessionId,
+      utm: attribution.utm,
       ip: meta.ip ?? null,
     },
+    include: { course: { select: { title: true } }, service: { select: { title: true } } },
   });
 
-  // Notification runs out-of-band; the user response never waits on Telegram.
+  // Side effects run out-of-band; the visitor's response never waits on Telegram or Meta.
   void notifyNewLead(lead.id);
+  void sendLeadCreated(lead, { ip: meta.ip, userAgent: meta.userAgent, pageUrl: attribution.pageUrl, fbc: attribution.fbc, fbp: attribution.fbp });
 
   return { id: lead.id, type: lead.type, createdAt: lead.createdAt };
 }
@@ -72,6 +86,8 @@ function buildWhere(filter: Omit<LeadFilter, "page" | "pageSize" | "sort" | "dir
     status: filter.status,
     courseId: filter.courseId,
     serviceId: filter.serviceId,
+    channel: filter.channel,
+    utmCampaign: filter.campaign ? { equals: filter.campaign.toLowerCase() } : undefined,
     createdAt: filter.from || filter.to ? { gte: filter.from, lte: filter.to } : undefined,
     OR: filter.q
       ? [
@@ -130,11 +146,14 @@ export async function transitionLeadStatus(
   status: LeadStatus,
   opts: { actorId?: string; actorLabel?: string; viaTelegram?: boolean },
 ) {
+  const before = await db.lead.findUnique({ where: { id }, select: { status: true, contactedAt: true } });
+  if (!before) throw notFound("Lead topilmadi");
   const lead = await db.lead.update({
     where: { id },
     data: {
       status,
-      contactedAt: status === "CONTACTED" ? new Date() : undefined,
+      // First time a lead leaves NEW counts as the first contact (used for response-time stats).
+      contactedAt: status !== "NEW" && !before.contactedAt ? new Date() : undefined,
       closedAt: status === "CONVERTED" || status === "LOST" ? new Date() : null,
     },
     include: leadInclude,
@@ -147,6 +166,7 @@ export async function transitionLeadStatus(
     meta: { status, via: opts.viaTelegram ? "telegram" : "admin", actor: opts.actorLabel },
   });
   void syncLeadMessage(id, opts.actorLabel);
+  if (status === "CONVERTED" && before.status !== "CONVERTED") void sendLeadConversion(id);
   return lead;
 }
 

@@ -28,7 +28,7 @@ describe("createPublicLead", () => {
         courseSlug: "dasturlash",
         message: "Salom <i>dunyo</i>\n\n  qalay?",
         source: "course:dasturlash",
-        utm: { utm_source: "google" },
+        attribution: { last: { utmSource: "google", utmMedium: "cpc", landingPath: "/kurslar?utm_source=google" } },
         startedAt: past(),
       },
       { ip: "203.0.113.7" },
@@ -43,7 +43,11 @@ describe("createPublicLead", () => {
     expect(lead.serviceId).toBeNull();
     expect(lead.message).toBe("Salom dunyo qalay?");
     expect(lead.source).toBe("course:dasturlash");
-    expect(lead.utm).toEqual({ utm_source: "google" });
+    expect(lead.channel).toBe("GOOGLE");
+    expect(lead.utmSource).toBe("google");
+    expect(lead.utmMedium).toBe("cpc");
+    expect(lead.landingPage).toBe("/kurslar");
+    expect(lead.utm).toMatchObject({ last: { utmSource: "google" } });
     expect(lead.ip).toBe("203.0.113.7");
     expect(lead.status).toBe("NEW");
     expect(lead.company).toBeNull();

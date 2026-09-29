@@ -19,6 +19,14 @@ function lead(i: number, overrides: Partial<LeadListItem> = {}): LeadListItem {
     branchId: null,
     interest: null,
     source: "/kurslar",
+    channel: "INSTAGRAM",
+    utmSource: "instagram",
+    utmMedium: "story",
+    utmCampaign: "sentabr_qabul",
+    utmContent: null,
+    landingPage: "/kurslar",
+    referrer: null,
+    sessionId: null,
     utm: null,
     ip: null,
     telegramMessageId: null,
@@ -36,7 +44,27 @@ function lead(i: number, overrides: Partial<LeadListItem> = {}): LeadListItem {
   };
 }
 
-const HEADERS = ["Sana", "Turi", "Ism", "Telefon", "Kurs / Xizmat", "Filial", "Kompaniya", "Byudjet", "Status", "Manba", "Xabar", "Masʼul", "created_at", "ID"];
+const HEADERS = [
+  "Sana",
+  "Turi",
+  "Ism",
+  "Telefon",
+  "Kurs / Xizmat",
+  "Filial",
+  "Kompaniya",
+  "Byudjet",
+  "Status",
+  "Kanal",
+  "Joylashuv (utm_medium)",
+  "Kampaniya (utm_campaign)",
+  "utm_source",
+  "Kirish sahifasi",
+  "Forma",
+  "Xabar",
+  "Masʼul",
+  "created_at",
+  "ID",
+];
 
 async function parse(buffer: Buffer) {
   const wb = new ExcelJS.Workbook();
@@ -74,8 +102,13 @@ describe("buildLeadsWorkbook", () => {
     expect(r1[3]).toBe("+998900000001");
     expect(r1[4]).toBe("Dasturlash");
     expect(r1[8]).toBe("Yangi");
-    expect(r1[12]).toBe("2026-09-20T09:00:00.000Z");
-    expect(r1[13]).toBe(leads[0].id);
+    expect(r1[9]).toBe("Instagram");
+    expect(r1[10]).toBe("story");
+    expect(r1[11]).toBe("sentabr_qabul");
+    expect(r1[12]).toBe("instagram");
+    expect(r1[13]).toBe("/kurslar");
+    expect(r1[17]).toBe("2026-09-20T09:00:00.000Z");
+    expect(r1[18]).toBe(leads[0].id);
     expect(r1[0]).toBeInstanceOf(Date);
 
     const r2 = row(3);
@@ -89,14 +122,14 @@ describe("buildLeadsWorkbook", () => {
     expect(r3[1]).toBe("Umumiy");
     expect(r3[4]).toBe("Hamkorlik");
     expect(r3[8]).toBe("Rad etildi");
-    expect(r3[11]).toBe("Admin");
+    expect(r3[16]).toBe("Admin");
   });
 
   it("freezes the header row and sets an autofilter over all rows", async () => {
     const wb = await parse(await buildLeadsWorkbook([lead(1), lead(2)]));
     const ws = wb.getWorksheet("Leads")!;
     expect(ws.views[0]).toMatchObject({ state: "frozen", ySplit: 1 });
-    expect(ws.autoFilter).toBe("A1:N3");
+    expect(ws.autoFilter).toBe("A1:S3");
     expect(ws.getRow(1).font?.bold).toBe(true);
   });
 });

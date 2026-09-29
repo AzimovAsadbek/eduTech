@@ -126,3 +126,24 @@ describe("parseCallback", () => {
     expect(parseCallback(`lead:${"a".repeat(65)}:CONTACTED`)).toBeNull();
   });
 });
+
+describe("channel line", () => {
+  it("shows the marketing channel, placement and campaign", async () => {
+    const { formatChannel, formatLeadMessage } = await import("@/server/modules/telegram/format");
+    expect(formatChannel({ channel: "INSTAGRAM", utmMedium: "story", utmCampaign: "sentabr_qabul" })).toBe("📸 Instagram · story · sentabr_qabul");
+    expect(formatChannel({ channel: "DIRECT", utmMedium: null, utmCampaign: null })).toBe("🔗 Toʻgʻridan-toʻgʻri");
+    expect(formatChannel({ channel: null })).toBeNull();
+    const msg = formatLeadMessage({
+      id: "clead0000000000000000009",
+      type: "EDUCATION",
+      status: "NEW",
+      name: "Ali",
+      phone: "+998901234567",
+      channel: "INSTAGRAM",
+      utmMedium: "reels",
+      utmCampaign: "<b>x</b>",
+      createdAt: new Date("2026-09-29T10:00:00Z"),
+    });
+    expect(msg).toContain("<b>Channel:</b> 📸 Instagram · reels · &lt;b&gt;x&lt;/b&gt;");
+  });
+});

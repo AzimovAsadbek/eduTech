@@ -17,6 +17,7 @@ import { Select, Textarea } from "@/components/admin/ui/field";
 import { EmptyState } from "@/components/admin/ui/empty-state";
 import { LEAD_STATUS_COLORS, LeadStatusBadge, LeadTypeBadge } from "@/components/admin/ui/status-badge";
 import { useToast } from "@/components/admin/ui/toast";
+import { LeadSourceCard } from "./lead-source-card";
 import { LeadStatusSelect } from "./status-select";
 
 export type LeadDetail = Awaited<ReturnType<typeof getLead>>;
@@ -99,7 +100,7 @@ export function LeadDetailView({ lead, role, assignees }: { lead: LeadDetail; ro
 
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-4">
         {/* Stepper */}
         <Card>
           <CardBody>
@@ -107,7 +108,7 @@ export function LeadDetailView({ lead, role, assignees }: { lead: LeadDetail; ro
               {STEPPER.map((s, i) => {
                 const done = stepIndex >= i && status !== "LOST";
                 return (
-                  <li key={s} className="flex flex-1 items-center gap-2">
+                  <li key={s} className="flex min-w-0 flex-1 items-center gap-2">
                     <span className="flex min-w-0 items-center gap-2">
                       <span aria-hidden className={cn("grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold", done ? "text-white" : "bg-paper-3 text-muted")} style={done ? { background: LEAD_STATUS_COLORS[s] } : undefined}>
                         {i + 1}
@@ -180,20 +181,6 @@ export function LeadDetailView({ lead, role, assignees }: { lead: LeadDetail; ro
                   <p className="whitespace-pre-wrap">{lead.message}</p>
                 </Row>
               ) : null}
-              <Row label="Manba">
-                <span className="font-mono text-xs">{lead.source ?? "—"}</span>
-              </Row>
-              {lead.utm && typeof lead.utm === "object" && !Array.isArray(lead.utm) && Object.keys(lead.utm).length ? (
-                <Row label="UTM">
-                  <ul className="flex flex-wrap gap-1.5">
-                    {Object.entries(lead.utm as Record<string, unknown>).map(([k, v]) => (
-                      <li key={k} className="t-meta rounded-full border border-(--line) px-2 py-0.5 text-muted">
-                        {k}={String(v)}
-                      </li>
-                    ))}
-                  </ul>
-                </Row>
-              ) : null}
               <Row label="Yaratildi">
                 <DateText value={lead.createdAt} className="font-mono text-xs" />
               </Row>
@@ -249,7 +236,9 @@ export function LeadDetailView({ lead, role, assignees }: { lead: LeadDetail; ro
       </div>
 
       {/* Side panel */}
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-4">
+        <LeadSourceCard lead={lead} />
+
         <Card>
           <CardHeader title="Masʼul xodim" />
           <CardBody>

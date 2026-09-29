@@ -1,8 +1,10 @@
 /**
  * Baseline environment for tests. Values are only applied when the variable is not already set,
- * except DATABASE_URL for integration runs which is forced to the dedicated `edutech_test` database.
+ * except DATABASE_URL for integration runs which is forced to the dedicated test database
+ * (`edutech_test` by default; override with TEST_DATABASE_NAME to run suites in parallel checkouts).
  */
-export const TEST_DATABASE_URL = "postgresql://edutech:edutech@localhost:5433/edutech_test?schema=public";
+export const TEST_DATABASE_NAME = process.env.TEST_DATABASE_NAME || "edutech_test";
+export const TEST_DATABASE_URL = `postgresql://edutech:edutech@localhost:5433/${TEST_DATABASE_NAME}?schema=public`;
 
 const defaults: Record<string, string> = {
   NODE_ENV: "test",

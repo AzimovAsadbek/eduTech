@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   // Standalone output is for the Docker image; Vercel handles bundling itself.
   output: process.env.VERCEL ? undefined : "standalone",
   poweredByHeader: false,
+  // Do not generate AGENTS.md / CLAUDE.md into the project on `next dev`.
+  agentRules: false,
   reactStrictMode: true,
   images: {
     formats: ["image/avif", "image/webp"],

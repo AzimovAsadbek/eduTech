@@ -7,6 +7,9 @@ import { SESSION_COOKIE, verifySessionJwt } from "@/server/modules/auth/token";
 
 const isDev = process.env.NODE_ENV !== "production";
 
+// Meta Pixel (Instagram / Facebook ads measurement) is only allowed when a pixel is configured.
+const META = process.env.NEXT_PUBLIC_META_PIXEL_ID ? " https://connect.facebook.net https://www.facebook.com" : "";
+
 function buildCsp(nonce: string) {
   const directives = [
     "default-src 'self'",
@@ -15,7 +18,7 @@ function buildCsp(nonce: string) {
     "img-src 'self' data: blob: https:",
     "media-src 'self' blob: https:",
     "font-src 'self' data:",
-    "connect-src 'self'" + (isDev ? " ws: wss:" : ""),
+    "connect-src 'self'" + META + (isDev ? " ws: wss:" : ""),
     "frame-src 'self' https://www.google.com https://maps.google.com https://yandex.com https://yandex.uz https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
     "object-src 'none'",
     "base-uri 'self'",

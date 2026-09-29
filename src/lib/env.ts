@@ -17,6 +17,12 @@ const schema = z.object({
   UPLOAD_DIR: z.string().default("./public/uploads"),
   UPLOAD_PUBLIC_PATH: z.string().default("/uploads"),
   UPLOAD_MAX_MB: z.coerce.number().positive().default(10),
+  // Meta (Instagram / Facebook) — Pixel in the browser + Conversions API from the server.
+  NEXT_PUBLIC_META_PIXEL_ID: z.string().regex(/^\d*$/, "Pixel ID must be numeric").optional().default(""),
+  META_CAPI_ACCESS_TOKEN: z.string().optional().default(""),
+  META_CAPI_TEST_EVENT_CODE: z.string().optional().default(""),
+  META_GRAPH_VERSION: z.string().regex(/^v\d+\.\d+$/).default("v23.0"),
+  META_API_BASE: z.string().optional().default(""),
 });
 
 export type Env = z.infer<typeof schema>;

@@ -1,13 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Phone, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
+import { getAttribution } from "@/lib/attribution";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -50,11 +51,19 @@ interface Props {
   className?: string;
   dark?: boolean;
   submitLabel?: string;
+  /** "quick" keeps only what is needed to call back (name, phone, course/service) — used for Instagram visitors. */
+  variant?: "full" | "quick";
+  /** Offered on the success screen so hot leads can reach the team immediately. */
+  contacts?: { phone?: string; telegram?: string };
 }
 
+const META_PIXEL_ON = Boolean(process.env.NEXT_PUBLIC_META_PIXEL_ID);
+
 /** One form component for all three lead types. Posts JSON to the public API. */
-export function LeadForm({ type, courses = [], services = [], branches = [], defaultCourseSlug, defaultServiceSlug, source, onDone, className, dark, submitLabel }: Props) {
+export function LeadForm({ type, courses = [], services = [], branches = [], defaultCourseSlug, defaultServiceSlug, source, onDone, className, dark, submitLabel, variant = "full", contacts }: Props) {
   const t = useTranslations("leadForm");
+  const tg = useTranslations("growth");
+  const quick = variant === "quick";
   const tc = useTranslations("common.actions");
   const [state, setState] = useState<{ status: "idle" | "submitting" | "success" | "error"; message?: string }>({ status: "idle" });
 
@@ -71,7 +80,13 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
 
   const onSubmit = handleSubmit(async (values) => {
     setState({ status: "submitting" });
-    const payload: Record<string, unknown> = { type, ...values, website: "", source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined) };
+    const payload: Record<string, unknown> = {
+      type,
+      ...values,
+      website: "",
+      source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined),
+      attribution: getAttribution(),
+    };
     for (const k of Object.keys(payload)) if (payload[k] === "") delete payload[k];
     try {
       const res = await fetch("/api/v1/public/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
@@ -81,7 +96,7 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
         setState({ status: "error", message: details?.[0] ? `${details[0].message}` : (json?.error?.message ?? t("errors.generic")) });
         return;
       }
-      track(type === "MEDIA" ? "media_inquiry_submit" : "application_submit", { type, source: String(payload.source ?? "") });
+      track(type === "MEDIA" ? "media_inquiry_submit" : "application_submit", { type, source: String(payload.source ?? ""), leadId: String(json.data?.id ?? "") || undefined });
       setState({ status: "success" });
     } catch {
       setState({ status: "error", message: t("errors.network") });
@@ -96,6 +111,33 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
         </span>
         <h3 className="t-h3 mb-2">{t("success.title")}</h3>
         <p className="text-(--fg-muted)">{t("success.text")}</p>
+        {contacts?.telegram || contacts?.phone ? (
+          <div className="mt-6">
+            <p className="t-meta mb-3 text-(--fg-muted)">{tg("success.next")}</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {contacts.telegram ? (
+                <a
+                  href={contacts.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track("telegram_click", { source: "lead-success" })}
+                  className="inline-flex h-11 items-center gap-2 rounded-full bg-[#229ED9] px-5 text-sm font-semibold text-white transition-transform active:scale-[0.97]"
+                >
+                  <Send size={16} /> {tg("success.telegram")}
+                </a>
+              ) : null}
+              {contacts.phone ? (
+                <a
+                  href={`tel:${contacts.phone.replace(/\s/g, "")}`}
+                  onClick={() => track("phone_click", { source: "lead-success" })}
+                  className="inline-flex h-11 items-center gap-2 rounded-full border border-(--line) px-5 text-sm font-semibold transition-transform active:scale-[0.97]"
+                >
+                  <Phone size={16} /> {tg("success.call")}
+                </a>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
         {onDone ? (
           <Button variant={dark ? "inverse" : "secondary"} className="mt-6" onClick={onDone}>
             {tc("close")}
@@ -130,7 +172,7 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       {type === "EDUCATION" ? (
         <div className="grid gap-4 sm:grid-cols-2">
           <Controller name="courseSlug" control={control} render={({ field: f }) => <Select label={t("fields.course")} options={courses} placeholder={t("fields.coursePlaceholder")} error={err("courseSlug")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} />
-          {branches.length > 1 ? <Controller name="branchId" control={control} render={({ field: f }) => <Select label={t("fields.branch")} options={branches} error={err("branchId")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} /> : null}
+          {branches.length > 1 && !quick ? <Controller name="branchId" control={control} render={({ field: f }) => <Select label={t("fields.branch")} options={branches} error={err("branchId")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} /> : null}
         </div>
       ) : null}
 
@@ -146,7 +188,9 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
 
       {type === "GENERAL" ? <Controller name="interest" control={control} render={({ field: f }) => <Select label={t("fields.interest")} options={interests} placeholder={t("fields.selectPlaceholder")} error={err("interest")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} /> : null}
 
-      <Textarea label={t("fields.message")} placeholder={type === "MEDIA" ? t("fields.messagePlaceholderMedia") : t("fields.messagePlaceholder")} error={err("message")} {...register("message")} />
+      {quick ? null : (
+        <Textarea label={t("fields.message")} placeholder={type === "MEDIA" ? t("fields.messagePlaceholderMedia") : t("fields.messagePlaceholder")} error={err("message")} {...register("message")} />
+      )}
 
       {state.status === "error" ? (
         <p role="alert" className="rounded-(--radius-md) bg-danger/10 px-4 py-3 text-sm text-danger">
@@ -155,7 +199,7 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       ) : null}
 
       <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="t-meta text-(--fg-muted)">{t("privacy")}</p>
+        <p className="t-meta text-(--fg-muted)">{META_PIXEL_ON ? tg("privacyMeta") : t("privacy")}</p>
         <Button type="submit" size="lg" disabled={state.status === "submitting"} icon={<ArrowRight size={18} />} className="sm:min-w-52">
           {state.status === "submitting" ? t("submitting") : (submitLabel ?? tc("send"))}
         </Button>

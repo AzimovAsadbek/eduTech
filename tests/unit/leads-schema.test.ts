@@ -68,10 +68,17 @@ describe("publicLeadSchema (discriminated union)", () => {
     expect(mediaLeadSchema.safeParse({ type: "MEDIA", ...base, email: "not-an-email" }).success).toBe(false);
   });
 
-  it("rejects overly long message / utm values", () => {
+  it("rejects overly long message / attribution values", () => {
     expect(mediaLeadSchema.safeParse({ type: "MEDIA", ...base, message: "x".repeat(1501) }).success).toBe(false);
-    expect(mediaLeadSchema.safeParse({ type: "MEDIA", ...base, utm: { utm_source: "x".repeat(201) } }).success).toBe(false);
-    expect(mediaLeadSchema.safeParse({ type: "MEDIA", ...base, utm: { utm_source: "google" } }).success).toBe(true);
+    expect(mediaLeadSchema.safeParse({ type: "MEDIA", ...base, attribution: { last: { utmSource: "x".repeat(121) } } }).success).toBe(false);
+    expect(mediaLeadSchema.safeParse({ type: "MEDIA", ...base, attribution: { last: { utmSource: "instagram", utmMedium: "story" } } }).success).toBe(true);
+  });
+
+  it("validates the attribution envelope (session id, in-app browser, touch timestamp)", () => {
+    const ok = { sessionId: "3f2b8c1e-6a9d-4d2f-9a51-0c7e2b1d4a66", first: { utmSource: "instagram", at: Date.now() }, last: { inApp: "instagram" as const }, page: "/kurslar", fbp: "fb.1.1.2" };
+    expect(publicLeadSchema.safeParse({ type: "GENERAL", ...base, attribution: ok }).success).toBe(true);
+    expect(publicLeadSchema.safeParse({ type: "GENERAL", ...base, attribution: { ...ok, sessionId: "x" } }).success).toBe(false);
+    expect(publicLeadSchema.safeParse({ type: "GENERAL", ...base, attribution: { ...ok, last: { inApp: "tiktok" } } }).success).toBe(false);
   });
 });
 

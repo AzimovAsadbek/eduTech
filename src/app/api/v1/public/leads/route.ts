@@ -10,6 +10,6 @@ export const POST = handler(async (req) => {
   await limits.publicLead().consume(ip);
   assertSameOrigin(req, env().NEXT_PUBLIC_SITE_URL);
   const input = await parseJson(req, publicLeadSchema);
-  const lead = await createPublicLead(input, { ip });
+  const lead = await createPublicLead(input, { ip, userAgent: req.headers.get("user-agent") });
   return created(lead);
 });

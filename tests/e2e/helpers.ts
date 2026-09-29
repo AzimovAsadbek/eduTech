@@ -21,6 +21,11 @@ export interface LeadRow {
   courseId: string | null;
   serviceId: string | null;
   source: string | null;
+  channel?: string;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  landingPage?: string | null;
   createdAt: string;
   course: { id: string; title: string; slug: string } | null;
   service: { id: string; title: string; slug: string } | null;

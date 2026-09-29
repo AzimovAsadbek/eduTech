@@ -11,6 +11,7 @@ async function loadMessages(locale: string) {
     import(`../../messages/${locale}/common.json`),
     import(`../../messages/${locale}/components.json`),
     import(`../../messages/${locale}/pages.json`),
+    import(`../../messages/${locale}/growth.json`),
   ]);
   return Object.assign({}, ...parts.map((p) => p.default));
 }
