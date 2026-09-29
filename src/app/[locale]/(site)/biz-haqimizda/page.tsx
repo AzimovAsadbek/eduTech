@@ -13,7 +13,7 @@ import { localizeAll } from "@/i18n/localize";
 import { localizeCourses, localizeTeachers } from "@/i18n/localize-content";
 import { localizeSettings } from "@/i18n/localize-settings";
 import { resolveLocale, type LocaleParams } from "@/i18n/params";
-import { getActiveBranches, getPublishedCourses, getPublishedGallery, getPublishedServices, getPublishedTeachers } from "@/server/modules/content/public";
+import { getActiveBranches, getPublishedCourses, getPublishedGallery, getPublishedTeachers } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 import { pageMetadata } from "@/lib/seo";
 
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AboutPage({ params }: Props) {
   const locale = await resolveLocale(params);
   setRequestLocale(locale);
-  const [t, tc, tl, rawSettings, rawTeachers, gallery, rawCourses, rawServices, rawBranches] = await Promise.all([
+  const [t, tc, tl, rawSettings, rawTeachers, gallery, rawCourses, rawBranches] = await Promise.all([
     getTranslations("pages.about"),
     getTranslations("common"),
     getTranslations("pages.jsonLd"),
@@ -37,13 +37,11 @@ export default async function AboutPage({ params }: Props) {
     getPublishedTeachers(),
     getPublishedGallery(),
     getPublishedCourses(),
-    getPublishedServices(),
     getActiveBranches(),
   ]);
   const settings = localizeSettings(rawSettings, locale);
   const teachers = localizeTeachers(rawTeachers, locale);
   const courses = localizeCourses(rawCourses, locale);
-  const services = localizeAll(rawServices, locale);
   const branches = localizeAll(rawBranches, locale);
   const campus = gallery.filter((g) => g.category === "CAMPUS" || g.category === "CLASSROOM").slice(0, 3);
   const pillars = t.raw("pillars") as Pillar[];
@@ -116,7 +114,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </section>
 
-      <Conversion courses={courses.map((c) => ({ value: c.slug, label: c.title }))} services={services.map((s) => ({ value: s.slug, label: s.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))} settings={settings} />
+      <Conversion courses={courses.map((c) => ({ value: c.slug, label: c.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))} settings={settings} />
     </>
   );
 }

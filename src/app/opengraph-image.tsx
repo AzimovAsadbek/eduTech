@@ -24,7 +24,7 @@ async function loadFont(family: string, weight: number, text: string): Promise<A
 const HEADLINE = "Kelajak kasblarini bugundan oʻrganing.";
 
 export default async function OgImage() {
-  const [display, body] = await Promise.all([loadFont("Bricolage Grotesque", 700, HEADLINE), loadFont("Manrope", 500, "Namangan · IT + AI + Digital + Creative Kurslar · Media xizmatlar")]);
+  const [display, body] = await Promise.all([loadFont("Bricolage Grotesque", 700, HEADLINE), loadFont("Manrope", 500, "Namangan · IT + AI + Digital + Creative Kurslar · Bepul konsultatsiya")]);
   const fonts = [
     ...(display ? [{ name: "Bricolage", data: display, weight: 700 as const, style: "normal" as const }] : []),
     ...(body ? [{ name: "Manrope", data: body, weight: 500 as const, style: "normal" as const }] : []),
@@ -54,7 +54,7 @@ export default async function OgImage() {
         </div>
         <div style={{ position: "absolute", right: 72, bottom: 72, display: "flex", alignItems: "center", gap: 10, fontFamily: body ? "Manrope" : "sans-serif", fontSize: 22, color: BRAND.charcoal }}>
           <div style={{ width: 12, height: 12, borderRadius: 9999, background: BRAND.orange }} />
-          <span>Kurslar · Media xizmatlar</span>
+          <span>Kurslar · Bepul konsultatsiya</span>
         </div>
       </div>
     ),

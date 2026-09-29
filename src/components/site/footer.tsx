@@ -1,20 +1,41 @@
+import { hasLocale } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+import { localizeAll } from "@/i18n/localize";
+import { localizeCourses } from "@/i18n/localize-content";
+import { routing, type Locale } from "@/i18n/routing";
 import { nav, routes, siteConfig } from "@/config/site";
+import { getPublishedCourses, getPublishedServices } from "@/server/modules/content/public";
 import type { SiteSettings } from "@/server/modules/settings/service";
 import { Logo } from "./logo";
 import { ContactLink } from "./contact-link";
+import { FooterDirections, type FooterColumn } from "./footer-directions";
 
 export async function Footer({ settings }: { settings: SiteSettings }) {
-  const [t, tc, locale] = await Promise.all([getTranslations("footer"), getTranslations("common"), getLocale()]);
+  const [t, tc, requested, rawCourses, rawServices] = await Promise.all([getTranslations("footer"), getTranslations("common"), getLocale(), getPublishedCourses(), getPublishedServices()]);
+  const locale: Locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
   const year = new Date().getFullYear();
   const homeHref = locale === routing.defaultLocale ? routes.home : `/${locale}`;
-  const mediaLinks = [
-    { href: routes.media, label: tc("actions.mediaServices") },
-    { href: routes.portfolio, label: tc("nav.portfolio") },
-    { href: routes.courses, label: tc("actions.allCourses") },
-  ];
+  // Second column: the academy everywhere, the agency only inside /media (picked client-side from the pathname).
+  const academy: FooterColumn = {
+    title: tc("nav.courses"),
+    links: [
+      ...localizeCourses(rawCourses, locale)
+        .slice(0, 5)
+        .map((c) => ({ href: routes.course(c.slug), label: c.title })),
+      { href: routes.courses, label: tc("actions.allCourses") },
+    ],
+  };
+  const agency: FooterColumn = {
+    title: tc("nav.media"),
+    links: [
+      { href: routes.media, label: tc("actions.mediaServices") },
+      { href: routes.portfolio, label: tc("nav.portfolio") },
+      ...localizeAll(rawServices, locale)
+        .slice(0, 4)
+        .map((s) => ({ href: routes.service(s.slug), label: s.title })),
+    ],
+  };
   const socials = [
     settings.telegram ? { kind: "telegram" as const, href: settings.telegram, label: "Telegram" } : null,
     settings.instagram ? { kind: "instagram" as const, href: settings.instagram, label: "Instagram" } : null,
@@ -57,18 +78,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
                 ))}
               </ul>
             </div>
-            <div>
-              <p className="t-eyebrow mb-3 text-white/45">{t("directions")}</p>
-              <ul className="space-y-2 text-sm">
-                {mediaLinks.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="text-white/80 transition-colors hover:text-orange">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <FooterDirections academy={academy} agency={agency} />
             <div className="col-span-2 sm:col-span-1">
               <p className="t-eyebrow mb-3 text-white/45">{t("contact")}</p>
               <ul className="space-y-2 text-sm text-white/80">

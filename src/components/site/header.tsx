@@ -194,9 +194,6 @@ export function Header() {
             <Button size="lg" onClick={onApply} icon={<ArrowUpRight size={18} />}>
               {ctaLabel}
             </Button>
-            <Button size="lg" variant="outline-inverse" href={routes.media}>
-              {t("actions.mediaServices")}
-            </Button>
           </div>
         </div>
       </div>

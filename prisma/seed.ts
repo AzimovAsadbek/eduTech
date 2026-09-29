@@ -50,7 +50,8 @@ async function main() {
     // Existing installs: merge newly added default keys (e.g. translations) without overwriting edited values.
     const existing = await db.siteSetting.findUnique({ where: { key: "site" } });
     const current = (existing?.value ?? {}) as Record<string, unknown>;
-    if (existing && !current.translations) {
+    const translations = current.translations as Record<string, unknown> | undefined;
+    if (existing && (!translations || Object.keys(translations).length === 0)) {
       await db.siteSetting.update({ where: { key: "site" }, data: { value: { ...current, translations: SETTINGS_TRANSLATIONS } } });
     }
   }

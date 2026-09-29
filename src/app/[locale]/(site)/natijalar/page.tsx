@@ -14,7 +14,7 @@ import { localizeAll } from "@/i18n/localize";
 import { localizeCourses, localizeWithCourse } from "@/i18n/localize-content";
 import { localizeSettings } from "@/i18n/localize-settings";
 import { resolveLocale, type LocaleParams } from "@/i18n/params";
-import { getActiveBranches, getPublishedCourses, getPublishedGallery, getPublishedResults, getPublishedServices, getPublishedTestimonials } from "@/server/modules/content/public";
+import { getActiveBranches, getPublishedCourses, getPublishedGallery, getPublishedResults, getPublishedTestimonials } from "@/server/modules/content/public";
 import { getSiteSettings } from "@/server/modules/settings/service";
 import { pageMetadata } from "@/lib/seo";
 
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ResultsPage({ params }: Props) {
   const locale = await resolveLocale(params);
   setRequestLocale(locale);
-  const [t, tc, rawSettings, rawResults, rawTestimonials, gallery, rawCourses, rawServices, rawBranches] = await Promise.all([
+  const [t, tc, rawSettings, rawResults, rawTestimonials, gallery, rawCourses, rawBranches] = await Promise.all([
     getTranslations("pages.results"),
     getTranslations("common"),
     getSiteSettings(),
@@ -37,14 +37,12 @@ export default async function ResultsPage({ params }: Props) {
     getPublishedTestimonials(),
     getPublishedGallery(),
     getPublishedCourses(),
-    getPublishedServices(),
     getActiveBranches(),
   ]);
   const settings = localizeSettings(rawSettings, locale);
   const results = localizeWithCourse(rawResults, locale);
   const testimonials = localizeWithCourse(rawTestimonials, locale);
   const courses = localizeCourses(rawCourses, locale);
-  const services = localizeAll(rawServices, locale);
   const branches = localizeAll(rawBranches, locale);
   const videoTestimonials = testimonials.filter((t) => t.videoUrl);
   const empty = !results.length && !testimonials.length;
@@ -164,7 +162,7 @@ export default async function ResultsPage({ params }: Props) {
         </section>
       ) : null}
 
-      <Conversion courses={courses.map((c) => ({ value: c.slug, label: c.title }))} services={services.map((s) => ({ value: s.slug, label: s.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))} settings={settings} />
+      <Conversion courses={courses.map((c) => ({ value: c.slug, label: c.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))} settings={settings} />
     </>
   );
 }

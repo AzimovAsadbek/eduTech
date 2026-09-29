@@ -1,8 +1,7 @@
 {
   "footer": {
-    "tagline": "{tagline}. IT + AI + Digital + Creative — {city}dagi zamonaviy kasblar akademiyasi va media studiya.",
+    "tagline": "{tagline}. IT + AI + Digital + Creative — {city}da amaliy kurslar, tajribali mentorlar va real loyihalar.",
     "site": "Sayt",
-    "directions": "Yoʻnalishlar",
     "contact": "Kontakt",
     "rights": "© {year} {brand} · Namangan",
     "closing": "Kelajak kasblari — bugundan."
@@ -66,8 +65,12 @@
     "filterLabel": "Kurs yoʻnalishlari",
     "all": "Barchasi",
     "empty": "Bu yoʻnalishda hozircha kurs yoʻq.",
+    "allCta": {
+      "more": "{count, plural, =0 {Toʻliq katalog} other {yana # ta kurs}}",
+      "total": "Jami {count} ta kurs",
+      "action": "Koʻrish"
+    },
     "coverAlt": "{title} kursi",
-    "swipe": "Chapga suring",
     "card": {
       "duration": "Davomiylik",
       "level": "Daraja",
@@ -124,17 +127,10 @@
     "lead": "Raqamlar — boshlanish. Haqiqiy dalil — oʻquvchilarimizning ishlari va ish joylari.",
     "statsDesc": {
       "students": "biz bilan yangi kasb boshladi",
-      "courses": "IT, AI, media va marketing",
-      "projects": "portfolio va mijozlar uchun"
+      "courses": "IT, AI, robototexnika va kreativ kasblar",
+      "projects": "EduTech tajribasida"
     },
     "railLabel": "Oʻquvchilar hikoyalari"
-  },
-  "worldShift": {
-    "ariaLabel": "Taʼlimdan mediaga oʻtish",
-    "eyebrow": "Ikki dunyo — bitta jamoa",
-    "edu": "EDU",
-    "media": "MEDIA",
-    "lead": "Taʼlim — bu boshlanish. Media — bu brendingizning ovozi. Bizneslar uchun kontent, marketing va prodakshn."
   },
   "mediaHero": {
     "eyebrow": "EduTech Media · bizneslar uchun",
@@ -160,14 +156,12 @@
     "eyebrow": "Boshlaymizmi?",
     "title": "Bir qadam —",
     "titleAccent": "bir ariza.",
-    "lead": "Kurs tanlashda yordam kerakmi yoki brendingiz uchun kontent? Yozing — bir ish kuni ichida javob beramiz.",
+    "lead": "Qaysi kurs sizga mos kelishini bilmayapsizmi? Ariza qoldiring — bir ish kuni ichida bogʻlanamiz va yoʻnalish tanlashda yordam beramiz.",
     "address": "Manzil",
     "phone": "Telefon",
     "hours": "Ish vaqti",
-    "tabsLabel": "Ariza turi",
-    "tabMedia": "Media xizmat",
-    "submitEducation": "Ariza yuborish",
-    "submitMedia": "Soʻrov yuborish"
+    "formTitle": "Sizga mos kursni birga tanlaymiz.",
+    "submitEducation": "Ariza yuborish"
   },
   "faqSection": {
     "eyebrow": "FAQ",
@@ -214,7 +208,6 @@
     ],
     "interests": [
       "Kurslar",
-      "Media xizmatlar",
       "Hamkorlik",
       "Boshqa"
     ],
@@ -312,12 +305,5 @@
   },
   "mobileBar": {
     "call": "Qoʻngʻiroq qilish"
-  },
-  "servicesTeaser": {
-    "eyebrow": "Media xizmatlar",
-    "title": "Bizneslar uchun kontent va marketing.",
-    "lead": "Reels, YouTube, SMM, target va toʻliq video prodakshn — bir jamoada. Toʻliq roʻyxat va jarayon Media sahifasida.",
-    "cta": "Barcha xizmatlar",
-    "count": "{count} ta xizmat"
   }
 }

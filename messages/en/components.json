@@ -1,8 +1,7 @@
 {
   "footer": {
-    "tagline": "{tagline}. IT + AI + Digital + Creative — an academy of modern professions and media studio in {city}.",
+    "tagline": "{tagline}. IT + AI + Digital + Creative — hands-on courses, experienced mentors and real projects in {city}.",
     "site": "Site",
-    "directions": "Explore",
     "contact": "Contact",
     "rights": "© {year} {brand} · Namangan",
     "closing": "Future professions — starting today."
@@ -66,8 +65,12 @@
     "filterLabel": "Course categories",
     "all": "All",
     "empty": "No courses in this category yet.",
+    "allCta": {
+      "more": "{count, plural, =0 {Full catalogue} one {# more course} other {# more courses}}",
+      "total": "{count, plural, one {# course} other {# courses}} in total",
+      "action": "View"
+    },
     "coverAlt": "{title} course",
-    "swipe": "Swipe",
     "card": {
       "duration": "Duration",
       "level": "Level",
@@ -124,17 +127,10 @@
     "lead": "Numbers are only the start. The real proof is our students' work and where they work now.",
     "statsDesc": {
       "students": "started a new profession with us",
-      "courses": "IT, AI, media and marketing",
-      "projects": "for portfolios and clients"
+      "courses": "IT, AI, robotics and creative careers",
+      "projects": "in EduTech's track record"
     },
     "railLabel": "Student stories"
-  },
-  "worldShift": {
-    "ariaLabel": "Transition from education to media",
-    "eyebrow": "Two worlds — one team",
-    "edu": "EDU",
-    "media": "MEDIA",
-    "lead": "Education is the beginning. Media is your brand's voice. Content, marketing and production for businesses."
   },
   "mediaHero": {
     "eyebrow": "EduTech Media · for businesses",
@@ -160,14 +156,12 @@
     "eyebrow": "Shall we start?",
     "title": "One step —",
     "titleAccent": "one application.",
-    "lead": "Need help choosing a course, or content for your brand? Write to us — we reply within one business day.",
+    "lead": "Not sure which course is right for you? Leave a request — we'll get back to you within one business day and help you choose.",
     "address": "Address",
     "phone": "Phone",
     "hours": "Working hours",
-    "tabsLabel": "Request type",
-    "tabMedia": "Media service",
-    "submitEducation": "Send application",
-    "submitMedia": "Send request"
+    "formTitle": "Let's find the course that fits you.",
+    "submitEducation": "Send application"
   },
   "faqSection": {
     "eyebrow": "FAQ",
@@ -214,7 +208,6 @@
     ],
     "interests": [
       "Courses",
-      "Media services",
       "Partnership",
       "Other"
     ],
@@ -312,12 +305,5 @@
   },
   "mobileBar": {
     "call": "Call"
-  },
-  "servicesTeaser": {
-    "eyebrow": "Media services",
-    "title": "Content and marketing for business.",
-    "lead": "Reels, YouTube, SMM, paid ads and full video production — one team. The full list and process live on the Media page.",
-    "cta": "All services",
-    "count": "{count} services"
   }
 }

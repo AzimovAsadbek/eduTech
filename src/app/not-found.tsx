@@ -29,8 +29,8 @@ export default async function NotFound() {
             <Link href="/kurslar" className="inline-flex h-12 items-center rounded-full border border-(--line) px-6 font-semibold hover:bg-ink/5">
               {tc("nav.courses")}
             </Link>
-            <Link href="/media" className="inline-flex h-12 items-center rounded-full border border-(--line) px-6 font-semibold hover:bg-ink/5">
-              {tc("nav.media")}
+            <Link href="/kontakt" className="inline-flex h-12 items-center rounded-full border border-(--line) px-6 font-semibold hover:bg-ink/5">
+              {tc("nav.contact")}
             </Link>
           </div>
         </div>

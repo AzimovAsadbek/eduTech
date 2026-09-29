@@ -1,10 +1,10 @@
 export const siteConfig = {
   name: "EduTech",
   legalName: "EduTech — Zamonaviy kasblar akademiyasi",
-  description: "Namangandagi zamonaviy kasblar akademiyasi va media studiya: dasturlash, AI, robototexnika, SMM, video prodakshn kurslari va bizneslar uchun kontent xizmatlari.",
+  description: "Namangandagi zamonaviy kasblar akademiyasi: dasturlash, AI, robototexnika, IT-Kids, SMM, target, mobilografiya va videografiya boʻyicha amaliy kurslar.",
   locale: "uz_UZ",
   city: "Namangan",
-  keywords: ["EduTech", "Namangan", "IT kurslar", "dasturlash kurslari", "AI kurs", "robototexnika", "SMM", "video prodakshn", "media studiya Namangan"],
+  keywords: ["EduTech", "Namangan", "IT kurslar", "dasturlash kurslari", "AI kurs", "robototexnika kursi", "SMM kursi", "mobilografiya kursi", "oʻquv markazi Namangan"],
 } as const;
 
 /** Primary navigation. Labels live in `messages/<locale>/common.json` under `common.nav.<key>`. */

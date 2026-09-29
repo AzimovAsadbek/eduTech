@@ -1,8 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { LeadForm, type LeadFormOption } from "@/components/site/lead-form";
 import { ContactLink } from "@/components/site/contact-link";
@@ -10,20 +6,15 @@ import type { SiteSettings } from "@/server/modules/settings/service";
 
 interface Props {
   courses: LeadFormOption[];
-  services: LeadFormOption[];
   branches: LeadFormOption[];
   settings: SiteSettings;
-  defaultTab?: "EDUCATION" | "MEDIA";
 }
 
-/** CONVERSION: one section, two paths. Glass card on a warm ambient wash + contact facts. */
-export function Conversion({ courses, services, branches, settings, defaultTab = "EDUCATION" }: Props) {
-  const t = useTranslations("conversion");
-  const tc = useTranslations("common.actions");
-  const [tab, setTab] = useState<"EDUCATION" | "MEDIA">(defaultTab);
+/** CONVERSION: the course application. Glass card with one form on a warm ambient wash + contact facts. */
+export async function Conversion({ courses, branches, settings }: Props) {
+  const [t, tc] = await Promise.all([getTranslations("conversion"), getTranslations("common.actions")]);
   return (
     <section id="ariza" className="section-y relative overflow-hidden bg-orange-soft" aria-labelledby="apply-title" data-nav="/kontakt">
-      <div id="media-inquiry" className="absolute -top-24" aria-hidden />
       <div aria-hidden className="pointer-events-none absolute -top-1/3 -right-1/4 size-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.35),transparent)] blur-3xl" />
       <div className="container-x relative grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-5">
@@ -68,30 +59,9 @@ export function Conversion({ courses, services, branches, settings, defaultTab =
         </div>
 
         <div className="glass relative rounded-(--radius-xl) p-6 sm:p-8 lg:col-span-7">
-          <div role="tablist" aria-label={t("tabsLabel")} className="mb-6 grid grid-cols-2 rounded-full bg-ink/5 p-1">
-            {(
-              [
-                ["EDUCATION", tc("apply")],
-                ["MEDIA", t("tabMedia")],
-              ] as const
-            ).map(([k, l]) => (
-              <button
-                key={k}
-                role="tab"
-                type="button"
-                aria-selected={tab === k}
-                onClick={() => setTab(k)}
-                className={cn("h-11 rounded-full text-sm font-semibold transition-colors duration-300", tab === k ? "bg-ink text-white shadow-md" : "text-ink/70 hover:text-ink")}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-          {tab === "EDUCATION" ? (
-            <LeadForm key="edu" type="EDUCATION" courses={courses} branches={branches} source="home:apply" submitLabel={t("submitEducation")} />
-          ) : (
-            <LeadForm key="media" type="MEDIA" services={services} source="home:media-inquiry" submitLabel={t("submitMedia")} />
-          )}
+          <p className="t-eyebrow mb-2 text-orange">{tc("apply")}</p>
+          <h3 className="t-h3 mb-6">{t("formTitle")}</h3>
+          <LeadForm type="EDUCATION" courses={courses} branches={branches} source="home:apply" submitLabel={t("submitEducation")} />
         </div>
       </div>
     </section>
