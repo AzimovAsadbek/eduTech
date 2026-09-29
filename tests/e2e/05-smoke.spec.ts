@@ -14,6 +14,21 @@ test.describe("Public smoke", () => {
     });
   }
 
+  // Files in public/ must be served as files, not rewritten into a locale route (which answers 404 with HTML).
+  for (const [path, type] of [
+    ["/icon.svg", "image/svg+xml"],
+    ["/apple-icon.png", "image/png"],
+    ["/icon-192.png", "image/png"],
+    ["/brand/logo-light.svg", "image/svg+xml"],
+    ["/brand/lockup-dark-tagline.svg", "image/svg+xml"],
+  ] as const) {
+    test(`static ${path} is served as ${type}`, async ({ request }) => {
+      const res = await request.get(path);
+      expect(res.status(), `${path} → ${res.status()}`).toBe(200);
+      expect(res.headers()["content-type"]).toContain(type);
+    });
+  }
+
   test("an unknown path returns the custom 404 page", async ({ page }) => {
     const res = await page.goto("/bu-sahifa-mavjud-emas-e2e");
     expect(res?.status()).toBe(404);

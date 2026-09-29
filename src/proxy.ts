@@ -76,7 +76,9 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip static assets and Next internals; include pages and API routes.
-    "/((?!_next/static|_next/image|favicon.ico|uploads/|icons/|images/|fonts/|robots.txt|sitemap.xml|manifest.webmanifest).*)",
+    // Pages and API routes only. Anything with a file extension (public/ files such as /icon.svg or
+    // /brand/*.svg, robots.txt, sitemap.xml, the manifest) skips the proxy: next-intl would otherwise
+    // rewrite them to /uz/… and answer 404 with a full HTML page. No route or slug contains a dot.
+    "/((?!_next/static|_next/image|uploads/|.*\\.[^/]+$).*)",
   ],
 };
