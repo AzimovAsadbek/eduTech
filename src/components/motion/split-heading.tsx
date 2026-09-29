@@ -1,4 +1,4 @@
-import type { CSSProperties, ElementType } from "react";
+import { Fragment, type CSSProperties, type ElementType } from "react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -24,13 +24,17 @@ export function SplitHeading({ text, className, as: Tag = "h2", accent = [], del
       {words.map((w, i) => {
         const clean = w.replace(/[.,!?]/g, "");
         const isAccent = accent.includes(clean);
+        // The space sits between the clipping boxes, not inside them: a trailing space inside an
+        // inline-block is dropped at the end of its line, which glued the words together.
         return (
-          <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-top" aria-hidden>
-            <span data-word className={cn("inline-block", isAccent && "text-orange")} style={{ "--i": i } as CSSProperties}>
-              {w}
+          <Fragment key={i}>
+            <span className="inline-block overflow-hidden pb-[0.08em] align-top" aria-hidden>
+              <span data-word className={cn("inline-block", isAccent && "text-orange")} style={{ "--i": i } as CSSProperties}>
+                {w}
+              </span>
             </span>
             {i < words.length - 1 ? " " : null}
-          </span>
+          </Fragment>
         );
       })}
     </Tag>
