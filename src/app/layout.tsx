@@ -6,12 +6,13 @@ import { siteConfig, absoluteUrl } from "@/config/site";
 import "./globals.css";
 
 /*
- * Font budget: only what the first paint needs is preloaded (display + body, Latin only, ~64 KB).
+ * Font budget: only the Latin files of the three faces are preloaded (~94 KB, down from 284 KB).
  * - Bricolage Grotesque is self-hosted as Google's static instance at its display optical size
  *   (opsz 96, width 100, variable weight). Headings always used opsz 96, but the full variable file
  *   (opsz + wdth + wght axes) costs 128 KB for Latin alone; the pinned instance is 40 KB.
  * - Manrope and JetBrains Mono keep every subset available through unicode-range (Cyrillic loads on
- *   demand for Russian pages), but only Latin is preloaded, and the mono labels are not preloaded at all.
+ *   demand for Russian pages); only Latin is preloaded. Measured: not preloading the mono face made the
+ *   simulated FCP about 150 ms worse (its request then waited for the CSS), so it is preloaded too.
  */
 const bricolage = localFont({
   src: "./fonts/bricolage-grotesque-opsz96-latin.woff2",
@@ -29,14 +30,13 @@ const bricolage = localFont({
   ],
 });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
-// Not preloaded, so it swaps in after the first paint. Its stand-in must be monospace too: the default
+// If it arrives after the first paint it swaps in, so its stand-in must be monospace too: the default
 // fallback is Arial scaled to 135%, which wraps labels differently and shifts the layout on swap.
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
   display: "swap",
   weight: ["400", "500"],
-  preload: false,
   adjustFontFallback: false,
   fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", "monospace"],
 });

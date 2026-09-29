@@ -68,7 +68,9 @@ export function Hero({ stats, heroImage }: Props) {
               { v: stats.projects, l: tc("stats.projects") },
             ].map((s) => (
               <div key={s.l} className="glass rounded-(--radius-lg) px-4 py-3">
-                <dt className="t-meta order-2 text-(--fg-muted)">{s.l}</dt>
+                {/* Phones: labels always reserve two lines. "real loyiha" sits right at the wrap edge, so the late
+                    mono-font swap would otherwise change the card height and shift the scene below. */}
+                <dt className="t-meta text-(--fg-muted) max-sm:min-h-[2lh]">{s.l}</dt>
                 <dd className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
                   <Counter value={s.v} />
                 </dd>
