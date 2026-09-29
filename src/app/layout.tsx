@@ -29,7 +29,17 @@ const bricolage = localFont({
   ],
 });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
-const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap", weight: ["400", "500"], preload: false });
+// Not preloaded, so it swaps in after the first paint. Its stand-in must be monospace too: the default
+// fallback is Arial scaled to 135%, which wraps labels differently and shifts the layout on swap.
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+  weight: ["400", "500"],
+  preload: false,
+  adjustFontFallback: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "Liberation Mono", "monospace"],
+});
 
 const title = `${siteConfig.name} — Zamonaviy kasblar akademiyasi | Namangan`;
 
