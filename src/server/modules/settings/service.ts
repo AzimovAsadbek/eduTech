@@ -1,5 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { CacheTags, invalidate } from "@/server/cache";
@@ -34,13 +35,16 @@ export type SiteSettings = z.infer<typeof siteSettingsSchema>;
 
 const KEY = "site";
 
-export const getSiteSettings = unstable_cache(
-  async (): Promise<SiteSettings> => {
-    const row = await db.siteSetting.findUnique({ where: { key: KEY } });
-    return siteSettingsSchema.parse(row?.value ?? {});
-  },
-  ["site-settings"],
-  { tags: [CacheTags.settings] },
+/** Persistent data cache across requests, deduplicated within a request (layout, footer and page all read it). */
+export const getSiteSettings = cache(
+  unstable_cache(
+    async (): Promise<SiteSettings> => {
+      const row = await db.siteSetting.findUnique({ where: { key: KEY } });
+      return siteSettingsSchema.parse(row?.value ?? {});
+    },
+    ["site-settings"],
+    { tags: [CacheTags.settings] },
+  ),
 );
 
 export async function updateSiteSettings(patch: Partial<SiteSettings>, actorId: string): Promise<SiteSettings> {

@@ -1,11 +1,18 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import type { Prisma } from "@prisma/client";
 import { db } from "@/server/db";
 import { CacheTags } from "@/server/cache";
 import { getAuth } from "@/server/modules/auth/service";
 
 const PUBLISHED = { status: "PUBLISHED" } as const;
+
+/*
+ * The loaders the site layout, the footer and most pages all call are wrapped in React `cache()` as well:
+ * `unstable_cache` persists across requests, `cache()` makes repeated calls within one request free
+ * (on Vercel each data-cache read is a network round trip).
+ */
 
 export const courseCardSelect = {
   id: true,
@@ -29,10 +36,12 @@ export const courseCardSelect = {
 
 export type CourseCard = Prisma.CourseGetPayload<{ select: typeof courseCardSelect }>;
 
-export const getPublishedCourses = unstable_cache(
-  () => db.course.findMany({ where: PUBLISHED, select: courseCardSelect, orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
-  ["public-courses"],
-  { tags: [CacheTags.courses] },
+export const getPublishedCourses = cache(
+  unstable_cache(
+    () => db.course.findMany({ where: PUBLISHED, select: courseCardSelect, orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
+    ["public-courses"],
+    { tags: [CacheTags.courses] },
+  ),
 );
 
 export const getCourseCategories = unstable_cache(
@@ -68,10 +77,12 @@ export const getCourseBySlug = async (slug: string, opts?: { preview?: boolean }
         { tags: [CacheTags.courses, CacheTags.teachers, CacheTags.testimonials, CacheTags.results, CacheTags.faq] },
       )();
 
-export const getPublishedServices = unstable_cache(
-  () => db.service.findMany({ where: PUBLISHED, orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
-  ["public-services"],
-  { tags: [CacheTags.services] },
+export const getPublishedServices = cache(
+  unstable_cache(
+    () => db.service.findMany({ where: PUBLISHED, orderBy: [{ order: "asc" }, { createdAt: "asc" }] }),
+    ["public-services"],
+    { tags: [CacheTags.services] },
+  ),
 );
 
 export const getServiceBySlug = async (slug: string, opts?: { preview?: boolean }) =>
@@ -137,10 +148,12 @@ export const getPublishedFaqs = unstable_cache(
   { tags: [CacheTags.faq] },
 );
 
-export const getActiveBranches = unstable_cache(
-  () => db.branch.findMany({ where: { isActive: true }, orderBy: { order: "asc" } }),
-  ["public-branches"],
-  { tags: [CacheTags.branches] },
+export const getActiveBranches = cache(
+  unstable_cache(
+    () => db.branch.findMany({ where: { isActive: true }, orderBy: { order: "asc" } }),
+    ["public-branches"],
+    { tags: [CacheTags.branches] },
+  ),
 );
 
 /** Slugs for sitemap generation. */
