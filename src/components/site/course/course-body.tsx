@@ -1,11 +1,9 @@
-import { Link } from "@/i18n/navigation";
-import { ArrowUpRight, Check, Quote } from "lucide-react";
+import { Check, Quote } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/motion/reveal";
 import { Accordion } from "@/components/ui/accordion";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
-import { routes } from "@/config/site";
 import { pad2 } from "@/lib/utils";
 import type { CourseDetail } from "@/server/modules/content/public";
 import type { LeadFormOption } from "@/components/site/lead-form";
@@ -41,7 +39,7 @@ export async function CourseBody({ course, branches }: { course: CourseDetail; b
   ].filter(Boolean) as [string, string][];
 
   return (
-    <div className="container-x grid gap-12 pb-24 lg:grid-cols-12">
+    <div className="container-x grid gap-12 pb-12 lg:grid-cols-12 lg:pb-16">
       <div className="min-w-0 lg:col-span-7">
         <nav aria-label={t("sectionsNav")} className="sticky top-20 z-10 -mx-(--gutter) mb-4 overflow-x-auto bg-paper/85 px-(--gutter) py-3 backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <ul className="flex gap-2">
@@ -173,11 +171,6 @@ export async function CourseBody({ course, branches }: { course: CourseDetail; b
           </Block>
         ) : null}
 
-        <div className="border-t border-(--line) pt-10">
-          <Link href={routes.courses} className="inline-flex items-center gap-1 font-semibold text-orange hover:underline">
-            {t("otherCourses")} <ArrowUpRight size={16} />
-          </Link>
-        </div>
       </div>
 
       <aside className="min-w-0 lg:col-span-5">
