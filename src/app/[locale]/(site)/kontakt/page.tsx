@@ -34,7 +34,7 @@ export default async function ContactPage({ params }: Props) {
       <JsonLd data={breadcrumbJsonLd([{ name: tc("nav.home"), path: "/" }, { name: tc("nav.contact"), path: "/kontakt" }], locale)} />
       <PageHeader eyebrow={t("eyebrow")} title={t("title")} accent={t.raw("accent") as string[]} lead={t("lead")} />
 
-      <section className="container-x grid gap-12 pb-24 lg:grid-cols-12">
+      <section className="container-x grid gap-12 pb-(--section-y) lg:grid-cols-12">
         <Reveal className="space-y-8 lg:col-span-5">
           {branches.map((b) => (
             <div key={b.id} className="rounded-(--radius-xl) border border-(--line) p-6">
@@ -43,7 +43,8 @@ export default async function ContactPage({ params }: Props) {
                 <li className="flex items-start gap-3">
                   <MapPin size={18} className="mt-0.5 shrink-0 text-(--fg-muted)" />
                   <span>
-                    {settings.city}, {b.address}
+                    {settings.city}
+                    {b.address ? `, ${b.address}` : ""}
                   </span>
                 </li>
                 {b.phone || settings.phone ? (
@@ -73,15 +74,12 @@ export default async function ContactPage({ params }: Props) {
               </ContactLink>
             ) : null}
           </div>
+          {/* Only a real map is shown; visitors never see a placeholder for it. */}
           {mapUrl ? (
             <div className="overflow-hidden rounded-(--radius-xl) border border-(--line)">
               <iframe src={mapUrl} title={t("mapTitle")} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[4/3] w-full" allowFullScreen />
             </div>
-          ) : (
-            <div className="placeholder-surface grain flex aspect-[4/3] items-center justify-center rounded-(--radius-xl)" role="img" aria-label={t("mapPlaceholder")}>
-              <span className="t-meta rounded-full bg-black/10 px-3 py-1.5">{t("mapHint")}</span>
-            </div>
-          )}
+          ) : null}
         </Reveal>
 
         <Reveal className="glass rounded-(--radius-xl) p-6 sm:p-8 lg:col-span-7" delay={0.15}>

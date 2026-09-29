@@ -88,7 +88,7 @@
       "lead": "Har bir ish — mijoz, muammo, strategiya va natija. Faqat real loyihalar.",
       "empty": {
         "title": "Portfolio tez orada",
-        "text": "Loyihalar admin paneldan nashr qilinishi bilan shu yerda paydo boʻladi."
+        "text": "Mijozlar uchun tayyorlagan ishlarimiz shu yerda boʻladi."
       }
     },
     "project": {
@@ -147,7 +147,7 @@
       "statProjects": "loyiha",
       "empty": {
         "title": "Hikoyalar tez orada",
-        "text": "Oʻquvchilar natijalari va fikrlari admin paneldan nashr qilinishi bilan shu yerda koʻrinadi."
+        "text": "Bitiruvchilarimizning natijalari va fikrlari shu yerda boʻladi."
       },
       "projects": {
         "eyebrow": "Loyihalar va karyera",
@@ -241,8 +241,6 @@
       ],
       "lead": "Kurs tanlash, dars jadvali yoki hamkorlik — bir xabar yetarli. Ish kunlari bir soat ichida javob beramiz.",
       "mapTitle": "EduTech xaritada",
-      "mapPlaceholder": "Xarita joyi",
-      "mapHint": "Xarita: admin → Sozlamalar",
       "form": {
         "eyebrow": "Xabar yuborish",
         "title": "Sizga qanday yordam bera olamiz?"

@@ -59,12 +59,13 @@ async function main() {
     await db.branch.create({
       data: {
         name: "Namangan, asosiy filial",
-        address: "Manzil admin paneldan kiritiladi",
+        // The street address is left empty until the owner enters it in the admin panel; the site then shows the city only.
+        address: "",
         workingHours: "Du–Sh 09:00–19:00",
         order: 0,
         translations: {
-          ru: { name: "Наманган, главный филиал", address: "Адрес указывается в админ-панели", workingHours: "Пн–Сб 09:00–19:00" },
-          en: { name: "Namangan, main branch", address: "Address is set in the admin panel", workingHours: "Mon–Sat 09:00–19:00" },
+          ru: { name: "Наманган, главный филиал", workingHours: "Пн–Сб 09:00–19:00" },
+          en: { name: "Namangan, main branch", workingHours: "Mon–Sat 09:00–19:00" },
         },
       },
     });

@@ -88,7 +88,7 @@
       "lead": "Every piece of work — a client, a problem, a strategy and a result. Only real projects.",
       "empty": {
         "title": "Portfolio coming soon",
-        "text": "Projects will show up here as soon as they are published from the admin panel."
+        "text": "This is where the work we make for clients will appear."
       }
     },
     "project": {
@@ -147,7 +147,7 @@
       "statProjects": "projects",
       "empty": {
         "title": "Stories coming soon",
-        "text": "Student results and testimonials will appear here as soon as they are published from the admin panel."
+        "text": "Our graduates' results and reviews will appear here."
       },
       "projects": {
         "eyebrow": "Projects and careers",
@@ -241,8 +241,6 @@
       ],
       "lead": "Choosing a course, class schedules or a partnership — one message is enough. On working days we reply within the hour.",
       "mapTitle": "EduTech on the map",
-      "mapPlaceholder": "Map placeholder",
-      "mapHint": "Map: admin → Settings",
       "form": {
         "eyebrow": "Send a message",
         "title": "How can we help you?"
