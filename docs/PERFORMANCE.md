@@ -108,6 +108,18 @@ Server, median of 9 requests (local, warm data cache), before → after:
 | `/kontakt` | 12 → 10 ms | 28.0 → 20.1 KB |
 | `/ru` | 17 → 18 ms | 49.2 → 34.9 KB |
 
+Vercel demo, measured from Uzbekistan with curl, before → after (uncompressed HTML, as in the baseline):
+
+| Page | Time to first byte | Full HTML |
+|---|---|---|
+| `/` | 1.14 → 0.93 s | 1.69 → 1.30 s |
+| `/kurslar` | 0.88 → 0.84 s | 1.42 → 1.16 s |
+| `/ig` | 0.87 → 0.89 s | 1.24 → 1.06 s |
+| `/media` | 0.89 → 0.94 s | 1.41 → 1.50 s |
+
+The demo's first byte is bound by the network path to Frankfurt and serverless overhead (see "Remaining
+bottlenecks"). These single-machine timings vary by about ±0.15 s between runs.
+
 Interaction to Next Paint could not be measured in the lab. Total Blocking Time, its lab proxy, fell
 36–73% on mobile.
 
