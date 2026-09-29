@@ -64,7 +64,9 @@
 
 /* ───────────────────────── Root variables ───────────────────────── */
 :root {
-  --section-y: clamp(4rem, 10vw, 9rem);
+  /* Vertical padding of a section. Two neighbouring sections add up, so this is half of the gap between them:
+     ~96 px on phones, ~170 px on a 1440 px desktop. */
+  --section-y: clamp(3rem, 6vw, 5.5rem);
   --gutter: 1rem;
   --container: 90rem;
   --header-h: 4.5rem;

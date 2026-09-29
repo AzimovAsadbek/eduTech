@@ -16,7 +16,7 @@ interface Props {
 /** Inner-page opener: eyebrow, split-revealed H1, lead. Editorial, not a "banner". */
 export function PageHeader({ eyebrow, title, accent, lead, children, dark, className }: Props) {
   return (
-    <section data-world={dark ? "media" : undefined} className={cn("relative overflow-hidden pt-36 pb-16 lg:pt-44 lg:pb-20", dark ? "bg-(--surface) text-white" : "", className)}>
+    <section data-world={dark ? "media" : undefined} className={cn("relative overflow-hidden pt-32 pb-16 lg:pt-40 lg:pb-20", dark ? "bg-(--surface) text-white" : "", className)}>
       <div aria-hidden className="pointer-events-none absolute -top-32 right-[-10%] h-[50vh] w-[50vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.18),transparent)] blur-3xl" />
       <div className="container-x grid gap-8 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-8">

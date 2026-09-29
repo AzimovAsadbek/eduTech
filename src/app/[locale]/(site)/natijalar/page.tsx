@@ -68,7 +68,7 @@ export default async function ResultsPage({ params }: Props) {
       </PageHeader>
 
       {empty ? (
-        <section className="container-x pb-24">
+        <section className="container-x pb-(--section-y)">
           <div className="glass rounded-(--radius-xl) p-8 text-center sm:p-12">
             <p className="t-h3">{t("empty.title")}</p>
             <p className="mt-3 text-(--fg-muted)">{t("empty.text")}</p>

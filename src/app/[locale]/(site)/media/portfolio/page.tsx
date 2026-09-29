@@ -34,7 +34,7 @@ export default async function PortfolioPage({ params }: Props) {
       {projects.length ? (
         <PortfolioPreview projects={projects} heading={false} limit={100} />
       ) : (
-        <section className="container-x pb-24">
+        <section className="container-x pb-(--section-y)">
           <div className="rounded-(--radius-xl) border border-dashed border-white/15 p-12 text-center">
             <p className="t-h3">{t("empty.title")}</p>
             <p className="mt-3 text-white/60">{t("empty.text")}</p>

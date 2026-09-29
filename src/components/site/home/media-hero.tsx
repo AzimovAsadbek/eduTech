@@ -10,7 +10,7 @@ import { routes } from "@/config/site";
 export async function MediaHero({ standalone }: { standalone?: boolean }) {
   const [t, tc] = await Promise.all([getTranslations("mediaHero"), getTranslations("common.actions")]);
   return (
-    <section data-world="media" data-nav="/media" className={`relative overflow-hidden bg-(--surface) text-white ${standalone ? "pt-36 pb-20 lg:pt-44 lg:pb-28" : "section-y"}`} aria-labelledby="media-title">
+    <section data-world="media" data-nav="/media" className={`relative overflow-hidden bg-(--surface) text-white ${standalone ? "pt-32 pb-12 lg:pt-40 lg:pb-28" : "section-y"}`} aria-labelledby="media-title">
       <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 h-[60vh] w-[90vw] -translate-x-1/2"><div className="light-leak size-full rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.3),transparent)] blur-3xl" /></div>
       <div aria-hidden className="pointer-events-none absolute inset-0 grain" />
       <div className="container-x relative grid gap-10 lg:grid-cols-12 lg:items-end">

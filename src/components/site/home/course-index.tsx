@@ -7,6 +7,7 @@ import { CourseTile } from "@/components/site/course/course-tile";
 import type { CourseTileData } from "@/components/site/course/course-tile-data";
 import { Chip } from "@/components/ui/chip";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { cn } from "@/lib/utils";
 
 interface Props {
   courses: CourseTileData[];
@@ -35,13 +36,13 @@ export function CourseIndex({ courses, categories = [], heading = true }: Props)
   };
 
   return (
-    <section className="section-y relative" aria-labelledby={heading ? "courses-title" : undefined} aria-label={heading ? undefined : t("filterLabel")} data-nav="/kurslar">
+    <section className={heading ? "section-y relative" : "relative pb-(--section-y)"} aria-labelledby={heading ? "courses-title" : undefined} aria-label={heading ? undefined : t("filterLabel")} data-nav="/kurslar">
       <div className="container-x">
         {heading ? <SectionHeading eyebrow={tc("nav.courses")} title={<span id="courses-title">{t("title")}</span>} lead={t("lead")} align="split" /> : null}
 
         {usedCats.length > 1 ? (
           <div
-            className="lg:glass mt-10 flex flex-wrap gap-2 lg:sticky lg:top-20 lg:z-20 lg:-mx-3 lg:w-fit lg:rounded-full lg:px-3 lg:py-2"
+            className={cn("lg:glass flex flex-wrap gap-2 lg:sticky lg:top-20 lg:z-20 lg:-mx-3 lg:w-fit lg:rounded-full lg:px-3 lg:py-2", heading && "mt-10")}
             role="tablist"
             aria-label={t("filterLabel")}
           >

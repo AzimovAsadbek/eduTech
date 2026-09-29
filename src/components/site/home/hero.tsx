@@ -33,7 +33,7 @@ export function Hero({ stats, heroImage }: Props) {
   const isAccent = (w: string) => accent.includes(w) || accent.includes(w.replace(/[.,!?]/g, ""));
 
   return (
-    <section id="hero" className="relative overflow-hidden pt-32 pb-16 sm:pt-36 lg:pt-40 lg:pb-24" aria-labelledby="hero-title">
+    <section id="hero" className="relative overflow-hidden pt-32 pb-10 sm:pt-36 sm:pb-16 lg:pt-40 lg:pb-24" aria-labelledby="hero-title">
       <HeroParallax rootId="hero" />
       {/* Ambient orange light — the "energy" of the brand */}
       <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-[70vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.22),transparent)] blur-3xl" />

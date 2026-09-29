@@ -15,7 +15,9 @@ export function CourseTeaser({ courses, limit }: { courses: CourseTileData[]; li
   const shown = [...courses].sort((a, b) => Number(b.featured) - Number(a.featured)).slice(0, limit);
 
   return (
-    <section className="section-y relative" aria-labelledby="courses-title" data-nav="/kurslar">
+    // The block ends with a small link rather than content, so its bottom padding is shorter than the
+    // standard section rhythm; otherwise the gap to the next section reads as empty space.
+    <section className="relative pt-(--section-y) pb-[calc(var(--section-y)*0.6)]" aria-labelledby="courses-title" data-nav="/kurslar">
       <div className="container-x">
         <SectionHeading eyebrow={tc("nav.courses")} title={<span id="courses-title">{t("title")}</span>} lead={t("lead")} align="split" />
         {/* 2 columns from phones up (compact cards below `sm`), 3 on desktop. */}

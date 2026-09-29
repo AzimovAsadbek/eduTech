@@ -69,7 +69,7 @@ export default async function ServicePage({ params, searchParams }: { params: Pa
       <JsonLd data={serviceJsonLd(service, locale)} />
       <JsonLd data={breadcrumbJsonLd([{ name: tc("nav.home"), path: "/" }, { name: tc("nav.media"), path: "/media" }, { name: service.title, path: `/media/xizmatlar/${service.slug}` }], locale)} />
 
-      <section className="relative overflow-hidden pt-36 pb-16 lg:pt-44">
+      <section className="relative overflow-hidden pt-32 pb-16 lg:pt-40">
         <div aria-hidden className="pointer-events-none absolute -top-32 right-[-10%] h-[60vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.3),transparent)] blur-3xl" />
         <div className="container-x grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
