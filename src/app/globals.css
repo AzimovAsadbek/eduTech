@@ -104,7 +104,6 @@
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
   }
-  html:has([data-lenis]) { scroll-behavior: auto; }
   body {
     background: var(--surface);
     color: var(--fg);

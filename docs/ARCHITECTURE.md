@@ -26,7 +26,7 @@ edutech-platform/
 │   ├── components/
 │   │   ├── ui/             # design-system primitives (Button, Input, Glass, Eyebrow…)
 │   │   ├── site/           # public-site sections & layouts
-│   │   ├── motion/         # GSAP wrappers, reduced-motion aware
+│   │   ├── motion/         # CSS motion runtime (Reveal, SplitHeading, Counter), reduced-motion aware
 │   │   └── admin/          # admin-only UI (data tables, forms, charts)
 │   ├── server/             # domain layer — the only place that touches Prisma
 │   │   ├── db.ts           # Prisma client singleton
@@ -50,7 +50,7 @@ edutech-platform/
 ### Why Next.js App Router + Server Components
 
 * Public pages render on the server from PostgreSQL ⇒ SEO friendly HTML, no client data fetching for content.
-* Client Components are used only where interaction demands it (GSAP, forms, nav, admin tables).
+* Client Components are used only where interaction demands it (forms, nav, dialogs, admin tables). Entrance animations are server markup plus one small IntersectionObserver runtime and CSS.
 * Route Handlers give REST endpoints; `proxy.ts` gives us a single place for security headers + CSP nonces + admin auth gating.
 
 ### Data

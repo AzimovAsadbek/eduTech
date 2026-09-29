@@ -57,7 +57,7 @@ Headings never repeat the same size treatment in adjacent sections; the editoria
 
 * Easings: `--ease-out: cubic-bezier(.16,1,.3,1)`, `--ease-in-out: cubic-bezier(.65,0,.35,1)`, `--ease-snap: cubic-bezier(.2,.8,.2,1)`.
 * Durations: 150ms (hover), 300ms (UI), 600ms (reveal), 900–1200ms (hero / signature).
-* Only `transform` and `opacity` animate. ScrollTriggers are created in `useGSAP` scopes and killed on unmount.
+* Only `transform` and `opacity` animate, as CSS transitions/keyframes. Scroll entrances use `data-reveal` / `data-split` markup driven by `MotionRuntime`; nothing already on screen is hidden while JavaScript loads.
 * `prefers-reduced-motion`: all timelines collapse to instant state; pinned sections become static.
 * Mobile: no pinning, no horizontal scroll hijack, reveal only.
 
