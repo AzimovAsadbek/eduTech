@@ -31,30 +31,30 @@
     "steps": [
       {
         "n": "01",
-        "key": "Learn",
+        "tag": "Knowledge",
         "title": "Learn",
-        "text": "Live classes with a mentor. Only as much theory as practice actually needs.",
+        "text": "Live classes with a mentor — only as much theory as practice needs.",
         "detail": "2–3 classes a week · small groups"
       },
       {
         "n": "02",
-        "key": "Practice",
+        "tag": "Skill",
         "title": "Practise",
-        "text": "Every class is a task. Every week is a mini project. Mistakes are fine — stopping is not.",
-        "detail": "Code review · feedback · retakes"
+        "text": "Every class is a task, every week a mini project.",
+        "detail": "Mentor review · retakes"
       },
       {
         "n": "03",
-        "key": "Build",
+        "tag": "Experience",
         "title": "Build",
-        "text": "You ship a product for a real client or a real problem. That is a portfolio, not a certificate.",
+        "text": "You build a product for a real client or a real problem.",
         "detail": "Capstone project · teamwork"
       },
       {
         "n": "04",
-        "key": "Grow",
+        "tag": "Profession",
         "title": "Grow",
-        "text": "A job, freelance work or your own project. We stay by your side after graduation too.",
+        "text": "A job, freelancing or your own project — we stay by your side after graduation.",
         "detail": "Career support · community"
       }
     ]

@@ -31,31 +31,31 @@
     "steps": [
       {
         "n": "01",
-        "key": "Learn",
+        "tag": "Bilim",
         "title": "Oʻrganish",
-        "text": "Mentor bilan jonli darslar. Nazariya faqat amaliyot uchun kerak boʻlgan darajada.",
+        "text": "Mentor bilan jonli darslar — nazariya faqat amaliyotga kerakli darajada.",
         "detail": "Haftasiga 2–3 dars · kichik guruhlar"
       },
       {
         "n": "02",
-        "key": "Practice",
+        "tag": "Koʻnikma",
         "title": "Mashq qilish",
-        "text": "Har bir dars — vazifa. Har bir hafta — kichik loyiha. Xato qilish mumkin, toʻxtash mumkin emas.",
-        "detail": "Kod-review · feedback · retake"
+        "text": "Har bir dars — vazifa, har bir hafta — kichik loyiha.",
+        "detail": "Mentor tekshiruvi · qayta topshirish"
       },
       {
         "n": "03",
-        "key": "Build",
+        "tag": "Tajriba",
         "title": "Yaratish",
-        "text": "Real mijoz yoki real muammo uchun mahsulot yaratasiz. Bu portfolio, sertifikat emas.",
+        "text": "Real mijoz yoki real muammo uchun mahsulot yaratasiz.",
         "detail": "Diplom loyihasi · jamoaviy ish"
       },
       {
         "n": "04",
-        "key": "Grow",
+        "tag": "Kasb",
         "title": "Oʻsish",
-        "text": "Ishga joylashish, freelance yoki oʻz loyihangiz. Biz bitiruvdan keyin ham yonma-yon qolamiz.",
-        "detail": "Karyera yordami · community"
+        "text": "Ish, frilans yoki oʻz loyihangiz — bitiruvdan keyin ham yoningizdamiz.",
+        "detail": "Karyera yordami · hamjamiyat"
       }
     ]
   },
