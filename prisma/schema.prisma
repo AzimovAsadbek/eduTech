@@ -67,6 +67,19 @@ enum GalleryCategory {
   CAMPUS
 }
 
+/// Marketing channel a visit or lead came from (derived from UTM tags, referrer and in-app browser).
+enum Channel {
+  INSTAGRAM
+  FACEBOOK
+  TELEGRAM
+  GOOGLE
+  YANDEX
+  YOUTUBE
+  DIRECT
+  REFERRAL
+  OTHER
+}
+
 enum AuditAction {
   LOGIN
   LOGIN_FAILED
@@ -164,13 +177,13 @@ model SiteSetting {
 // ─────────────────────────── Education ───────────────────────────
 
 model CourseCategory {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  name      String
-  order     Int      @default(0)
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  order        Int      @default(0)
   translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   courses Course[]
 }
@@ -202,7 +215,7 @@ model Course {
   order          Int           @default(0)
   seoTitle       String?
   seoDescription String?
-  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
+  translations   Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -218,18 +231,18 @@ model Course {
 }
 
 model Teacher {
-  id        String        @id @default(cuid())
-  slug      String        @unique
-  name      String
-  title     String // "Senior Frontend Engineer"
-  bio       String?
-  photo     String?
-  socials   Json? // { telegram?, instagram?, linkedin? }
-  status    ContentStatus @default(DRAFT)
-  order     Int           @default(0)
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  name         String
+  title        String // "Senior Frontend Engineer"
+  bio          String?
+  photo        String?
+  socials      Json? // { telegram?, instagram?, linkedin? }
+  status       ContentStatus @default(DRAFT)
+  order        Int           @default(0)
   translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   courses CourseTeacher[]
 
@@ -264,7 +277,7 @@ model Service {
   order          Int           @default(0)
   seoTitle       String?
   seoDescription String?
-  translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
+  translations   Json? // { ru: {...}, en: {...} } — translated copies of text fields
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -275,28 +288,28 @@ model Service {
 }
 
 model MediaProject {
-  id          String        @id @default(cuid())
-  slug        String        @unique
-  title       String
-  client      String
-  serviceId   String?
-  category    String
-  description String
-  challenge   String?
-  solution    String?
-  results     String?
-  coverImage  String?
-  videos      Json? // [{ url, title?, poster? }]
-  images      String[]
-  tags        String[]
-  beforeImage String?
-  afterImage  String?
-  status      ContentStatus @default(DRAFT)
-  featured    Boolean       @default(false)
-  order       Int           @default(0)
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  title        String
+  client       String
+  serviceId    String?
+  category     String
+  description  String
+  challenge    String?
+  solution     String?
+  results      String?
+  coverImage   String?
+  videos       Json? // [{ url, title?, poster? }]
+  images       String[]
+  tags         String[]
+  beforeImage  String?
+  afterImage   String?
+  status       ContentStatus @default(DRAFT)
+  featured     Boolean       @default(false)
+  order        Int           @default(0)
   translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 
@@ -307,19 +320,19 @@ model MediaProject {
 // ─────────────────────────── Proof ───────────────────────────
 
 model Testimonial {
-  id          String        @id @default(cuid())
-  name        String
-  role        String? // "Frontend kursi bitiruvchisi" / "Marketing direktori, X"
-  courseId    String?
-  photo       String?
-  quote       String
-  resultLabel String? // "Junior Frontend Developer sifatida ishga kirdi"
-  videoUrl    String?
-  status      ContentStatus @default(DRAFT)
-  order       Int           @default(0)
+  id           String        @id @default(cuid())
+  name         String
+  role         String? // "Frontend kursi bitiruvchisi" / "Marketing direktori, X"
+  courseId     String?
+  photo        String?
+  quote        String
+  resultLabel  String? // "Junior Frontend Developer sifatida ishga kirdi"
+  videoUrl     String?
+  status       ContentStatus @default(DRAFT)
+  order        Int           @default(0)
   translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
 
@@ -327,23 +340,23 @@ model Testimonial {
 }
 
 model Result {
-  id          String        @id @default(cuid())
-  kind        ResultKind    @default(PROJECT)
-  title       String
-  studentName String?
-  courseId    String?
-  description String?
-  metricLabel String? // "+40 000 obunachi"
-  image       String?
-  beforeImage String?
-  afterImage  String?
-  link        String?
-  status      ContentStatus @default(DRAFT)
-  featured    Boolean       @default(false)
-  order       Int           @default(0)
+  id           String        @id @default(cuid())
+  kind         ResultKind    @default(PROJECT)
+  title        String
+  studentName  String?
+  courseId     String?
+  description  String?
+  metricLabel  String? // "+40 000 obunachi"
+  image        String?
+  beforeImage  String?
+  afterImage   String?
+  link         String?
+  status       ContentStatus @default(DRAFT)
+  featured     Boolean       @default(false)
+  order        Int           @default(0)
   translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
 
@@ -365,16 +378,16 @@ model GalleryItem {
 }
 
 model Faq {
-  id        String        @id @default(cuid())
-  question  String
-  answer    String
-  scope     FaqScope      @default(GENERAL)
-  courseId  String?
-  status    ContentStatus @default(PUBLISHED)
-  order     Int           @default(0)
+  id           String        @id @default(cuid())
+  question     String
+  answer       String
+  scope        FaqScope      @default(GENERAL)
+  courseId     String?
+  status       ContentStatus @default(PUBLISHED)
+  order        Int           @default(0)
   translations Json? // { ru: {...}, en: {...} } — translated copies of text fields
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
@@ -398,8 +411,16 @@ model Lead {
   serviceId         String?
   branchId          String?
   interest          String? // free-text interest for GENERAL leads
-  source            String? // page path the lead came from
-  utm               Json?
+  source            String? // form that produced the lead, e.g. "course:dasturlash", "dialog:/kurslar"
+  channel           Channel    @default(DIRECT)
+  utmSource         String?
+  utmMedium         String? // for Instagram: bio | story | reels | post | ads | direct …
+  utmCampaign       String?
+  utmContent        String?
+  landingPage       String? // first page of the attributed visit
+  referrer          String? // referrer host of the attributed visit
+  sessionId         String? // links the lead to its Visit row
+  utm               Json? // raw attribution snapshot: first/last touch, click ids (fbclid/fbc/fbp), user agent
   ip                String?
   telegramMessageId String?
   telegramChatId    String?
@@ -420,6 +441,30 @@ model Lead {
   @@index([phone])
   @@index([courseId])
   @@index([serviceId])
+  @@index([channel, createdAt])
+  @@index([utmCampaign])
+}
+
+/// One row per browser session (first page view). No IP or personal data — used for the channel funnel
+/// (visits → leads → enrolled) in the admin dashboard.
+model Visit {
+  id           String   @id @default(cuid())
+  sessionId    String   @unique
+  channel      Channel
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  utmContent   String?
+  referrerHost String?
+  landingPath  String
+  locale       String?
+  device       String // mobile | tablet | desktop
+  inApp        String? // instagram | facebook | telegram — in-app browser the visit was opened in
+  createdAt    DateTime @default(now())
+
+  @@index([channel, createdAt])
+  @@index([createdAt])
+  @@index([utmCampaign])
 }
 
 model LeadNote {

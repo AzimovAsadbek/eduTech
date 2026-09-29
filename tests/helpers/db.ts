@@ -15,6 +15,7 @@ export async function testDb(): Promise<PrismaClient> {
 const TABLES = [
   "LeadNote",
   "Lead",
+  "Visit",
   "AuditLog",
   "Session",
   "AdminUser",

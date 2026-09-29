@@ -1,12 +1,10 @@
 /**
- * Creates the `edutech_test` database (if missing) on the same Postgres container as the dev DB
+ * Creates the test database (`edutech_test` or $TEST_DATABASE_NAME) if missing on the same Postgres container as the dev DB
  * and applies migrations to it. Run via `npm run test:integration`.
  */
 import { execSync } from "node:child_process";
 import { PrismaClient } from "@prisma/client";
-import { TEST_DATABASE_URL } from "./env";
-
-const TEST_DB_NAME = "edutech_test";
+import { TEST_DATABASE_NAME as TEST_DB_NAME, TEST_DATABASE_URL } from "./env";
 
 async function ensureDatabase() {
   const url = new URL(TEST_DATABASE_URL);

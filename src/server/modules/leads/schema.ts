@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { CHANNELS } from "@/lib/channels";
+import { attributionInputSchema } from "@/server/modules/attribution/schema";
 
 const phone = z
   .string()
@@ -24,7 +26,7 @@ export const educationLeadSchema = z.object({
   branchId: z.string().optional(),
   message: shortText(1000).optional(),
   source: shortText(300).optional(),
-  utm: z.record(z.string(), z.string().max(200)).optional(),
+  attribution: attributionInputSchema.optional(),
   ...antiSpam,
 });
 
@@ -39,7 +41,7 @@ export const mediaLeadSchema = z.object({
   message: shortText(1500).optional(),
   email: z.string().trim().email("Email notoʻgʻri").max(200).optional().or(z.literal("")),
   source: shortText(300).optional(),
-  utm: z.record(z.string(), z.string().max(200)).optional(),
+  attribution: attributionInputSchema.optional(),
   ...antiSpam,
 });
 
@@ -51,7 +53,7 @@ export const generalLeadSchema = z.object({
   message: shortText(1500).optional(),
   email: z.string().trim().email("Email notoʻgʻri").max(200).optional().or(z.literal("")),
   source: shortText(300).optional(),
-  utm: z.record(z.string(), z.string().max(200)).optional(),
+  attribution: attributionInputSchema.optional(),
   ...antiSpam,
 });
 
@@ -60,6 +62,7 @@ export type PublicLeadInput = z.infer<typeof publicLeadSchema>;
 
 export const leadStatusSchema = z.enum(["NEW", "CONTACTED", "IN_PROGRESS", "CONVERTED", "LOST"]);
 export const leadTypeSchema = z.enum(["EDUCATION", "MEDIA", "GENERAL"]);
+export const channelSchema = z.enum(CHANNELS);
 
 export const leadFilterSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -69,6 +72,8 @@ export const leadFilterSchema = z.object({
   status: leadStatusSchema.optional(),
   courseId: z.string().optional(),
   serviceId: z.string().optional(),
+  channel: channelSchema.optional(),
+  campaign: z.string().trim().max(160).optional(),
   from: z.coerce.date().optional(),
   to: z.coerce.date().optional(),
   sort: z.enum(["createdAt", "updatedAt", "name", "status"]).default("createdAt"),

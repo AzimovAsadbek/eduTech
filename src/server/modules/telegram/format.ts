@@ -1,4 +1,5 @@
-import type { LeadStatus, LeadType } from "@prisma/client";
+import type { Channel, LeadStatus, LeadType } from "@prisma/client";
+import { CHANNEL_LABELS } from "@/lib/channels";
 import { escapeHtml } from "@/lib/sanitize";
 
 export interface LeadForTelegram {
@@ -13,6 +14,9 @@ export interface LeadForTelegram {
   message?: string | null;
   interest?: string | null;
   source?: string | null;
+  channel?: Channel | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
   createdAt: Date;
   course?: { title: string } | null;
   service?: { title: string } | null;
@@ -45,6 +49,24 @@ const fmtTime = (d: Date) =>
     minute: "2-digit",
   }).format(d);
 
+const CHANNEL_EMOJI: Record<Channel, string> = {
+  INSTAGRAM: "📸",
+  FACEBOOK: "📘",
+  TELEGRAM: "✈️",
+  GOOGLE: "🔎",
+  YANDEX: "🔎",
+  YOUTUBE: "▶️",
+  DIRECT: "🔗",
+  REFERRAL: "🌐",
+  OTHER: "•",
+};
+
+/** "📸 Instagram · story · autumn_intake" — shown so staff can prioritise and follow up per channel. */
+export function formatChannel(lead: Pick<LeadForTelegram, "channel" | "utmMedium" | "utmCampaign">): string | null {
+  if (!lead.channel) return null;
+  return [`${CHANNEL_EMOJI[lead.channel]} ${CHANNEL_LABELS[lead.channel]}`, lead.utmMedium, lead.utmCampaign].filter(Boolean).join(" · ");
+}
+
 const line = (label: string, value?: string | null) => (value ? `<b>${label}:</b> ${escapeHtml(value)}\n` : "");
 
 /** Telegram HTML message for a lead; safe against injection because every value is escaped. */
@@ -69,6 +91,7 @@ export function formatLeadMessage(lead: LeadForTelegram, actor?: string): string
     body += line("Comment", lead.message);
   }
   body += line("Email", lead.email);
+  body += line("Channel", formatChannel(lead));
   body += line("Source", lead.source);
   body += line("Time", fmtTime(lead.createdAt));
   body += `\n${STATUS_EMOJI[lead.status]} <b>Status:</b> ${STATUS_LABELS[lead.status]}`;
