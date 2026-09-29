@@ -59,8 +59,8 @@ export function ApplyDialogProvider({ children, courses, services, branches, con
       const d = ref.current;
       if (!d) return;
       d.showModal();
-      // Start in the first field instead of on the close button.
-      d.querySelector<HTMLInputElement>('input:not([type="hidden"])')?.focus({ preventScroll: true });
+      // Start in the first real field (not the close button, not the off-screen honeypot).
+      d.querySelector<HTMLInputElement>('input:not([type="hidden"]):not([tabindex="-1"])')?.focus({ preventScroll: true });
     });
   }, []);
   const close = useCallback(() => ref.current?.close(), []);
