@@ -3,9 +3,8 @@
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useState, type CSSProperties } from "react";
 import type { Service } from "@prisma/client";
-import { gsap, prefersReducedMotion } from "@/components/motion/gsap";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { routes } from "@/config/site";
@@ -19,13 +18,9 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
   const t = useTranslations("serviceExplorer");
   const tc = useTranslations("common.actions");
   const [activeId, setActiveId] = useState(services[0]?.id ?? "");
-  const panel = useRef<HTMLDivElement>(null);
   const active = services.find((s) => s.id === activeId) ?? services[0];
-
-  useEffect(() => {
-    if (!panel.current || prefersReducedMotion()) return;
-    gsap.fromTo(panel.current.querySelectorAll("[data-anim]"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.05, ease: "expo.out" });
-  }, [activeId]);
+  // The panel content is keyed by the active service, so its CSS rise (globals.css, [data-anim]) replays on every switch.
+  const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
   if (!active) return null;
 
@@ -56,46 +51,62 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
                   >
                     <span className="t-meta w-8">{pad2(i + 1)}</span>
                     <span className="t-h3 flex-1">{s.title}</span>
-                    <span className={cn("h-px w-8 origin-left bg-orange transition-transform duration-500 ease-[var(--ease-out)]", isActive ? "scale-x-100" : "scale-x-0")} aria-hidden />
+                    <span
+                      className={cn(
+                        "bg-orange h-px w-8 origin-left transition-transform duration-500 ease-[var(--ease-out)]",
+                        isActive ? "scale-x-100" : "scale-x-0",
+                      )}
+                      aria-hidden
+                    />
                   </button>
                 </li>
               );
             })}
           </ul>
 
-          <div id="service-panel" role="tabpanel" ref={panel} className="glass relative overflow-hidden rounded-(--radius-xl) p-10 lg:col-span-7">
-            <div aria-hidden className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-orange/30 blur-3xl" />
-            <p data-anim className="t-eyebrow text-orange">{t("panelEyebrow")}</p>
-            <h3 data-anim className="t-h1 mt-3">
-              {active.title}
-            </h3>
-            <p data-anim className="t-lead mt-4 max-w-lg text-white/70">
-              {active.tagline}
-            </p>
-            <ul data-anim className="mt-8 flex flex-wrap gap-2">
-              {active.attributes.map((a) => (
-                <li key={a} className="t-meta rounded-full border border-white/15 px-3 py-1.5 text-white/80">
-                  {a}
-                </li>
-              ))}
-            </ul>
-            {active.deliverables.length ? (
-              <ul data-anim className="mt-8 grid gap-2 border-t border-white/10 pt-6 text-white/80 sm:grid-cols-2">
-                {active.deliverables.map((d) => (
-                  <li key={d} className="flex items-start gap-2 text-sm">
-                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-orange" aria-hidden />
-                    {d}
+          <div id="service-panel" role="tabpanel" className="glass relative overflow-hidden rounded-(--radius-xl) p-10 lg:col-span-7">
+            <div aria-hidden className="bg-orange/30 pointer-events-none absolute -top-24 -right-24 size-72 rounded-full blur-3xl" />
+            <div key={active.id} className="relative">
+              <p data-anim style={step(0)} className="t-eyebrow text-orange">
+                {t("panelEyebrow")}
+              </p>
+              <h3 data-anim style={step(1)} className="t-h1 mt-3">
+                {active.title}
+              </h3>
+              <p data-anim style={step(2)} className="t-lead mt-4 max-w-lg text-white/70">
+                {active.tagline}
+              </p>
+              <ul data-anim style={step(3)} className="mt-8 flex flex-wrap gap-2">
+                {active.attributes.map((a) => (
+                  <li key={a} className="t-meta rounded-full border border-white/15 px-3 py-1.5 text-white/80">
+                    {a}
                   </li>
                 ))}
               </ul>
-            ) : null}
-            <div data-anim className="mt-10 flex flex-wrap gap-3">
-              <Link href={routes.service(active.slug)} className="inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 font-semibold text-ink transition-colors hover:bg-orange hover:text-white">
-                {t("explore")} <ArrowUpRight size={16} />
-              </Link>
-              <a href="#media-inquiry" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/25 px-5 font-semibold text-white transition-colors hover:border-white">
-                {tc("order")}
-              </a>
+              {active.deliverables.length ? (
+                <ul data-anim style={step(4)} className="mt-8 grid gap-2 border-t border-white/10 pt-6 text-white/80 sm:grid-cols-2">
+                  {active.deliverables.map((d) => (
+                    <li key={d} className="flex items-start gap-2 text-sm">
+                      <span className="bg-orange mt-2 size-1.5 shrink-0 rounded-full" aria-hidden />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <div data-anim style={step(5)} className="mt-10 flex flex-wrap gap-3">
+                <Link
+                  href={routes.service(active.slug)}
+                  className="text-ink hover:bg-orange inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 font-semibold transition-colors hover:text-white"
+                >
+                  {t("explore")} <ArrowUpRight size={16} />
+                </Link>
+                <a
+                  href="#media-inquiry"
+                  className="inline-flex h-11 items-center gap-2 rounded-full border border-white/25 px-5 font-semibold text-white transition-colors hover:border-white"
+                >
+                  {tc("order")}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -104,10 +115,13 @@ export function ServiceExplorer({ services }: { services: Service[] }) {
         <Reveal stagger={0.05} as="ul" className="mt-10 grid gap-3 sm:grid-cols-2 lg:hidden">
           {services.map((s, i) => (
             <li key={s.id}>
-              <Link href={routes.service(s.slug)} className="glass group flex h-full flex-col rounded-(--radius-xl) p-5 transition-transform duration-300 active:scale-[0.98] [--glass-bg:rgba(255,255,255,.05)]">
+              <Link
+                href={routes.service(s.slug)}
+                className="glass group flex h-full flex-col rounded-(--radius-xl) p-5 transition-transform duration-300 [--glass-bg:rgba(255,255,255,.05)] active:scale-[0.98]"
+              >
                 <div className="flex items-center justify-between">
                   <span className="t-meta text-white/45">{pad2(i + 1)}</span>
-                  <span className="grid size-9 place-items-center rounded-full bg-orange text-white">
+                  <span className="bg-orange grid size-9 place-items-center rounded-full text-white">
                     <ArrowUpRight size={16} />
                   </span>
                 </div>

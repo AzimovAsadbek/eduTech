@@ -28,35 +28,54 @@ export function Header() {
   const { open: openApply } = useApplyDialog();
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Scroll work is coalesced to at most once per frame.
   useEffect(() => {
+    let raf = 0;
     const onScroll = () => {
+      raf = 0;
       const y = window.scrollY;
       const next: Stage = y < 24 ? "top" : y < 240 ? "glass" : "compact";
       setStage((prev) => (prev === next ? prev : next));
     };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(onScroll);
+    };
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", schedule, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+    };
   }, []);
 
   // Invert colours while a dark "media world" section sits under the header.
   useEffect(() => {
     const headerH = 72;
+    // The page's sections are fixed once it renders; look them up once, not on every scroll event.
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-world="media"]'));
+    let raf = 0;
     const check = () => {
-      const sections = document.querySelectorAll<HTMLElement>('[data-world="media"]');
-      let hit = false;
-      sections.forEach((s) => {
+      raf = 0;
+      // Only full-bleed surfaces count: small dark tiles (e.g. the hero's reel card) must not flip the header.
+      const minWidth = window.innerWidth * 0.9;
+      const hit = sections.some((s) => {
         const r = s.getBoundingClientRect();
-        if (r.top <= headerH && r.bottom >= headerH) hit = true;
+        return r.width >= minWidth && r.top <= headerH && r.bottom >= headerH;
       });
       setDark((prev) => (prev === hit ? prev : hit));
     };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
     check();
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
+    // Pages without a dark section never need to listen.
+    if (!sections.length) return;
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("resize", check);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
   }, [pathname]);
 

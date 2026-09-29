@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { toCourseTile } from "@/components/site/course/course-tile-data";
 import { CourseIndex } from "@/components/site/home/course-index";
 import { FaqSection } from "@/components/site/faq-section";
 import { PageHeader } from "@/components/site/page-header";
@@ -44,7 +45,7 @@ export default async function CoursesPage({ params }: Props) {
       <JsonLd data={breadcrumbJsonLd([{ name: tc("nav.home"), path: "/" }, { name: tc("nav.courses"), path: "/kurslar" }], locale)} />
       <JsonLd data={courseListJsonLd(courses, locale, tl("courseList"))} />
       <PageHeader eyebrow={t("eyebrow", { count: courses.length, city: settings.city })} title={t("title")} accent={t.raw("accent") as string[]} lead={t("lead")} />
-      <CourseIndex courses={courses} categories={categories} heading={false} />
+      <CourseIndex courses={courses.map(toCourseTile)} categories={categories.map((c) => ({ id: c.id, slug: c.slug, name: c.name }))} heading={false} />
       <FaqSection faqs={faqs.filter((f) => f.scope !== "MEDIA")} />
       <Conversion courses={courses.map((c) => ({ value: c.slug, label: c.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))} settings={settings} />
     </>

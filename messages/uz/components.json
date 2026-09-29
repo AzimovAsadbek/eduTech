@@ -67,8 +67,7 @@
     "empty": "Bu yoʻnalishda hozircha kurs yoʻq.",
     "allCta": {
       "more": "{count, plural, =0 {Toʻliq katalog} other {yana # ta kurs}}",
-      "total": "Jami {count} ta kurs",
-      "action": "Koʻrish"
+      "action": "Barcha kurslarni koʻrish"
     },
     "coverAlt": "{title} kursi",
     "card": {

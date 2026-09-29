@@ -1,92 +1,40 @@
-"use client";
-
-import { ArrowDown, ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef } from "react";
-import { gsap, isDesktop, prefersReducedMotion, useGSAP } from "@/components/motion/gsap";
+import type { CSSProperties } from "react";
 import { Counter } from "@/components/motion/counter";
 import { Button } from "@/components/ui/button";
 import { PlaceholderImage } from "@/components/ui/placeholder-image";
-import { useApplyDialog } from "@/components/site/apply-dialog";
 import { routes } from "@/config/site";
+import { HeroConsultButton, HeroParallax } from "./hero-client";
 
 interface Props {
   stats: { students: string; courses: string; projects: string };
   heroImage?: string | null;
 }
 
+/** CSS custom properties used by the hero's keyframes (globals.css, "Hero"). */
+const vars = (v: Record<string, string | number>) => v as CSSProperties;
+
 /**
  * Signature hero: editorial headline on the left, an "ecosystem" composition on the right —
- * code, AI, robotics and content tiles orbiting a real-photo slot. Entrance timeline + cursor parallax.
+ * code, AI, robotics and content tiles orbiting a real-photo slot.
+ *
+ * Server-rendered. The entrance is pure CSS and starts with the first paint, so the copy never waits for
+ * JavaScript (the lead paragraph is the LCP element on phones: it only rises, it is never hidden). Tiles
+ * float on CSS keyframes; on phones the layers drift with the scroll through a CSS scroll timeline.
+ * The only scripts are two islands: the consultation button and the desktop cursor parallax.
  */
 export function Hero({ stats, heroImage }: Props) {
   const t = useTranslations("hero");
   const tc = useTranslations("common");
-  const root = useRef<HTMLElement>(null);
-  const { open } = useApplyDialog();
-
-  useGSAP(
-    () => {
-      const el = root.current!;
-      const reduced = prefersReducedMotion();
-      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-      const words = el.querySelectorAll<HTMLElement>("[data-hero-word]");
-      const tiles = el.querySelectorAll<HTMLElement>("[data-tile]");
-
-      if (reduced) {
-        gsap.set([words, tiles, "[data-hero-fade]"], { clearProps: "all", opacity: 1 });
-        return;
-      }
-
-      gsap.set(words, { yPercent: 110, rotate: 3 });
-      gsap.set("[data-hero-fade]", { opacity: 0, y: 16 });
-      gsap.set(tiles, { opacity: 0, y: 40, scale: 0.94 });
-      gsap.set("[data-hero-photo]", { clipPath: "inset(12% 12% 12% 12% round 28px)", scale: 1.08 });
-
-      tl.to(words, { yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.06 }, 0.1)
-        .to("[data-hero-fade]", { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 }, 0.5)
-        .to("[data-hero-photo]", { clipPath: "inset(0% 0% 0% 0% round 28px)", scale: 1, duration: 1.4 }, 0.3)
-        .to(tiles, { opacity: 1, y: 0, scale: 1, duration: 1.1, stagger: 0.09 }, 0.7);
-
-      // Floating idle motion — transform only
-      tiles.forEach((t, i) => {
-        gsap.to(t, { y: `+=${8 + (i % 3) * 4}`, duration: 3 + i * 0.4, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 1.8 });
-      });
-
-      // Phones/tablets: depth layers drift with scroll instead of the cursor.
-      if (!isDesktop()) {
-        el.querySelectorAll<HTMLElement>("[data-depth]").forEach((l) => {
-          const depth = Number(l.dataset.depth);
-          gsap.to(l, { yPercent: -14 * depth, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.6 } });
-        });
-        return;
-      }
-      const scene = el.querySelector<HTMLElement>("[data-scene]")!;
-      const layers = el.querySelectorAll<HTMLElement>("[data-depth]");
-      const xs = Array.from(layers).map((l) => gsap.quickTo(l, "x", { duration: 0.8, ease: "power3" }));
-      const ys = Array.from(layers).map((l) => gsap.quickTo(l, "y", { duration: 0.8, ease: "power3" }));
-      const onMove = (e: MouseEvent) => {
-        const r = scene.getBoundingClientRect();
-        const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
-        const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
-        layers.forEach((l, i) => {
-          const depth = Number(l.dataset.depth);
-          xs[i](dx * depth * 24);
-          ys[i](dy * depth * 18);
-        });
-      };
-      el.addEventListener("mousemove", onMove);
-      return () => el.removeEventListener("mousemove", onMove);
-    },
-    { scope: root },
-  );
 
   const headline = t("headline").split(" ");
   const accent = t.raw("accent") as string[];
   const isAccent = (w: string) => accent.includes(w) || accent.includes(w.replace(/[.,!?]/g, ""));
 
   return (
-    <section ref={root} className="relative overflow-hidden pt-32 pb-16 sm:pt-36 lg:pt-40 lg:pb-24" aria-labelledby="hero-title">
+    <section id="hero" className="relative overflow-hidden pt-32 pb-16 sm:pt-36 lg:pt-40 lg:pb-24" aria-labelledby="hero-title">
+      <HeroParallax rootId="hero" />
       {/* Ambient orange light — the "energy" of the brand */}
       <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] h-[70vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,107,26,.22),transparent)] blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute top-1/2 left-[-20%] h-[50vh] w-[40vw] rounded-full bg-[radial-gradient(closest-side,rgba(255,178,122,.25),transparent)] blur-3xl" />
@@ -96,26 +44,24 @@ export function Hero({ stats, heroImage }: Props) {
           <h1 id="hero-title" className="t-display" aria-label={t("headline")}>
             {headline.map((w, i) => (
               <span key={`${w}-${i}`} className="inline-block overflow-hidden pb-[0.06em] align-top" aria-hidden>
-                <span data-hero-word className={isAccent(w) ? "inline-block text-orange" : "inline-block"}>
+                <span data-hero-word className={isAccent(w) ? "inline-block text-orange" : "inline-block"} style={vars({ "--i": i })}>
                   {w}
                 </span>
                 {i < headline.length - 1 ? " " : null}
               </span>
             ))}
           </h1>
-          <p data-hero-fade className="t-lead mt-6 max-w-lg">
+          <p data-hero-rise className="t-lead mt-6 max-w-lg" style={vars({ "--i": 0 })}>
             {t("lead")}
           </p>
-          <div data-hero-fade className="mt-8 flex flex-wrap items-center gap-3">
+          <div data-hero-rise className="mt-8 flex flex-wrap items-center gap-3" style={vars({ "--i": 1 })}>
             <Button size="lg" href={routes.courses} magnetic icon={<ArrowUpRight size={18} />}>
               {tc("actions.viewCourses")}
             </Button>
-            <Button size="lg" variant="ghost" onClick={() => open()} icon={<ArrowDown size={18} className="rotate-[-90deg]" />}>
-              {tc("actions.consult")}
-            </Button>
+            <HeroConsultButton label={tc("actions.consult")} />
           </div>
 
-          <dl data-hero-fade className="mt-12 grid max-w-md grid-cols-3 gap-3">
+          <dl data-hero-rise className="mt-12 grid max-w-md grid-cols-3 gap-3" style={vars({ "--i": 2 })}>
             {[
               { v: stats.students, l: tc("stats.students") },
               { v: stats.courses, l: tc("stats.courses") },
@@ -135,13 +81,13 @@ export function Hero({ stats, heroImage }: Props) {
         <div className="relative lg:col-span-6" data-scene>
           <div className="relative mx-auto aspect-[4/5] w-full max-w-[520px] sm:aspect-[5/5.4]">
             {/* Photo slot */}
-            <div data-hero-photo data-depth="0.4" className="absolute inset-x-[10%] top-[6%] bottom-[6%] overflow-hidden rounded-[28px] shadow-lg will-change-transform">
+            <div data-hero-photo data-depth="0.4" style={vars({ "--depth": 0.4 })} className="absolute inset-x-[10%] top-[6%] bottom-[6%] overflow-hidden rounded-[28px] shadow-lg lg:will-change-transform">
               <PlaceholderImage src={heroImage} alt={t("photoAlt")} className="h-full w-full" priority sizes="(min-width:1024px) 40vw, 90vw" />
               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/35 to-transparent" aria-hidden />
             </div>
 
             {/* Code tile */}
-            <div data-tile data-depth="1" className="glass absolute top-[2%] left-0 w-[52%] rounded-(--radius-lg) p-4 will-change-transform">
+            <div data-tile data-depth="1" style={vars({ "--i": 0, "--depth": 1, "--float-y": "8px", "--float-dur": "3s" })} className="glass absolute top-[2%] left-0 w-[52%] rounded-(--radius-lg) p-4 lg:will-change-transform">
               <p className="t-meta mb-2 flex items-center gap-2 text-(--fg-muted)">
                 <span className="size-2 rounded-full bg-orange" /> {t("tiles.codeFile")}
               </p>
@@ -151,7 +97,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* AI tile */}
-            <div data-tile data-depth="1.4" className="glass absolute right-0 bottom-[6%] w-[46%] rounded-(--radius-lg) p-4 will-change-transform sm:top-[38%] sm:bottom-auto">
+            <div data-tile data-depth="1.4" style={vars({ "--i": 1, "--depth": 1.4, "--float-y": "12px", "--float-dur": "3.4s" })} className="glass absolute right-0 bottom-[6%] w-[46%] rounded-(--radius-lg) p-4 sm:top-[38%] sm:bottom-auto lg:will-change-transform">
               <p className="t-meta mb-3 text-(--fg-muted)">{t("tiles.ai")}</p>
               <div className="flex items-end gap-1" aria-hidden>
                 {[40, 65, 50, 80, 62, 92, 74, 100].map((h, i) => (
@@ -162,7 +108,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* Reel tile */}
-            <div data-tile data-depth="0.8" className="absolute bottom-[4%] left-[2%] w-[30%] overflow-hidden rounded-(--radius-lg) bg-ink text-white shadow-lg will-change-transform">
+            <div data-tile data-depth="0.8" style={vars({ "--i": 2, "--depth": 0.8, "--float-y": "16px", "--float-dur": "3.8s" })} className="absolute bottom-[4%] left-[2%] w-[30%] overflow-hidden rounded-(--radius-lg) bg-ink text-white shadow-lg lg:will-change-transform">
               <div className="placeholder-surface aspect-[9/14]" data-world="media">
                 <div className="absolute inset-0 grid place-items-center">
                   <span className="grid size-10 place-items-center rounded-full bg-white/90 text-ink">
@@ -177,7 +123,7 @@ export function Hero({ stats, heroImage }: Props) {
             </div>
 
             {/* Robotics tile */}
-            <div data-tile data-depth="1.2" className="glass absolute right-[2%] bottom-[8%] hidden w-[42%] rounded-(--radius-lg) p-4 will-change-transform sm:block">
+            <div data-tile data-depth="1.2" style={vars({ "--i": 3, "--depth": 1.2, "--float-y": "8px", "--float-dur": "4.2s" })} className="glass absolute right-[2%] bottom-[8%] hidden w-[42%] rounded-(--radius-lg) p-4 sm:block lg:will-change-transform">
               <p className="t-meta mb-2 text-(--fg-muted)">{t("tiles.robot")}</p>
               <svg viewBox="0 0 120 40" className="h-10 w-full text-orange" aria-hidden>
                 <polyline fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" points="0,30 12,28 22,12 34,26 46,18 58,32 70,10 84,24 96,16 108,28 120,14" />

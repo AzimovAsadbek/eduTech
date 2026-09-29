@@ -28,11 +28,14 @@ export function MobileCtaBar({ phone, telegram }: Props) {
   const isMediaPage = pathname === "/media" || pathname.startsWith("/media/");
 
   useEffect(() => {
-    const hideZones = () => Array.from(document.querySelectorAll<HTMLElement>("#ariza, #media-inquiry, footer, [data-hide-cta]"));
+    // Zones where the dock would cover the page's own form or the footer; fixed once the page renders.
+    const zones = Array.from(document.querySelectorAll<HTMLElement>("#ariza, #media-inquiry, footer, [data-hide-cta]"));
+    let raf = 0;
     const check = () => {
+      raf = 0;
       if (document.body.style.overflow === "hidden") return setVisible(false);
       const vh = window.innerHeight;
-      const overZone = hideZones().some((z) => {
+      const overZone = zones.some((z) => {
         const r = z.getBoundingClientRect();
         return r.top < vh * 0.9 && r.bottom > vh * 0.4;
       });
@@ -40,14 +43,19 @@ export function MobileCtaBar({ phone, telegram }: Props) {
       const under = document.elementFromPoint(window.innerWidth / 2, vh - 40);
       setDark(Boolean(under?.closest('[data-world="media"]')));
     };
+    // Coalesce scroll/resize/style changes to at most one check per frame (the check reads layout and hit-tests).
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
     check();
-    window.addEventListener("scroll", check, { passive: true });
-    window.addEventListener("resize", check);
-    const mo = new MutationObserver(check);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const mo = new MutationObserver(schedule);
     mo.observe(document.body, { attributes: true, attributeFilter: ["style"] });
     return () => {
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("resize", check);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
       mo.disconnect();
     };
   }, [pathname]);

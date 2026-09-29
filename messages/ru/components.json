@@ -67,8 +67,7 @@
     "empty": "В этом направлении пока нет курсов.",
     "allCta": {
       "more": "{count, plural, =0 {Полный каталог} one {ещё # курс} few {ещё # курса} many {ещё # курсов} other {ещё # курса}}",
-      "total": "Всего {count, plural, one {# курс} few {# курса} many {# курсов} other {# курса}}",
-      "action": "Смотреть"
+      "action": "Смотреть все курсы"
     },
     "coverAlt": "Курс «{title}»",
     "card": {

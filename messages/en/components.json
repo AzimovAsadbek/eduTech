@@ -67,8 +67,7 @@
     "empty": "No courses in this category yet.",
     "allCta": {
       "more": "{count, plural, =0 {Full catalogue} one {# more course} other {# more courses}}",
-      "total": "{count, plural, one {# course} other {# courses}} in total",
-      "action": "View"
+      "action": "View all courses"
     },
     "coverAlt": "{title} course",
     "card": {

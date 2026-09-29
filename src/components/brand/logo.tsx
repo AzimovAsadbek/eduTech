@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { BRAND, LOGO } from "./logo-data";
+import { lockupPath, logoLayout } from "./logo-svg";
 
 interface MarkProps {
   className?: string;
@@ -29,19 +30,26 @@ interface LogoProps {
   tagline?: boolean;
   href?: string | null;
   label?: string;
+  /**
+   * Render the static lockup file (/brand/lockup-*.svg) as a lazy <img> instead of inline paths.
+   * For placements below the fold (footer): the ~10 KB of path data then stays out of every page's
+   * HTML and RSC payload, and the browser caches one file for the whole site.
+   */
+  asImage?: boolean;
 }
 
 /**
  * Full lockup: mark + "DU TECH" (+ optional tagline). Wordmark uses `currentColor`
  * so it inherits charcoal on light surfaces and white on dark ones.
  */
-export function Logo({ className, height = 30, tone = "light", tagline = false, href = "/", label = "EduTech — bosh sahifa" }: LogoProps) {
-  // Without the tagline the wordmark is centred on the mark's height instead of sitting on its top edge.
-  const viewH = tagline ? LOGO.height : LOGO.mark.height + 1.8;
-  const wordShift = tagline ? 0 : (LOGO.mark.height - 52.5) / 2;
-  const width = (LOGO.width / viewH) * height;
-  const svg = (
-    <svg viewBox={`0 0 ${LOGO.width} ${viewH}`} width={width} height={height} className="block" aria-hidden>
+export function Logo({ className, height = 30, tone = "light", tagline = false, href = "/", label = "EduTech — bosh sahifa", asImage = false }: LogoProps) {
+  const { viewW, viewH, wordShift } = logoLayout(tagline);
+  const width = (viewW / viewH) * height;
+  const svg = asImage ? (
+    // eslint-disable-next-line @next/next/no-img-element -- static SVG from /public; next/image adds nothing for vector art.
+    <img src={lockupPath(tone, tagline)} width={Math.round(width)} height={height} alt="" loading="lazy" decoding="async" className="block" />
+  ) : (
+    <svg viewBox={`0 0 ${viewW} ${viewH}`} width={width} height={height} className="block" aria-hidden>
       <path d={LOGO.markE} fill={BRAND.orange} />
       <path d={LOGO.markL} fill={tone === "dark" ? "#FFFFFF" : BRAND.orange} />
       <path d={LOGO.wordmark} fill="currentColor" transform={wordShift ? `translate(0 ${wordShift.toFixed(2)})` : undefined} />

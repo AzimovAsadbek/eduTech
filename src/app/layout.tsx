@@ -1,17 +1,35 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, JetBrains_Mono, Manrope } from "next/font/google";
+import { JetBrains_Mono, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import { getLocale } from "next-intl/server";
 import { siteConfig, absoluteUrl } from "@/config/site";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-bricolage",
-  axes: ["opsz", "wdth"],
+/*
+ * Font budget: only what the first paint needs is preloaded (display + body, Latin only, ~64 KB).
+ * - Bricolage Grotesque is self-hosted as Google's static instance at its display optical size
+ *   (opsz 96, width 100, variable weight). Headings always used opsz 96, but the full variable file
+ *   (opsz + wdth + wght axes) costs 128 KB for Latin alone; the pinned instance is 40 KB.
+ * - Manrope and JetBrains Mono keep every subset available through unicode-range (Cyrillic loads on
+ *   demand for Russian pages), but only Latin is preloaded, and the mono labels are not preloaded at all.
+ */
+const bricolage = localFont({
+  src: "./fonts/bricolage-grotesque-opsz96-latin.woff2",
+  weight: "200 800",
+  style: "normal",
   display: "swap",
+  variable: "--font-bricolage",
+  adjustFontFallback: "Arial",
+  // Google Fonts' "latin" range (font loader options must be literals): Uzbek Latin incl. ʻ U+02BB / ʼ U+02BC, English, punctuation.
+  declarations: [
+    {
+      prop: "unicode-range",
+      value: "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    },
+  ],
 });
-const manrope = Manrope({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-manrope", display: "swap" });
-const jetbrains = JetBrains_Mono({ subsets: ["latin", "latin-ext", "cyrillic"], variable: "--font-jetbrains", display: "swap", weight: ["400", "500"] });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
+const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap", weight: ["400", "500"], preload: false });
 
 const title = `${siteConfig.name} — Zamonaviy kasblar akademiyasi | Namangan`;
 

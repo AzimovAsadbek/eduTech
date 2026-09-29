@@ -1,61 +1,29 @@
-"use client";
-
-import { useRef, type ElementType } from "react";
-import { cn } from "@/lib/utils";
-import { gsap, isDesktop, prefersReducedMotion, ScrollTrigger, useGSAP } from "./gsap";
+import type { CSSProperties, ElementType, ReactNode } from "react";
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   as?: ElementType;
-  /** Stagger direct children instead of animating the wrapper. */
+  /** Stagger the direct children (seconds between them) instead of animating the wrapper. */
   stagger?: number;
   delay?: number;
+  /** Rise distance in px. */
   y?: number;
-  once?: boolean;
-  start?: string;
   id?: string;
 }
 
-/** Scroll-linked entrance. Animates transform/opacity only; no-ops under reduced motion. */
-export function Reveal({ children, className, as: Tag = "div", stagger, delay = 0, y = 28, once = true, start = "top 85%", id }: Props) {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
-      const targets = stagger ? Array.from(el.children) : [el];
-      if (prefersReducedMotion()) {
-        gsap.set(targets, { opacity: 1, y: 0, clearProps: "all" });
-        return;
-      }
-      // On phones a staggered group would reveal off-screen children too early — trigger each one as it enters.
-      if (stagger && !isDesktop()) {
-        targets.forEach((t) => {
-          const tw = gsap.fromTo(t, { opacity: 0, y }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", paused: true, immediateRender: true });
-          ScrollTrigger.create({ trigger: t, start: "top 92%", once: true, onEnter: () => tw.play() });
-        });
-        return;
-      }
-      const tween = gsap.fromTo(
-        targets,
-        { opacity: 0, y },
-        { opacity: 1, y: 0, duration: 0.9, ease: "expo.out", delay, stagger: stagger ?? 0, paused: true, immediateRender: true },
-      );
-      ScrollTrigger.create({
-        trigger: el,
-        start,
-        once,
-        onEnter: () => tween.play(),
-        onLeaveBack: once ? undefined : () => tween.reverse(),
-      });
-    },
-    { scope: ref },
-  );
-
+/**
+ * Scroll entrance (opacity + translate). Pure markup: it renders on the server and needs no JavaScript of
+ * its own. The shared `MotionRuntime` hides only what is still below the fold when the page starts and
+ * reveals it with a CSS transition as it enters the viewport, so content is never hidden without JS and
+ * nothing already on screen flickers. Styles live in globals.css ("Motion").
+ */
+export function Reveal({ children, className, as: Tag = "div", stagger, delay, y = 28, id }: Props) {
+  const style: Record<string, string> = { "--rv-y": `${y}px` };
+  if (delay) style["--rv-delay"] = `${delay}s`;
+  if (stagger) style["--rv-stagger"] = `${stagger}s`;
   return (
-    <Tag ref={ref} className={cn(className)} id={id}>
+    <Tag className={className} id={id} data-reveal={stagger ? "group" : "self"} style={style as CSSProperties}>
       {children}
     </Tag>
   );

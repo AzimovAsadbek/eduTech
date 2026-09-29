@@ -1,6 +1,8 @@
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { MotionRuntime } from "@/components/motion/motion-runtime";
+import { pickClientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
 
 export function generateStaticParams() {
@@ -11,5 +13,12 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>;
+  // Only the namespaces client components use go to the browser (see i18n/client-messages.ts).
+  const messages = pickClientMessages(await getMessages());
+  return (
+    <NextIntlClientProvider messages={messages}>
+      {children}
+      <MotionRuntime />
+    </NextIntlClientProvider>
+  );
 }

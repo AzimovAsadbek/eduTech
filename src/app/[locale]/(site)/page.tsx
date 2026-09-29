@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Conversion } from "@/components/site/home/conversion";
-import { CourseIndex } from "@/components/site/home/course-index";
+import { toCourseTile } from "@/components/site/course/course-tile-data";
+import { CourseTeaser } from "@/components/site/home/course-teaser";
 import { Hero } from "@/components/site/home/hero";
 import { Journey } from "@/components/site/home/journey";
 import { Proof } from "@/components/site/home/proof";
@@ -16,8 +17,8 @@ import { getSiteSettings } from "@/server/modules/settings/service";
 
 type Props = { params: LocaleParams };
 
-/** How many courses the homepage previews; the rest are one click away on /kurslar. */
-const HOME_COURSES = 5;
+/** How many courses the homepage previews (two full rows: 3 × 2 on desktop, 2 × 3 on phones); the rest are one click away on /kurslar. */
+const HOME_COURSES = 6;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = await resolveLocale(params);
@@ -44,7 +45,7 @@ export default async function HomePage({ params }: Props) {
       <JsonLd data={courseListJsonLd(courses, locale, t("jsonLd.courseList"))} />
       <Hero stats={settings.stats} heroImage={gallery.find((g) => g.category === "CLASSROOM")?.image} />
       <Journey />
-      <CourseIndex courses={courses} limit={HOME_COURSES} />
+      <CourseTeaser courses={courses.map(toCourseTile)} limit={HOME_COURSES} />
       <Proof stats={settings.stats} testimonials={[]} results={[]} compact />
       <Conversion courses={courses.map((c) => ({ value: c.slug, label: c.title }))} branches={branches.map((b) => ({ value: b.id, label: b.name }))} settings={settings} />
     </>

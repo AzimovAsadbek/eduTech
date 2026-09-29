@@ -1,11 +1,9 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Check, Phone, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
+import { useState } from "react";
+import { Controller, useForm, type RegisterOptions } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import { getAttribution } from "@/lib/attribution";
@@ -18,26 +16,27 @@ export interface LeadFormOption {
   label: string;
 }
 
-function buildSchema(msg: { name: string; phone: string; phoneFormat: string }) {
-  return z.object({
-    name: z.string().trim().min(2, msg.name),
-    phone: z
-      .string()
-      .trim()
-      .min(7, msg.phone)
-      .regex(/^[+\d\s()-]+$/, msg.phoneFormat),
-    courseSlug: z.string().optional(),
-    branchId: z.string().optional(),
-    company: z.string().trim().max(150).optional(),
-    serviceSlug: z.string().optional(),
-    budget: z.string().optional(),
-    interest: z.string().optional(),
-    message: z.string().trim().max(1500).optional(),
-    // Hidden input + valueAsNumber yields NaN until a field was focused; treat that as "unknown" instead of failing silently.
-    startedAt: z.number().optional().catch(undefined),
-  });
+/**
+ * Client-side checks mirror the server schema's rules for the fields a visitor types. They only give
+ * instant feedback: the public API validates everything again with zod, so zod itself (and its locale
+ * tables) stays out of the browser bundle.
+ */
+const PHONE_CHARS = /^[+\d\s()-]+$/;
+
+interface Values {
+  name: string;
+  phone: string;
+  courseSlug?: string;
+  branchId?: string;
+  company?: string;
+  serviceSlug?: string;
+  budget?: string;
+  interest?: string;
+  message?: string;
+  startedAt?: number;
 }
-type Values = z.infer<ReturnType<typeof buildSchema>>;
+
+const TEXT_FIELDS = ["name", "phone", "company", "message"] as const;
 
 interface Props {
   type: "EDUCATION" | "MEDIA" | "GENERAL";
@@ -67,12 +66,19 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
   const tc = useTranslations("common.actions");
   const [state, setState] = useState<{ status: "idle" | "submitting" | "success" | "error"; message?: string }>({ status: "idle" });
 
-  const schema = useMemo(() => buildSchema({ name: t("errors.name"), phone: t("errors.phone"), phoneFormat: t("errors.phoneFormat") }), [t]);
   const budgets = (t.raw("budgets") as string[]).map((b) => ({ value: b, label: b }));
   const interests = (t.raw("interests") as string[]).map((b) => ({ value: b, label: b }));
 
+  const nameRules: RegisterOptions<Values, "name"> = { validate: (v) => (v ?? "").trim().length >= 2 || t("errors.name") };
+  const phoneRules: RegisterOptions<Values, "phone"> = {
+    validate: (v) => {
+      const value = (v ?? "").trim();
+      if (value.length < 7) return t("errors.phone");
+      return PHONE_CHARS.test(value) || t("errors.phoneFormat");
+    },
+  };
+
   const form = useForm<Values>({
-    resolver: zodResolver(schema),
     defaultValues: { courseSlug: defaultCourseSlug ?? "", serviceSlug: defaultServiceSlug ?? "", branchId: branches[0]?.value ?? "" },
   });
   const { register, handleSubmit, formState, setValue, getValues, control } = form;
@@ -80,9 +86,13 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
 
   const onSubmit = handleSubmit(async (values) => {
     setState({ status: "submitting" });
+    const clean: Values = { ...values };
+    for (const k of TEXT_FIELDS) if (typeof clean[k] === "string") clean[k] = clean[k].trim();
+    // The hidden timestamp is NaN until a field was focused; send it only when it is a real number.
+    if (!Number.isFinite(clean.startedAt)) delete clean.startedAt;
     const payload: Record<string, unknown> = {
       type,
-      ...values,
+      ...clean,
       website: "",
       source: source ?? (typeof window !== "undefined" ? window.location.pathname : undefined),
       attribution: getAttribution(),
@@ -165,8 +175,8 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Input label={t("fields.name")} placeholder={t("fields.namePlaceholder")} autoComplete="name" required error={err("name")} {...register("name")} />
-        <Input label={t("fields.phone")} placeholder={t("fields.phonePlaceholder")} type="tel" inputMode="tel" autoComplete="tel" required error={err("phone")} {...register("phone")} />
+        <Input label={t("fields.name")} placeholder={t("fields.namePlaceholder")} autoComplete="name" required error={err("name")} {...register("name", nameRules)} />
+        <Input label={t("fields.phone")} placeholder={t("fields.phonePlaceholder")} type="tel" inputMode="tel" autoComplete="tel" required error={err("phone")} {...register("phone", phoneRules)} />
       </div>
 
       {type === "EDUCATION" ? (
@@ -179,7 +189,7 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       {type === "MEDIA" ? (
         <>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Input label={t("fields.company")} placeholder={t("fields.companyPlaceholder")} autoComplete="organization" error={err("company")} {...register("company")} />
+            <Input label={t("fields.company")} placeholder={t("fields.companyPlaceholder")} autoComplete="organization" maxLength={150} error={err("company")} {...register("company")} />
             <Controller name="serviceSlug" control={control} render={({ field: f }) => <Select label={t("fields.service")} options={services} placeholder={t("fields.servicePlaceholder")} error={err("serviceSlug")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} />
           </div>
           <Controller name="budget" control={control} render={({ field: f }) => <Select label={t("fields.budget")} options={budgets} placeholder={t("fields.selectPlaceholder")} error={err("budget")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} />
@@ -189,7 +199,7 @@ export function LeadForm({ type, courses = [], services = [], branches = [], def
       {type === "GENERAL" ? <Controller name="interest" control={control} render={({ field: f }) => <Select label={t("fields.interest")} options={interests} placeholder={t("fields.selectPlaceholder")} error={err("interest")} value={f.value ?? ""} onChange={f.onChange} name={f.name} />} /> : null}
 
       {quick ? null : (
-        <Textarea label={t("fields.message")} placeholder={type === "MEDIA" ? t("fields.messagePlaceholderMedia") : t("fields.messagePlaceholder")} error={err("message")} {...register("message")} />
+        <Textarea label={t("fields.message")} placeholder={type === "MEDIA" ? t("fields.messagePlaceholderMedia") : t("fields.messagePlaceholder")} maxLength={1500} error={err("message")} {...register("message")} />
       )}
 
       {state.status === "error" ? (

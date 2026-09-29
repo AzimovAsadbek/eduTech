@@ -47,7 +47,7 @@ export async function Footer({ settings }: { settings: SiteSettings }) {
       <div className="container-x relative pt-14 pb-8">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo tone="dark" height={40} tagline href={homeHref} label={tc("a11y.home")} />
+            <Logo tone="dark" height={40} tagline href={homeHref} label={tc("a11y.home")} asImage />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60">{t("tagline", { tagline: settings.tagline, city: settings.city })}</p>
             {socials.length || settings.youtube ? (
               <div className="mt-5 flex flex-wrap gap-2">
