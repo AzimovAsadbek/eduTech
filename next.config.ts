@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["exceljs", "bcryptjs"],
   experimental: {
     optimizePackageImports: ["lucide-react", "recharts"],
+    // Links prefetch the full page on hover / touchstart (see src/i18n/navigation.ts).
+    dynamicOnHover: true,
   },
 };
 

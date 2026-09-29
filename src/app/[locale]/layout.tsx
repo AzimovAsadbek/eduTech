@@ -2,6 +2,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { MotionRuntime } from "@/components/motion/motion-runtime";
+import { NavigationProgress } from "@/components/site/navigation-progress";
 import { pickClientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
 
@@ -17,6 +18,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const messages = pickClientMessages(await getMessages());
   return (
     <NextIntlClientProvider messages={messages}>
+      <NavigationProgress />
       {children}
       <MotionRuntime />
     </NextIntlClientProvider>
