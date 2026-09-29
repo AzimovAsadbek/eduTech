@@ -5,8 +5,20 @@ import { adminApi, findLead, HUMAN_DELAY_MS } from "./helpers";
 const IG_UA =
   "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 390.0.0.20.85 (iPhone15,2; iOS 18_5; uz_UZ; uz; scale=3.00; 1179x2556; 734012345)";
 
+/**
+ * Own synthetic client IP: the earlier flows already spend most of the shared run IP's lead budget
+ * (5 posts / 10 min), and these two submissions must not hit the limiter.
+ */
+const IG_IP = `10.249.${Math.floor(Math.random() * 250)}.${1 + Math.floor(Math.random() * 250)}`;
+
 test.describe.serial("Instagram: bio page, welcome card and attribution", () => {
-  test.use({ userAgent: IG_UA, viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  test.use({
+    userAgent: IG_UA,
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    extraHTTPHeaders: { "X-Forwarded-For": IG_IP },
+  });
 
   test("the bio landing (/ig) takes a short application credited to Instagram · bio", async ({ page, playwright }) => {
     const phone = "+998901230071";

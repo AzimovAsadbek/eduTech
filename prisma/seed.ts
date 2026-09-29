@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import "dotenv/config";
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";

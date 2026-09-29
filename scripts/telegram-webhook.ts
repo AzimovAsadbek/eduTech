@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Registers (or removes) the Telegram webhook for lead inline actions.
  *   npx tsx scripts/telegram-webhook.ts set     → setWebhook to $NEXT_PUBLIC_SITE_URL/api/v1/telegram/webhook

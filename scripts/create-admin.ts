@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * Creates or resets an admin user without the UI.
  *   npx tsx scripts/create-admin.ts email@x.uz "Strong Passw0rd" "Full Name" [SUPER_ADMIN|ADMIN|EDITOR]
