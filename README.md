@@ -1,6 +1,12 @@
-# EduTech — Premium Digital Platform
+# EduTech · kurslar va studiya uchun murojaatlar
 
-EduTech'ning rasmiy web-platformasi: **EDU** (zamonaviy kasblar akademiyasi) va **MEDIA** (bizneslar uchun kontent va marketing studiyasi) — bitta premium digital tajriba, lead pipeline (Telegram + Excel) va toʻliq admin panel bilan.
+EduTech akademiyasi va media studiyasi bitta sayt orqali ariza oladi. Menejer yangi arizani Telegram’da ko‘radi, suhbatning o‘zida holatini yangilaydi va admin paneldan tanlangan arizalarni Excel’ga yuklaydi.
+
+## Bitta arizaning yo‘li
+
+1. Saytdagi forma arizani REST API’ga yuboradi. Server maydonlarni tekshiradi va arizani PostgreSQL’ga yozadi. [Arizani qabul qilish](src/app/api/v1/public/leads/route.ts) · [Saqlash va holatlar tarixi](src/server/modules/leads/service.ts)
+2. Bot guruhga tugmali xabar yuboradi. Menejer tugmani bosganda webhook ariza holatini yangilaydi. [Telegram integratsiyasi](src/server/modules/telegram/service.ts) · [Integratsion testlar](tests/integration/telegram-service.test.ts)
+3. Menejer admin panelda arizalarni filtrlaydi va shu ro‘yxatni Excel formatida oladi. [Eksport](src/app/api/v1/admin/leads/export/route.ts) · [Excel testlari](tests/unit/excel-service.test.ts)
 
 ```
 Next.js 16 · React 19 · TypeScript · Tailwind v4 · Prisma 6 · PostgreSQL · Docker
